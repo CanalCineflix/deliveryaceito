@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Plano Necessário - GetSolution{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="row justify-content-center text-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card p-5 shadow-lg">
+                <div class="card-body">
+                    <i class="bi bi-gem display-1 text-warning mb-4"></i>
+                    <h2 class="h3 fw-bold mb-3">Seu Plano de Assinatura Expirou ou Não Foi Encontrado</h2>
+                    <p class="lead text-muted mb-4">
+                        Para continuar utilizando todos os recursos da **GetSolution**, por favor, renove sua assinatura.
+                    </p>
+                    <p>
+                        Sua assinatura é essencial para manter a plataforma funcionando e para garantir que você tenha acesso a todas as ferramentas de gestão, relatórios e atendimento.
+                    </p>
+                    <hr class="my-4">
+                    <a href="{{ url_for('subscription.plans') }}" class="btn btn-warning btn-lg fw-bold">
+                        <i class="bi bi-gem"></i> Escolha seu Plano
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

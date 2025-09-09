@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Nossos Planos - GetSolution{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="text-center mb-5">
+        <h1 class="h2 fw-bold text-primary">Escolha o Plano Ideal para Você</h1>
+        <p class="lead text-muted">Recursos essenciais para o crescimento do seu negócio, sem complicação.</p>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0 text-center">
+                <div class="card-body p-4 d-flex flex-column">
+                    <h5 class="fw-bold text-muted text-uppercase mb-3">Básico</h5>
+                    <h2 class="card-title fw-bold mb-0">R$ 29,90<small class="text-muted">/mês</small></h2>
+                    <ul class="list-unstyled my-4 text-start mx-auto" style="max-width: 250px;">
+                        <li><i class="bi bi-check-lg text-success"></i> Gestão de Pedidos</li>
+                        <li><i class="bi bi-check-lg text-success"></i> Relatórios de Vendas</li>
+                        <li><i class="bi bi-x-lg text-danger"></i> Relatórios de Produtos</li>
+                        <li><i class="bi bi-x-lg text-danger"></i> Gerenciamento de Caixa</li>
+                    </ul>
+                    <div class="mt-auto">
+                        <a href="#" class="btn btn-primary w-100 fw-bold">
+                            Assinar Plano Básico
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 shadow-lg border-primary border-3 text-center position-relative">
+                <div class="ribbon">Mais Popular</div>
+                <div class="card-body p-4 d-flex flex-column">
+                    <h5 class="fw-bold text-uppercase mb-3 text-primary">Premium</h5>
+                    <h2 class="card-title fw-bold mb-0">R$ 49,90<small class="text-muted">/mês</small></h2>
+                    <ul class="list-unstyled my-4 text-start mx-auto" style="max-width: 250px;">
+                        <li><i class="bi bi-check-lg text-success"></i> Gestão de Pedidos</li>
+                        <li><i class="bi bi-check-lg text-success"></i> Relatórios de Vendas</li>
+                        <li><i class="bi bi-check-lg text-success"></i> Relatórios de Produtos</li>
+                        <li><i class="bi bi-check-lg text-success"></i> Gerenciamento de Caixa</li>
+                    </ul>
+                    <div class="mt-auto">
+                        <a href="#" class="btn btn-primary w-100 fw-bold btn-lg">
+                            Assinar Plano Premium
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0 text-center">
+                <div class="card-body p-4 d-flex flex-column">
+                    <h5 class="fw-bold text-muted text-uppercase mb-3">Enterprise</h5>
+                    <h2 class="card-title fw-bold mb-0">R$ 99,90<small class="text-muted">/mês</small></h2>
+                    <ul class="list-unstyled my-4 text-start mx-auto" style="max-width: 250px;">
+                        <li><i class="bi bi-check-lg text-success"></i> Todos os recursos</li>
+                        <li><i class="bi bi-check-lg text-success"></i> Suporte Prioritário</li>
+                        <li><i class="bi bi-check-lg text-success"></i> Personalização</li>
+                        <li><i class="bi bi-check-lg text-success"></i> Integrações</li>
+                    </ul>
+                    <div class="mt-auto">
+                        <a href="#" class="btn btn-primary w-100 fw-bold">
+                            Assinar Plano Enterprise
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .ribbon {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        padding: 5px 15px;
+        background-color: #0d6efd;
+        color: white;
+        font-weight: bold;
+        font-size: 0.8rem;
+        border-radius: 50px;
+        transform: rotate(10deg);
+    }
+</style>
+{% endblock %}

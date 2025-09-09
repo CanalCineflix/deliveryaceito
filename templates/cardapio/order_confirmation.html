@@ -1,0 +1,65 @@
+{% extends 'cardapio/cardapio_base.html' %} 
+
+{% block title %}Confirmação de Pedido{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white text-center">
+                    <h2 class="mb-0">Pedido Confirmado!</h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead text-center">Seu pedido foi recebido e está em processamento. Agradecemos a preferência!</p>
+                    <hr>
+                    <h4 class="mb-3">Detalhes do Pedido #{{ order.id }}</h4>
+                    <div class="card-text">
+                        <p><strong>Cliente:</strong> {{ order.client_name }}</p>
+                        <p><strong>Telefone:</strong> {{ order.client_phone }}</p>
+                        <p><strong>Endereço:</strong> {{ order.client_address }}</p>
+                        <p><strong>Total:</strong> R$ {{ "%.2f"|format(order.total_price) }}</p>
+                        <p><strong>Forma de Pagamento:</strong> {{ order.payment_method }}</p>
+                    </div>
+
+                    {% if order.payment_method == 'Pix' %}
+                    <div class="alert alert-info text-center" role="alert">
+                        <strong>Aguardando Pagamento por Pix.</strong> Por favor, use a chave PIX enviada a você para concluir o pagamento.
+                    </div>
+                    {% endif %}
+                    
+                    {% if order.payment_method == 'Dinheiro' and order.change_for %}
+<div class="alert alert-info" role="alert">
+    <strong>Troco para:</strong> R$ {{ "%.2f"|format(order.change_for) }}<br>
+    <strong>Troco:</strong> R$ {{ "%.2f"|format(order.change_due) }}
+</div>
+{% endif %}
+
+                    <h5 class="mt-4">Itens do Pedido:</h5>
+                    <ul class="list-group">
+                        {% for item in order.items %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                {{ item.quantity }}x {{ item.product.name }}
+                                {% if item.notes %}
+                                <br><small class="text-muted">Observação: {{ item.notes }}</small>
+                                {% endif %}
+                            </div>
+                            <span>R$ {{ "%.2f"|format(item.price_at_order) }}</span>
+                        </li>
+                        {% endfor %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Taxa de Entrega:</strong>
+                            <span>R$ {{ "%.2f"|format(order.delivery_fee) }}</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-4 text-center">
+                        <a href="{{ url_for('cardapio.menu', user_id=order.user_id) }}" class="btn btn-secondary">Voltar ao Cardápio</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

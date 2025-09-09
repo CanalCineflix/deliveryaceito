@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+
+{% block title %}Novo Pedido{% endblock %}
+
+{% block content %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#4B5563',
+                        light: '#E5E7EB',
+                        danger: '#EF4444',
+                        success: '#22C55E',
+                        warning: '#F59E0B',
+                        sidebar: '#1E293B',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <div class="flex-1 w-full p-4 md:p-8">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center space-x-4">
+                <i data-lucide="plus-circle" class="w-8 h-8 text-primary"></i>
+                <h1 class="text-3xl font-bold text-gray-800">Novo Pedido</h1>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-gray-800">Produtos</h3>
+                        <div class="relative w-full max-w-sm">
+                            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                            <input type="text" id="search-input" placeholder="Buscar produtos..." class="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors">
+                        </div>
+                    </div>
+                    <div id="products-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        {% if products %}
+                            {% for product in products %}
+                            <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-200 cursor-pointer p-4 border border-gray-200 relative group" data-product-id="{{ product.id }}">
+                                <h4 class="font-bold text-gray-800 text-lg mb-1">{{ product.name }}</h4>
+                                <p class="text-gray-500 text-sm mb-2">{{ product.description }}</p>
+                                <p class="text-primary font-bold text-xl">R$ {{ "%.2f"|format(product.price) }}</p>
+                                <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg">
+                                    <button class="bg-success text-white p-3 rounded-full shadow-lg hover:bg-success/90 transition-colors" data-action="add-to-order">
+                                        <i data-lucide="plus" class="w-6 h-6"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                        <div class="text-center p-8 text-gray-500 col-span-full">
+                            Nenhum produto cadastrado.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-xl shadow-lg p-6 sticky top-24">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Resumo do Pedido</h3>
+                    
+                    <div class="mb-4">
+                        <label for="table-number" class="block text-sm font-medium text-gray-700">Número da Mesa</label>
+                        <input type="number" id="table-number" name="table_number" min="1" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2">
+                    </div>
+
+                    <div id="order-items-list" class="space-y-3 mb-6">
+                        <p class="text-center text-gray-500">Nenhum item adicionado.</p>
+                    </div>
+
+                    <div class="flex justify-between items-center border-t pt-4">
+                        <span class="text-lg font-bold text-gray-800">Total:</span>
+                        <span id="order-total" class="text-2xl font-bold text-success">R$ 0,00</span>
+                    </div>
+
+                    <button id="submit-order-btn" class="mt-6 w-full bg-primary text-white py-3 px-4 rounded-lg shadow-md hover:bg-primary/90 transition-colors font-bold text-lg disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
+                        <i data-lucide="check-circle" class="inline-block w-5 h-5 mr-2"></i>
+                        Finalizar Pedido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="add-item-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 transform transition-transform duration-300 scale-95">
+            <h3 id="modal-product-name" class="text-xl font-semibold mb-4 text-gray-800"></h3>
+            <form id="add-item-form">
+                <input type="hidden" id="modal-product-id">
+                <div class="mb-4">
+                    <label for="modal-quantity" class="block text-sm font-medium text-gray-700">Quantidade</label>
+                    <input type="number" id="modal-quantity" name="quantity" min="1" value="1" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2">
+                </div>
+                <div class="mb-4">
+                    <label for="modal-observation" class="block text-sm font-medium text-gray-700">Observações (opcional)</label>
+                    <textarea id="modal-observation" name="observation" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancel-add-item" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Inicialização de ícones
+        lucide.createIcons();
+
+        // Variáveis globais
+        let selectedProducts = [];
+        const allProducts = [];
+
+        // Elementos DOM
+        const productsList = document.getElementById('products-list');
+        const orderItemsList = document.getElementById('order-items-list');
+        const orderTotalSpan = document.getElementById('order-total');
+        const tableNumberInput = document.getElementById('table-number');
+        const submitOrderBtn = document.getElementById('submit-order-btn');
+        const searchInput = document.getElementById('search-input');
+        const addItemModal = document.getElementById('add-item-modal');
+        const modalProductName = document.getElementById('modal-product-name');
+        const modalProductId = document.getElementById('modal-product-id');
+        const modalQuantity = document.getElementById('modal-quantity');
+        const modalObservation = document.getElementById('modal-observation');
+        const addItemForm = document.getElementById('add-item-form');
+        const cancelAddItemBtn = document.getElementById('cancel-add-item');
+
+        // Povoa a lista de todos os produtos a partir do DOM
+        document.querySelectorAll('[data-product-id]').forEach(card => {
+            const productId = card.getAttribute('data-product-id');
+            const productName = card.querySelector('h4').textContent;
+            const productDesc = card.querySelector('p:nth-of-type(1)').textContent;
+            const productPriceText = card.querySelector('p:last-of-type').textContent;
+            const productPrice = parseFloat(productPriceText.replace('R$', '').replace(',', '.'));
+            allProducts.push({
+                id: productId,
+                name: productName,
+                description: productDesc,
+                price: productPrice
+            });
+        });
+
+        // Funções auxiliares
+        const formatCurrency = (value) => `R$ ${value.toFixed(2).replace('.', ',')}`;
+
+        const showModal = (modal) => {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.querySelector('div').classList.remove('scale-95');
+                modal.querySelector('div').classList.add('scale-100');
+                modalQuantity.focus();
+            }, 10);
+        };
+
+        const hideModal = (modal) => {
+            modal.querySelector('div').classList.remove('scale-100');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }, 300);
+        };
+
+        const updateOrderSummary = () => {
+            orderItemsList.innerHTML = '';
+            if (selectedProducts.length === 0) {
+                orderItemsList.innerHTML = `<p class="text-center text-gray-500">Nenhum item adicionado.</p>`;
+                submitOrderBtn.disabled = true;
+                orderTotalSpan.textContent = formatCurrency(0);
+                return;
+            }
+
+            let total = 0;
+            selectedProducts.forEach((item, index) => {
+                total += item.price * item.quantity;
+                const itemElement = document.createElement('div');
+                itemElement.className = 'flex items-start justify-between border-b pb-2';
+                
+                let observationHtml = '';
+                if (item.observation && item.observation.trim() !== '') {
+                    observationHtml = `<p class="text-xs text-gray-400 italic mt-1">Obs: ${item.observation}</p>`;
+                }
+
+                itemElement.innerHTML = `
+                    <div class="flex-1">
+                        <p class="font-medium text-gray-700">${item.quantity}x ${item.name}</p>
+                        <p class="text-sm text-gray-500">${formatCurrency(item.price * item.quantity)}</p>
+                        ${observationHtml}
+                    </div>
+                    <div class="flex-shrink-0 ml-2">
+                        <button class="text-danger hover:text-danger/70 transition-colors" data-index="${index}">
+                            <i data-lucide="x-circle" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                `;
+                orderItemsList.appendChild(itemElement);
+            });
+            orderTotalSpan.textContent = formatCurrency(total);
+            submitOrderBtn.disabled = !tableNumberInput.value;
+            lucide.createIcons();
+        };
+
+        // Event Listeners
+        productsList.addEventListener('click', (e) => {
+            const card = e.target.closest('[data-product-id]');
+            if (!card) return;
+            
+            const productId = card.getAttribute('data-product-id');
+            
+            const productToAdd = allProducts.find(p => p.id == productId);
+
+            if (productToAdd) {
+                modalProductId.value = productToAdd.id;
+                modalProductName.textContent = productToAdd.name;
+                modalQuantity.value = 1;
+                modalObservation.value = '';
+                showModal(addItemModal);
+            }
+        });
+        
+        addItemForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const productId = modalProductId.value;
+            const quantity = parseInt(modalQuantity.value, 10);
+            const observation = modalObservation.value;
+            
+            const product = allProducts.find(p => p.id == productId);
+
+            if (product && quantity > 0) {
+                const productToAdd = { ...product, quantity, observation };
+                selectedProducts.push(productToAdd);
+                updateOrderSummary();
+            }
+            
+            hideModal(addItemModal);
+        });
+
+        orderItemsList.addEventListener('click', (e) => {
+            const removeBtn = e.target.closest('button[data-index]');
+            if (removeBtn) {
+                const index = parseInt(removeBtn.dataset.index, 10);
+                selectedProducts.splice(index, 1);
+                updateOrderSummary();
+            }
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('[data-product-id]').forEach(card => {
+                const cardText = card.textContent.toLowerCase();
+                card.style.display = cardText.includes(searchTerm) ? '' : 'none';
+            });
+        });
+        
+        tableNumberInput.addEventListener('input', () => {
+            submitOrderBtn.disabled = selectedProducts.length === 0 || !tableNumberInput.value;
+        });
+
+        submitOrderBtn.addEventListener('click', async () => {
+            if (selectedProducts.length === 0 || !tableNumberInput.value) {
+                // Mensagem de erro na UI em vez de alert()
+                alert('Por favor, adicione itens e insira o número da mesa.');
+                return;
+            }
+
+            const orderData = {
+                // Adapte para enviar apenas os dados que a rota Python espera
+                table_number: parseInt(tableNumberInput.value, 10),
+                items: selectedProducts.map(item => ({
+                    id: parseInt(item.id), // Garante que o ID é um número
+                    quantity: item.quantity,
+                    observation: item.observation || ''
+                })),
+            };
+
+            try {
+                const response = await fetch('/pedidos/novo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    window.location.href = result.redirect_url;
+                } else {
+                    alert(`Erro ao finalizar o pedido: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Erro ao salvar o pedido:', error);
+                alert('Ocorreu um erro ao finalizar o pedido. Tente novamente.');
+            }
+        });
+
+        cancelAddItemBtn.addEventListener('click', () => hideModal(addItemModal));
+    });
+</script>
+{% endblock %}

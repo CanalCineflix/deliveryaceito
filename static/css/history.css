@@ -1,0 +1,217 @@
+/*
+  Estilos gerais para a página de histórico de caixa.
+  - O design foca em cards para agrupar as informações por dia,
+    tornando o histórico mais legível e profissional.
+*/
+
+:root {
+    --primary-color: #4F46E5;
+    --secondary-color: #4B5563;
+    --success-color: #22C55E;
+    --danger-color: #EF4444;
+    --light-gray: #E5E7EB;
+    --medium-gray: #D1D5DB;
+    --dark-gray: #1f2937;
+    --bg-light: #F9FAFB;
+    --bg-card: #FFFFFF;
+}
+
+body {
+    background-color: var(--bg-light);
+    font-family: 'Inter', sans-serif;
+}
+
+.history-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.history-title {
+    font-size: 2.25rem; /* 3xl */
+    font-weight: 700;
+    color: var(--dark-gray);
+}
+
+/*
+  Estilos para o card do formulário de filtro.
+*/
+.filter-card {
+    background-color: var(--bg-card);
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.filter-card h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark-gray);
+    margin-bottom: 1rem;
+}
+
+.date-filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: flex-end;
+}
+
+.date-input-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 150px;
+}
+
+.date-input-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--secondary-color);
+    margin-bottom: 0.5rem;
+}
+
+.date-filter-form input[type="date"] {
+    padding: 0.625rem;
+    border: 1px solid var(--medium-gray);
+    border-radius: 0.5rem;
+    transition: all 0.2s ease-in-out;
+    background-color: #fff;
+}
+
+.date-filter-form input[type="date"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.date-filter-form button {
+    padding: 0.625rem 1.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.date-filter-form button:hover {
+    background-color: #4338ca;
+    transform: translateY(-1px);
+}
+
+/*
+  Estilos para os cards que agrupam as movimentações por data.
+*/
+.day-card {
+    background-color: var(--bg-card);
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    border: 1px solid var(--light-gray);
+}
+
+.day-header {
+    background-color: var(--bg-light);
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--light-gray);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.day-header h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--dark-gray);
+}
+
+/*
+  Estilos para a tabela de movimentações.
+*/
+.movements-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.movements-table th,
+.movements-table td {
+    padding: 1rem 1.5rem;
+    text-align: left;
+}
+
+.movements-table th {
+    background-color: var(--bg-light);
+    color: var(--secondary-color);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.movements-table tbody tr {
+    transition: background-color 0.2s ease-in-out;
+}
+
+.movements-table tbody tr:hover {
+    background-color: #f6f7f9;
+}
+
+.movements-table tbody tr:not(:last-child) td {
+    border-bottom: 1px solid var(--light-gray);
+}
+
+/*
+  Estilos para as tags de tipo de movimentação.
+*/
+.movement-type-tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-weight: 600;
+    font-size: 0.75rem;
+    border-radius: 9999px;
+    text-transform: uppercase;
+}
+
+.tag-sale {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.tag-expense, .tag-withdrawal {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.tag-deposit {
+    background-color: #e0e7ff;
+    color: #3730a3;
+}
+
+.tag-opening, .tag-closing {
+    background-color: #fef3c7;
+    color: #a16207;
+}
+
+/* Estilo para a célula de valor */
+.amount-cell {
+    font-weight: 600;
+}
+
+.amount-sale, .amount-deposit, .amount-opening {
+    color: var(--success-color);
+}
+
+.amount-expense, .amount-withdrawal, .amount-closing {
+    color: var(--danger-color);
+}

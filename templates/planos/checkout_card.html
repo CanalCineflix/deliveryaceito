@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto mt-10">
+    <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-6 text-center">Pagamento do Plano {{ plan.name }}</h2>
+        <p class="text-center text-3xl font-bold text-indigo-600 mb-6">R$ {{ "%.2f"|format(plan.price) }}</p>
+
+        <!-- Formulário de Pagamento do Mercado Pago -->
+        <form id="form-checkout" class="space-y-4">
+            <div id="form-container">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="form-checkout__cardholderEmail">
+                        E-mail
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="form-checkout__cardholderEmail" type="email" name="cardholderEmail" placeholder="Seu e-mail">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="form-checkout__cardholderName">
+                        Nome do Titular
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="form-checkout__cardholderName" type="text" name="cardholderName" placeholder="Nome impresso no cartão">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="form-checkout__cardNumber">
+                        Número do Cartão
+                    </label>
+                    <div id="form-checkout__cardNumber"></div>
+                </div>
+                <div class="flex space-x-4 mb-4">
+                    <div class="w-1/2">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="form-checkout__expirationDate">
+                            Validade (MM/AA)
+                        </label>
+                        <div id="form-checkout__expirationDate"></div>
+                    </div>
+                    <div class="w-1/2">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="form-checkout__securityCode">
+                            CVV
+                        </label>
+                        <div id="form-checkout__securityCode"></div>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="form-checkout__installments">
+                        Parcelas
+                    </label>
+                    <div id="form-checkout__installments"></div>
+                </div>
+                <div class="flex space-x-4 mb-4">
+                    <div class="w-1/2">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="form-checkout__identificationType">
+                            Tipo de Documento
+                        </label>
+                        <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="form-checkout__identificationType" name="identificationType"></select>
+                    </div>
+                    <div class="w-1/2">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="form-checkout__identificationNumber">
+                            Número do Documento
+                        </label>
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="form-checkout__identificationNumber" type="text" name="identificationNumber" placeholder="Número do documento">
+                    </div>
+                </div>
+            </div>
+            <button id="submit-button" class="w-full bg-indigo-600 text-white p-3 rounded-md font-semibold mt-4">Confirmar Pagamento</button>
+        </form>
+
+        <p id="alert-message" class="mt-4 text-center text-red-500"></p>
+    </div>
+</div>
+
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('form-checkout');
+        const alertMessage = document.getElementById('alert-message');
+        const mp_public_key = '{{ mp_public_key }}';
+        const plan_id = '{{ plan.id }}';
+
+        if (!mp_public_key) {
+            alertMessage.textContent = 'Erro de inicialização. Chave pública não encontrada.';
+            console.error('Mercado Pago Public Key is missing.');
+            return;
+        }
+
+        const mp = new MercadoPago(mp_public_key, {
+            locale: 'pt-BR'
+        });
+
+        const cardForm = mp.cardForm({
+            amount: '{{ plan.price }}',
+            iframe: true,
+            form: {
+                id: 'form-checkout',
+                cardholderName: { id: 'form-checkout__cardholderName' },
+                cardholderEmail: { id: 'form-checkout__cardholderEmail' },
+                cardNumber: { id: 'form-checkout__cardNumber' },
+                expirationDate: { id: 'form-checkout__expirationDate' },
+                securityCode: { id: 'form-checkout__securityCode' },
+                installments: { id: 'form-checkout__installments' },
+                identificationType: { id: 'form-checkout__identificationType' },
+                identificationNumber: { id: 'form-checkout__identificationNumber' },
+            },
+            callbacks: {
+                onFormMounted: error => {
+                    if (error) return console.warn("Form Mounted handling error: ", error);
+                    console.log("Form mounted");
+                },
+                onCardTokenReceived: async (error, token) => {
+                    if (error) {
+                        alertMessage.textContent = 'Erro ao processar o pagamento. Por favor, tente novamente.';
+                        alertMessage.style.color = 'red';
+                        console.error("Token handling error: ", error);
+                        return;
+                    }
+                    
+                    try {
+                        const response = await fetch('/payments/process_payment', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                token: token.id,
+                                plan_id: plan_id,
+                                payment_type: 'card'
+                            })
+                        });
+
+                        const paymentResult = await response.json();
+
+                        if (paymentResult.success) {
+                            alertMessage.textContent = 'Pagamento aprovado com sucesso!';
+                            alertMessage.style.color = 'green';
+                            console.log('Pagamento aprovado:', paymentResult);
+                            window.location.href = '/dashboard';
+                        } else {
+                            alertMessage.textContent = `Erro no pagamento: ${paymentResult.message || 'Ocorreu um erro.'}`;
+                            alertMessage.style.color = 'red';
+                            console.error('Erro no pagamento:', paymentResult);
+                        }
+                    } catch (error) {
+                        alertMessage.textContent = 'Erro de conexão. Por favor, tente novamente.';
+                        alertMessage.style.color = 'red';
+                        console.error('Erro de conexão:', error);
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

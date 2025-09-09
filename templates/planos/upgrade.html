@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2>Mudar de Plano</h2>
+    {% if current_subscription %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Seu Plano Atual: {{ current_subscription.plan.name }}</h5>
+            <p class="card-text">Expira em: {{ current_subscription.end_date.strftime('%d/%m/%Y') }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <h3>Planos Disponíveis</h3>
+    <div class="row">
+        {% for plan in plans %}
+        {% if not current_subscription or plan.id != current_subscription.plan.id %}
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ plan.name }}</h5>
+                    <p class="card-text">R$ {{ "%.2f"|format(plan.price) }} / {{ plan.duration_days }} dias</p>
+                    <p class="card-text">{{ plan.description }}</p>
+                    <a href="{{ url_for('planos.checkout', plan_id=plan.id) }}" class="btn btn-success">Mudar para este plano</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

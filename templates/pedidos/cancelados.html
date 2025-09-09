@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}Pedidos Cancelados{% endblock %}
+
+{% block content %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#4B5563',
+                        light: '#E5E7EB',
+                        danger: '#EF4444',
+                        success: '#22C55E',
+                        warning: '#F59E0B',
+                        info: '#3B82F6',
+                        sidebar: '#1E293B',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <div class="flex-1 w-full p-4 md:p-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-3xl font-bold text-gray-800">Pedidos Cancelados</h2>
+            <a href="{{ url_for('pedidos.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 transition-colors">
+                Voltar aos Pedidos Ativos
+            </a>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <form action="{{ url_for('pedidos.cancelados') }}" method="GET" class="flex flex-col sm:flex-row items-center gap-4">
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <label for="start_date" class="text-gray-600">De:</label>
+                    <input type="date" id="start_date" name="start_date" value="{{ start_date }}" class="form-input rounded-md shadow-sm border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <label for="end_date" class="text-gray-600">Até:</label>
+                    <input type="date" id="end_date" name="end_date" value="{{ end_date }}" class="form-input rounded-md shadow-sm border-gray-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                </div>
+                <button type="submit" class="w-full sm:w-auto px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-primary/90 transition-colors">
+                    <i data-lucide="filter" class="inline-block w-4 h-4 mr-2"></i>Filtrar
+                </button>
+            </form>
+        </div>
+
+        {% if grouped_orders %}
+            {% for date, orders in grouped_orders.items() %}
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-gray-700 border-b-2 border-gray-200 pb-2 mb-4">
+                        <i data-lucide="calendar" class="inline-block w-6 h-6 mr-2 text-danger"></i>
+                        {{ date }}
+                    </h3>
+                    {% for order in orders %}
+                        <div class="bg-white rounded-xl shadow-lg p-6 mb-4 border-l-4 border-danger">
+                            <h5 class="text-xl font-bold text-gray-800 mb-3">Pedido #{{ order.id }}</h5>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-sm text-gray-600 mb-1">
+                                        <strong>Cliente:</strong> {{ order.client_name }}
+                                    </p>
+                                    <p class="text-sm text-gray-600 mb-1">
+                                        <strong>Telefone:</strong> {{ order.client_phone }}
+                                    </p>
+                                    <p class="text-sm text-gray-600 mb-1">
+                                        <strong>Endereço:</strong> {{ order.client_address }}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600 mb-1">
+                                        <strong>Forma de Pagamento:</strong> {{ order.payment_method }}
+                                    </p>
+                                    <p class="text-sm text-gray-600 mb-1">
+                                        <strong>Motivo do Cancelamento:</strong> {{ order.cancel_reason or 'Não informado' }}
+                                    </p>
+                                    <p class="text-sm text-gray-600 mt-1">
+                                        <strong>Cancelado às:</strong> {{ order.canceled_at.strftime('%H:%M') }}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <hr class="my-4 border-t border-gray-200">
+                            
+                            <h6 class="text-md font-semibold text-gray-700 mb-2">Itens:</h6>
+                            <ul class="divide-y divide-gray-200">
+                                {% for item in order.items %}
+                                    <li class="flex justify-between items-center py-2">
+                                        <div>
+                                            <p class="text-sm text-gray-800 font-medium">
+                                                {{ item.quantity }}x {{ item.product.name }}
+                                            </p>
+                                            {% if item.notes %}
+                                                <small class="text-xs text-gray-500">
+                                                    Observação: {{ item.notes }}
+                                                </small>
+                                            {% endif %}
+                                        </div>
+                                        <span class="text-sm font-semibold text-primary">
+                                            R$ {{ "%.2f"|format(item.price_at_order) }}
+                                        </span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center p-10 bg-white rounded-lg shadow-lg">
+                <p class="text-2xl text-gray-400 font-medium">
+                    Nenhum pedido cancelado encontrado.
+                </p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}

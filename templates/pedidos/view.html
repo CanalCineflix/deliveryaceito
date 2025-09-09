@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-bold text-gray-800">Detalhes do Pedido #{{ order.id }}</h1>
+            <span class="px-3 py-1 text-sm font-semibold rounded-full 
+                {% if order.status.name == 'COMPLETED' %}bg-green-100 text-green-800{% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                {{ order.status.value }}
+            </span>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Informações do Cliente</h2>
+                <p><strong>Nome:</strong> {{ order.client_name }}</p>
+                <p><strong>Observações:</strong> {{ order.notes }}</p>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Detalhes da Compra</h2>
+                <p><strong>Data do Pedido:</strong> {{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
+                <p><strong>Método de Pagamento:</strong> {{ order.payment_method }}</p>
+                <p><strong>Total:</strong> R$ {{ "%.2f"|format(order.total_price) }}</p>
+                {% if order.change_for %}
+                    <p><strong>Valor Recebido:</strong> R$ {{ "%.2f"|format(order.change_for) }}</p>
+                    <p><strong>Troco:</strong> R$ {{ "%.2f"|format(order.change_for - order.total_price) }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <h2 class="text-xl font-semibold mt-6 mb-2">Itens do Pedido</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Produto</th>
+                        <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Qtd</th>
+                        <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Preço Un.</th>
+                        <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items %}
+                    <tr class="border-b">
+                        <td class="py-2 px-4">{{ item.product.name }}</td>
+                        <td class="py-2 px-4">{{ item.quantity }}</td>
+                        <td class="py-2 px-4">R$ {{ "%.2f"|format(item.price_at_order) }}</td>
+                        <td class="py-2 px-4">R$ {{ "%.2f"|format(item.quantity * item.price_at_order) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

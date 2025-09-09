@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+
+{% block title %}Histórico de Caixa{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .history-container {
+            max-width: 900px;
+            margin: auto;
+            padding: 1.5rem;
+            background-color: #f7fafc; /* Tailwind: gray-50 */
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .history-title {
+            font-size: 1.875rem; /* Tailwind: text-3xl */
+            font-weight: 700; /* Tailwind: font-bold */
+            color: #1a202c; /* Tailwind: gray-800 */
+        }
+        .filter-card {
+            background-color: #ffffff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        .filter-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .date-filter-form {
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5rem;
+        }
+        .date-input-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .date-input-group label {
+            font-size: 0.875rem;
+            color: #4a5568; /* Tailwind: gray-600 */
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        .date-input-group input {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .date-input-group input:focus {
+            border-color: #4f46e5;
+        }
+        .filter-button-group button {
+            background-color: #4f46e5;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            border: none;
+            cursor: pointer;
+        }
+        .filter-button-group button:hover {
+            background-color: #4338ca;
+        }
+        .day-card {
+            background-color: #ffffff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .day-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        .movements-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .movements-table th, .movements-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .movements-table th {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+        }
+        .movements-table td {
+            font-size: 0.875rem;
+            color: #2d3748;
+        }
+        .amount-cell {
+            font-weight: 600;
+        }
+        .amount-sale {
+            color: #22c55e;
+        }
+        .amount-expense {
+            color: #ef4444;
+        }
+        .movement-type-tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 0.75rem;
+            color: white;
+        }
+        .tag-sale { background-color: #22c55e; }
+        .tag-expense { background-color: #ef4444; }
+        .tag-opening { background-color: #4f46e5; }
+        .tag-closing { background-color: #4b5563; }
+        .tag-deposit { background-color: #10b981; }
+        .tag-withdrawal { background-color: #f59e0b; }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-md-4 py-3">
+    <div class="history-container">
+        <div class="history-header">
+            <div class="flex items-center space-x-4">
+                <i data-lucide="history" class="w-8 h-8 text-primary"></i>
+                <h1 class="history-title">Histórico de Caixa</h1>
+            </div>
+            <a href="{{ url_for('caixa.index') }}" class="bg-gray-200 text-secondary font-medium px-4 py-2 rounded-lg shadow-md hover:bg-gray-300 transition-colors">
+                <i data-lucide="wallet" class="inline-block w-4 h-4 mr-1"></i>
+                Voltar para o Caixa
+            </a>
+        </div>
+
+        <div class="filter-card">
+            <h3>Filtrar por Data</h3>
+            <form action="{{ url_for('caixa.history') }}" method="get" class="date-filter-form">
+                <div class="date-input-group">
+                    <label for="start_date">Data de Início</label>
+                    <input type="date" id="start_date" name="start_date" value="{{ start_date if start_date else '' }}">
+                </div>
+                <div class="date-input-group">
+                    <label for="end_date">Data de Fim</label>
+                    <input type="date" id="end_date" name="end_date" value="{{ end_date if end_date else '' }}">
+                </div>
+                <div class="filter-button-group">
+                    <button type="submit">
+                        <i data-lucide="search" class="inline-block w-4 h-4 mr-1"></i> Buscar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {% if movements_by_date %}
+            {% for date, movements in movements_by_date.items()|sort(reverse=True) %}
+            <div class="day-card">
+                <div class="day-header">
+                    <h3>Dia: <span class="text-primary">{{ date.strftime('%d/%m/%Y') }}</span></h3>
+                    <span class="text-sm font-medium text-gray-500">{{ movements|length }} Movimentações</span>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="movements-table">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Descrição</th>
+                                <th class="text-right">Valor</th>
+                                <th>Horário</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for movement in movements %}
+                            <tr>
+                                <td>
+                                    {% if movement.type == 'sale' %}
+                                        <span class="movement-type-tag tag-sale">Venda</span>
+                                    {% elif movement.type == 'expense' %}
+                                        <span class="movement-type-tag tag-expense">Despesa</span>
+                                    {% elif movement.type == 'opening' %}
+                                        <span class="movement-type-tag tag-opening">Abertura</span>
+                                    {% elif movement.type == 'closing' %}
+                                        <span class="movement-type-tag tag-closing">Fechamento</span>
+                                    {% elif movement.type == 'deposit' %}
+                                        <span class="movement-type-tag tag-deposit">Depósito</span>
+                                    {% elif movement.type == 'withdrawal' %}
+                                        <span class="movement-type-tag tag-withdrawal">Retirada</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ movement.description }}</td>
+                                <td class="amount-cell text-right {% if movement.amount >= 0 %}amount-sale{% else %}amount-expense{% endif %}">
+                                    R$ {{ "%.2f"|format(movement.amount) }}
+                                </td>
+                                <td>{{ movement.created_at.strftime('%H:%M') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <p class="text-gray-500 text-lg">Nenhuma movimentação de caixa encontrada para este período.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#4B5563',
+                        light: '#E5E7EB',
+                        danger: '#EF4444',
+                        success: '#22C55E',
+                        warning: '#F59E0B',
+                        sidebar: '#1E293B',
+                    }
+                }
+            }
+        }
+        lucide.createIcons();
+    </script>
+{% endblock %}

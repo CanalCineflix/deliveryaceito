@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comanda de Pedido #{{ order.id }}</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            background-color: #fff;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .order-info, .customer-info, .order-items, .total-section {
+            margin-bottom: 20px;
+        }
+        .order-info p, .customer-info p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .order-items table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .order-items th, .order-items td {
+            text-align: left;
+            padding: 8px 0;
+            border-bottom: 1px dashed #ccc;
+        }
+        .order-items th {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .order-items .item-price, .order-items .item-total {
+            text-align: right;
+        }
+        .total-section {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 2px solid #333;
+        }
+        .total-section .label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .total-section .value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+        
+        /* Estilos para impressão */
+        @media print {
+            body {
+                padding: 0;
+            }
+            .container {
+                max-width: none;
+                width: 100%;
+            }
+            /* Oculta elementos que não são necessários na impressão */
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{{ order.user.restaurant_name }}</h1>
+            <p>Comanda de Pedido #{{ order.id }}</p>
+            <p>{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
+        </div>
+
+        <div class="customer-info">
+            <h3>Dados do Cliente</h3>
+            <p><strong>Nome:</strong> {{ order.client_name }}</p>
+            <p><strong>Telefone:</strong> {{ order.client_phone }}</p>
+            <p><strong>Forma de Pagamento:</strong> {{ order.payment_method }}</p>
+           {% if order.payment_method == 'Dinheiro' and order.change_for %}
+<p><strong>Troco para:</strong> R$ {{ "%.2f"|format(order.change_for) }}</p>
+<p><strong>Troco:</strong> R$ {{ "%.2f"|format(order.change_due) }}</p>
+{% endif %}
+
+            {% if order.client_address %}
+            <p><strong>Endereço de Entrega:</strong> {{ order.client_address }}</p>
+            {% endif %}
+
+            {% if order.notes %}
+            <p><strong>Observação de Entrega:</strong> {{ order.notes }}</p>
+            {% endif %}
+        </div>
+
+        <div class="order-items">
+            <h3>Itens do Pedido</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Qtd</th>
+                        <th>Preço Unit.</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items %}
+                    <tr>
+                        <td>
+                            {{ item.product.name }}
+                            {% if item.notes %}
+                            <br><small class="item-note">Obs: {{ item.notes }}</small>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.quantity }}</td>
+                        <td class="item-price">R$ {{ "%.2f"|format(item.price_at_order) }}</td>
+                        <td class="item-total">R$ {{ "%.2f"|format(item.price_at_order * item.quantity) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="total-section">
+            <span class="label">Taxa de Entrega:</span>
+            <span class="value">R$ {{ "%.2f"|format(order.delivery_fee) }}</span>
+        </div>
+        
+        <div class="total-section">
+            <span class="label">Total Geral:</span>
+            <span class="value">R$ {{ "%.2f"|format(order.total_price) }}</span>
+        </div>
+
+        <div class="footer">
+            <p>Obrigado por seu pedido!</p>
+        </div>
+    </div>
+    
+    <script>
+        // Opcional: Imprime a página automaticamente ao carregar
+        window.onload = function() {
+            window.print();
+        }
+    </script>
+
+</body>
+</html>

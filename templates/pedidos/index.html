@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#4F46E5', // Um roxo/azul vibrante
+                        secondary: '#4B5563', // Cinza escuro
+                        light: '#E5E7EB', // Cinza claro para fundos
+                        danger: '#EF4444', // Vermelho para cancelar
+                        success: '#22C55E', // Verde para sucesso
+                        warning: '#F59E0B', // Amarelo para status
+                        info: '#3B82F6',   // Azul para 'Em Preparo'
+                        sidebar: '#1E293B', // Cinza escuro para a sidebar
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <div class="flex-1 w-full p-4 md:p-8">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center space-x-4">
+                <i data-lucide="clipboard-list" class="w-8 h-8 text-primary"></i>
+                <h1 class="text-3xl font-bold text-gray-800">Pedidos</h1>
+            </div>
+        </div>
+
+        <div class="bg-white p-2 rounded-lg shadow mb-6">
+            <div class="flex flex-wrap items-center justify-between space-x-2 sm:space-x-4">
+                <h2 class="text-xl font-semibold text-gray-700 p-2">Status dos Pedidos</h2>
+                <div class="flex space-x-2 sm:space-x-4 p-2">
+                    <a href="{{ url_for('pedidos.index', status='PENDING') }}" class="filter-btn px-4 py-2 rounded-lg font-medium transition-colors 
+                        {% if status == 'PENDING' %}bg-primary text-white shadow-md{% else %}bg-white text-secondary hover:bg-light{% endif %}">
+                        Novo
+                    </a>
+                    <a href="{{ url_for('pedidos.index', status='PREPARING') }}" class="filter-btn px-4 py-2 rounded-lg font-medium transition-colors 
+                        {% if status == 'PREPARING' %}bg-info text-white shadow-md{% else %}bg-white text-secondary hover:bg-light{% endif %}">
+                        Em Preparo
+                    </a>
+                    <a href="{{ url_for('pedidos.index', status='SENT') }}" class="filter-btn px-4 py-2 rounded-lg font-medium transition-colors 
+                        {% if status == 'SENT' %}bg-warning text-white shadow-md{% else %}bg-white text-secondary hover:bg-light{% endif %}">
+                        Enviado
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="orders-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% if orders %}
+                {% for order in orders %}
+                    <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 
+                        {% if order.status == OrderStatus.PENDING %}border-primary{% endif %}
+                        {% if order.status == OrderStatus.PREPARING %}border-info{% endif %}
+                        {% if order.status == OrderStatus.SENT %}border-warning{% endif %}
+                        {% if order.status == OrderStatus.COMPLETED %}border-success{% endif %}
+                        {% if order.status == OrderStatus.CANCELED %}border-danger{% endif %}
+                    ">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800">Pedido #{{ order.id }}</h3>
+                                <p class="text-sm text-gray-500">
+                                    <i data-lucide="user" class="inline-block w-4 h-4 mr-1"></i>
+                                    Cliente: {{ order.client_name }}
+                                </p>
+                                <p class="text-sm text-gray-500">
+                                    <i data-lucide="phone" class="inline-block w-4 h-4 mr-1"></i>
+                                    Telefone: {{ order.client_phone }}
+                                </p>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    <i data-lucide="calendar" class="inline-block w-4 h-4 mr-1"></i>
+                                    {{ order.created_at.strftime('%d/%m/%Y %H:%M') }}
+                                </p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold
+                                {% if order.status == OrderStatus.PENDING %}bg-primary text-white{% endif %}
+                                {% if order.status == OrderStatus.PREPARING %}bg-info text-white{% endif %}
+                                {% if order.status == OrderStatus.SENT %}bg-warning text-yellow-900{% endif %}
+                                {% if order.status == OrderStatus.COMPLETED %}bg-success text-white{% endif %}
+                                {% if order.status == OrderStatus.CANCELED %}bg-danger text-white{% endif %}">
+                                {% if order.status == OrderStatus.PENDING %}Novo{% else %}{{ order.status.name.replace('_', ' ') | title }}{% endif %}
+                            </span>
+                        </div>
+
+                        <div class="mb-4 border-t pt-4">
+                            <p class="text-sm text-gray-600 mb-2">Endereço: {{ order.client_address or 'Não informado' }}</p>
+                            <p class="text-lg font-bold text-primary">Total: R$ {{ "%.2f"|format(order.total_price) }}</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="text-md font-semibold text-gray-700">Itens:</h4>
+                            <ul class="text-sm text-gray-600 list-disc list-inside">
+                                {% for item in order.items %}
+                                    <li>{{ item.quantity }}x {{ item.product.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="flex flex-wrap gap-3 mt-4 justify-between">
+                            {% if order.status != OrderStatus.COMPLETED and order.status != OrderStatus.CANCELED %}
+                                <form action="{{ url_for('pedidos.next_status', order_id=order.id) }}" method="post" class="flex-grow">
+                                    <button type="submit" class="w-full px-4 py-2 text-white rounded-lg shadow-md transition-colors flex items-center justify-center
+                                        {% if order.status == OrderStatus.PENDING %}bg-info hover:bg-info/90{% endif %}
+                                        {% if order.status == OrderStatus.PREPARING %}bg-warning hover:bg-warning/90{% endif %}
+                                        {% if order.status == OrderStatus.SENT %}bg-success hover:bg-success/90{% endif %}
+                                    ">
+                                        {% if order.status == OrderStatus.PENDING %}
+                                            <i data-lucide="chef-hat" class="w-4 h-4 mr-2"></i>
+                                            Em Preparo
+                                        {% elif order.status == OrderStatus.PREPARING %}
+                                            <i data-lucide="send" class="w-4 h-4 mr-2"></i>
+                                            Enviado
+                                        {% elif order.status == OrderStatus.SENT %}
+                                            <i data-lucide="check" class="w-4 h-4 mr-2"></i>
+                                            Concluído
+                                        {% endif %}
+                                    </button>
+                                </form>
+                            {% endif %}
+                            
+                            <a href="{{ url_for('pedidos.print_comanda', order_id=order.id) }}" target="_blank" class="flex-grow text-center px-4 py-2 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 transition-colors flex items-center justify-center">
+                                <i data-lucide="printer" class="w-4 h-4 mr-2"></i>
+                                Imprimir
+                            </a>
+                            
+                            {% if order.status != OrderStatus.COMPLETED and order.status != OrderStatus.CANCELED %}
+                                <form action="{{ url_for('pedidos.cancel_order', order_id=order.id) }}" method="post" class="flex-grow">
+                                    <button type="submit" class="w-full px-4 py-2 bg-danger text-white rounded-lg shadow-md hover:bg-danger/90 transition-colors flex items-center justify-center">
+                                        <i data-lucide="x" class="w-4 h-4 mr-2"></i>
+                                        Cancelar
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-span-full text-center p-10 bg-white rounded-lg shadow-lg">
+                    <p class="text-2xl text-gray-400 font-medium">Nenhum pedido neste status no momento.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}

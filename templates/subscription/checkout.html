@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2>Checkout</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Resumo do Pedido</h5>
+            <p>Plano: <strong>{{ plan.name }}</strong></p>
+            <p>Preço: <strong>R$ {{ "%.2f"|format(plan.price) }}</strong></p>
+            <p>Duração: <strong>{{ plan.duration_days }} dias</strong></p>
+            
+            <a href="{{ payment_link }}" class="btn btn-success btn-lg">Pagar com Mercado Pago</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
