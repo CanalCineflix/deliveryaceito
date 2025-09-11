@@ -5,23 +5,22 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from flask import Flask, render_template, redirect, url_for, flash, request, session
-from flask_login import LoginManager, login_required, current_user
+from flask_login import current_user
 from datetime import datetime, timedelta
 # Importe o objeto de configuração
 from config import Config
 
 # Importe as extensões e os modelos
-from extensions import db, migrate
+from extensions import db, migrate, login_manager
 from models import User, Plan, Subscription, Product, Order, OrderItem, CashMovement, CashSession, OrderStatus, RestaurantConfig, Neighborhood
 
 # Configuração da aplicação
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# Inicializar as extensões de forma "lazy"
+# Inicializar as extensões de forma "lazy" ou diretamente após o app
 db.init_app(app)
 migrate.init_app(app, db)
-login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
 login_manager.login_message = 'Você precisa fazer login para acessar esta página.'
