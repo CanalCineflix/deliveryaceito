@@ -6,5 +6,5 @@ set -o errexit
 Install dependencies from requirements.txt
 pip install -r requirements.txt
 
-Create tables directly from models
-python -c "from app import create_app; from extensions import db; app = create_app(); with app.app_context(): db.create_all()"
+Create tables directly from models in a separate script
+python create_db.py
