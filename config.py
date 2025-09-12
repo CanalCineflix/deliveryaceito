@@ -1,23 +1,24 @@
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 class Config:
-    # Configurações do Flask a partir do .env
-    FLASK_APP = os.getenv('FLASK_APP')
-    FLASK_ENV = os.getenv('FLASK_ENV')
+    # Use os.environ.get() para carregar a variável de ambiente DATABASE_URL.
+    # Isso garante que a aplicação possa encontrar a URL tanto localmente (do .env)
+    # quanto na Render (das variáveis de ambiente do servidor).
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'voce-nunca-vai-adivinhar-isso'
     
     # Configurações do Mercado Pago
-    # ... suas outras configurações
     MP_ACCESS_TOKEN = os.environ.get('MP_ACCESS_TOKEN')
     MP_PUBLIC_KEY = os.environ.get('MP_PUBLIC_KEY')
     
-    # Configuração do ngrok (se estiver usando)
-    NGROK_AUTH_TOKEN = os.getenv('NGROK_AUTH_TOKEN')
-    
-    # Chave de segurança e banco de dados
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'sua-chave-secreta-padrao'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///getsolution.db'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    PAGADOR_EMAIL_TESTE = os.environ.get('PAGADOR_EMAIL_TESTE') or 'test_user@example.com'
+    # Configurações do Kirvano
+    KIRVANO_WEBHOOK_SECRET = os.environ.get('KIRVANO_WEBHOOK_SECRET')
+
+    # Configuração de e-mail (se aplicável)
+    MAIL_SERVER = os.environ.get('MAIL_SERVER')
+    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 587)
+    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    ADMINS = ['seu-email@exemplo.com']

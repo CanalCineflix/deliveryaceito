@@ -43,7 +43,7 @@ from routes.planos_routes import planos_bp
 from routes.cardapio_routes import cardapio_bp
 from routes.produtos_routes import produtos_bp
 from routes.payments_routes import payments_bp
-
+from routes.blocked_routes import blocked_bp # Novo: Importa o blueprint de bloqueio
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
@@ -55,7 +55,7 @@ app.register_blueprint(planos_bp, url_prefix='/planos')
 app.register_blueprint(cardapio_bp)
 app.register_blueprint(produtos_bp)
 app.register_blueprint(payments_bp, url_prefix='/webhooks/payments')
-
+app.register_blueprint(blocked_bp) # Novo: Registra o blueprint de bloqueio
 
 @app.route('/')
 def index():
