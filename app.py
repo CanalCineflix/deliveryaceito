@@ -5,23 +5,22 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from flask import Flask, render_template, redirect, url_for, flash, request, session
-from flask_login import LoginManager, login_required, current_user
+from flask_login import current_user
 from datetime import datetime, timedelta
 # Importe o objeto de configuração
 from config import Config
 
 # Importe as extensões e os modelos
-from extensions import db, migrate
+from extensions import db, migrate, login_manager
 from models import User, Plan, Subscription, Product, Order, OrderItem, CashMovement, CashSession, OrderStatus, RestaurantConfig, Neighborhood
 
 # Configuração da aplicação
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# Inicializar as extensões de forma "lazy"
+# Inicializar as extensões de forma "lazy" ou diretamente após o app
 db.init_app(app)
 migrate.init_app(app, db)
-login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
 login_manager.login_message = 'Você precisa fazer login para acessar esta página.'
@@ -43,7 +42,11 @@ from routes.planos_routes import planos_bp
 from routes.cardapio_routes import cardapio_bp
 from routes.produtos_routes import produtos_bp
 from routes.payments_routes import payments_bp
+<<<<<<< HEAD
 from routes.blocked_routes import blocked_bp # Novo: Importa o blueprint de bloqueio
+=======
+from routes.blocked_routes import blocked_bp
+>>>>>>> 0b9388c8cbadc6eacff1e24bea48bdbf23b00df4
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
@@ -55,7 +58,11 @@ app.register_blueprint(planos_bp, url_prefix='/planos')
 app.register_blueprint(cardapio_bp)
 app.register_blueprint(produtos_bp)
 app.register_blueprint(payments_bp, url_prefix='/webhooks/payments')
+<<<<<<< HEAD
 app.register_blueprint(blocked_bp) # Novo: Registra o blueprint de bloqueio
+=======
+app.register_blueprint(blocked_bp)
+>>>>>>> 0b9388c8cbadc6eacff1e24bea48bdbf23b00df4
 
 @app.route('/')
 def index():
@@ -82,82 +89,9 @@ def check_plan_access():
             return redirect(url_for('blocked.blocked'))
 
 
-def create_sample_data():
-    """Cria dados de exemplo para testes"""
-    with app.app_context():
-        # Cria os planos se não existirem
-        planos_data = [
-            {'name': 'Freemium', 'description': '15 dias de acesso grátis', 'price': 0.0, 'duration_days': 15},
-            {'name': 'Premium', 'description': 'Acesso completo por 30 dias', 'price': 49.90, 'duration_days': 30},
-        ]
-        for data in planos_data:
-            plan = Plan.query.filter_by(name=data['name']).first()
-            if not plan:
-                new_plan = Plan(**data)
-                db.session.add(new_plan)
-        db.session.commit()
-        
-        # Cria o usuário admin se não existir
-        admin_user = User.query.filter_by(email='admin@getsolution.com').first()
-        if not admin_user:
-            admin_user = User(
-                name='Admin GetSolution',
-                email='admin@getsolution.com',
-                phone='(11) 99999-9999',
-                restaurant_name='Restaurante Teste'
-            )
-            admin_user.set_password('admin123')
-            db.session.add(admin_user)
-            db.session.commit()
-            
-        # Cria produtos de exemplo se não existirem
-        if admin_user and not Product.query.filter_by(user_id=admin_user.id).first():
-            products_data = [
-                {'name': 'Pizza de Calabresa', 'description': 'A melhor pizza de calabresa da cidade', 'price': 45.00, 'category': 'Pizzas'},
-                {'name': 'Hambúrguer Clássico', 'description': 'Pão, carne, queijo e salada', 'price': 25.50, 'category': 'Lanches'},
-                {'name': 'Coca-Cola 350ml', 'description': 'Refrigerante gelado', 'price': 6.00, 'category': 'Bebidas'},
-            ]
-            for data in products_data:
-                new_product = Product(user_id=admin_user.id, **data)
-                db.session.add(new_product)
-            db.session.commit()
-            
-        # Cria as configurações do restaurante se não existirem
-        config = RestaurantConfig.query.filter_by(user_id=admin_user.id).first()
-        if not config:
-            config = RestaurantConfig(
-                user_id=admin_user.id,
-                business_hours='Segunda a Sábado, 09:00 - 22:00',
-                manual_status_override='Aberto',
-                pix_key='sua_chave_pix_aqui'
-            )
-            db.session.add(config)
-            db.session.commit()
-            
-        # Cria bairros de exemplo se não existirem
-        neighborhoods_data = [
-            {"name": "Centro", "delivery_fee": 5.00},
-            {"name": "América", "delivery_fee": 7.50},
-            {"name": "Boa Vista", "delivery_fee": 10.00}
-        ]
-        for data in neighborhoods_data:
-            neighborhood = Neighborhood.query.filter_by(name=data['name'], user_id=admin_user.id).first()
-            if not neighborhood:
-                neighborhood = Neighborhood(
-                    user_id=admin_user.id,
-                    name=data['name'],
-                    delivery_fee=data['delivery_fee']
-                )
-                db.session.add(neighborhood)
-            db.session.commit()
-
 @app.shell_context_processor
 def make_shell_context():
     return {'db': db, 'app': app, 'User': User, 'Plan': Plan, 'Subscription': Subscription}
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        create_sample_data()
-    
     app.run(debug=True, host='0.0.0.0', port=5000)
