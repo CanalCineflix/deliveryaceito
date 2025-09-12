@@ -8,4 +8,4 @@ pip install -r requirements.txt
 
 Apply all pending database migrations to the latest revision.
 This is the best practice for production environments.
-flask db upgrade
+flask db upgrad
