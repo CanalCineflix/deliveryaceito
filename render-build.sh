@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-Exit on first error
+Exit immediately if a command exits with a non-zero status.
 set -o errexit
 
 Install dependencies from requirements.txt
