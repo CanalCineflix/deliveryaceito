@@ -1,8 +1,18 @@
 import os
 from dotenv import load_dotenv
 
-# Carrega as variáveis de ambiente do arquivo .env
-load_dotenv()
+# Carrega as variáveis de ambiente com lógica para ambiente local e produção
+if os.environ.get('RENDER'):
+    # Em produção (no Render), as variáveis de ambiente já são gerenciadas pela plataforma.
+    # Não é necessário carregar um arquivo .env, pois ele já é injetado.
+    pass
+else:
+    # Em desenvolvimento local, o sistema irá carregar as variáveis de ambiente
+    # de um arquivo .env e, em seguida, sobrepor com as do .env.local,
+    # caso este arquivo exista.
+    load_dotenv()
+    load_dotenv('.env.local', override=True)
+
 
 from flask import Flask, render_template, redirect, url_for, flash, request, session
 from flask_login import current_user
@@ -86,5 +96,8 @@ def make_shell_context():
     return {'db': db, 'app': app, 'User': User, 'Plan': Plan, 'Subscription': Subscription}
 
 if __name__ == '__main__':
-    db.create_all()
+    # O comando `db.create_all()` deve ser evitado aqui em ambientes de produção.
+    # As migrações (`flask db upgrade`) são a forma correta de gerenciar o schema do DB.
+    # Para desenvolvimento, você pode usar db.create_all() ou as migrações.
+    # Para evitar conflitos, a lógica de migração foi movida para o run.py.
     app.run(debug=True, host='0.0.0.0', port=5000)

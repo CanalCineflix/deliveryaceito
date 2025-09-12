@@ -1,18 +1,28 @@
 from app import app, db
-from flask_migrate import upgrade
+from flask_migrate import upgrade, current as current_revision, stamp
 import os
 import sys
+import logging
 
-# Se a aplicação estiver sendo executada no ambiente do Render (ou qualquer ambiente de produção),
-# o comando 'gunicorn' será usado para iniciar o servidor. Nesse caso, a migração não precisa ser executada
-# por este script, pois o comando de pre-deploy já cuidará disso.
-# Esta é a abordagem mais segura para evitar problemas.
+# Configura o logging
+logging.basicConfig(level=logging.INFO)
+
+# Apenas para o ambiente de desenvolvimento local, vamos gerenciar as migrações aqui.
+# Em produção (Render), o 'render-build.sh' cuidará das dependências.
 if __name__ == '__main__':
     with app.app_context():
-        upgrade() # Garante que as migrações sejam aplicadas antes de iniciar o servidor
+        try:
+            # Tenta aplicar as migrações pendentes
+            upgrade()
+            logging.info("Migrações aplicadas com sucesso.")
+        except Exception as e:
+            # Se a migração falhar, o banco de dados pode estar fora de sincronia.
+            # Em vez de falhar, vamos registrar o erro.
+            # Pode ser necessário um 'stamp' manual em alguns casos, mas a forma
+            # mais segura é resolver localmente.
+            logging.error(f"Erro ao aplicar migrações: {e}")
     
     # Render usa Gunicorn para servir a aplicação.
-    # Em produção, você deve usar o Gunicorn para rodar a aplicação.
     if os.environ.get('RENDER'):
         from gunicorn.app.wsgiapp import WSGIApplication
 
@@ -24,9 +34,6 @@ if __name__ == '__main__':
             def load_wsgi(self):
                 return app
         
-        # O Gunicorn precisa do comando 'gunicorn app:app' para rodar,
-        # mas como estamos em um script de inicialização, podemos chamar a classe
-        # do Gunicorn diretamente.
         sys.argv = ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
         StandaloneApplication("app:app").run()
     else:

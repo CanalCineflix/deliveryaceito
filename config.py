@@ -1,10 +1,15 @@
 import os
 
 class Config:
-    # Use os.environ.get() para carregar a variável de ambiente DATABASE_URL.
-    # Isso garante que a aplicação possa encontrar a URL tanto localmente (do .env)
-    # quanto na Render (das variáveis de ambiente do servidor).
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    # Use os.environ.get() para carregar a variável de ambiente do banco de dados.
+    # A ordem de verificação é importante:
+    # 1. 'SQLALCHEMY_DATABASE_URI': para ambientes de desenvolvimento local (como seu .env.local).
+    # 2. 'DATABASE_URL': para ambientes de produção (como o Render).
+    # 3. 'sqlite:///app.db': um fallback para garantir que sempre haja uma URL de banco de dados.
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') or \
+                              os.environ.get('DATABASE_URL') or \
+                              'sqlite:///app.db'
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'voce-nunca-vai-adivinhar-isso'
     
