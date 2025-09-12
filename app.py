@@ -42,11 +42,7 @@ from routes.planos_routes import planos_bp
 from routes.cardapio_routes import cardapio_bp
 from routes.produtos_routes import produtos_bp
 from routes.payments_routes import payments_bp
-<<<<<<< HEAD
-from routes.blocked_routes import blocked_bp # Novo: Importa o blueprint de bloqueio
-=======
 from routes.blocked_routes import blocked_bp
->>>>>>> 0b9388c8cbadc6eacff1e24bea48bdbf23b00df4
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
@@ -58,11 +54,7 @@ app.register_blueprint(planos_bp, url_prefix='/planos')
 app.register_blueprint(cardapio_bp)
 app.register_blueprint(produtos_bp)
 app.register_blueprint(payments_bp, url_prefix='/webhooks/payments')
-<<<<<<< HEAD
-app.register_blueprint(blocked_bp) # Novo: Registra o blueprint de bloqueio
-=======
 app.register_blueprint(blocked_bp)
->>>>>>> 0b9388c8cbadc6eacff1e24bea48bdbf23b00df4
 
 @app.route('/')
 def index():
@@ -94,4 +86,5 @@ def make_shell_context():
     return {'db': db, 'app': app, 'User': User, 'Plan': Plan, 'Subscription': Subscription}
 
 if __name__ == '__main__':
+    db.create_all()
     app.run(debug=True, host='0.0.0.0', port=5000)

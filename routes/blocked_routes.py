@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import current_user, login_required
 
@@ -16,13 +15,5 @@ def blocked():
         # Se o usuário tiver um plano ativo, redirecione para o dashboard
         flash('Seu plano está ativo! Bem-vindo(a) de volta.', 'success')
         return redirect(url_for('dashboard.index'))
-
-=======
-from flask import Blueprint, render_template
-
-blocked_bp = Blueprint('blocked', __name__)
-
-@blocked_bp.route('/blocked', methods=['GET'])
-def blocked():
->>>>>>> 0b9388c8cbadc6eacff1e24bea48bdbf23b00df4
+        
     return render_template('blocked.html')
