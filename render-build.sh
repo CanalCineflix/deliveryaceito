@@ -9,23 +9,20 @@ cd /opt/render/project/src
 # Instala as dependências do projeto usando pip
 pip install -r requirements.txt
 
+# **CRÍTICO:** Limpa completamente o banco de dados, apagando todas as tabelas.
+# Isso garante que não haverá conflitos com migrações antigas.
+psql $DATABASE_URL -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+
 # Remove o diretório de migrações para evitar conflitos de histórico
 rm -rf migrations
 
-# Cria um novo diretório de migrações.
-# Isso não cria a tabela, apenas a estrutura.
+# Cria a estrutura inicial de migrações do Alembic.
 flask db init
 
-# **CRÍTICO:** Marca o banco de dados como "atualizado" com o head.
-# Isso sincroniza o histórico remoto com o local, resolvendo o erro de revisão.
-flask db stamp head
-
 # Cria a migração inicial com base nos modelos atuais.
-# Este comando gera o arquivo .py que o Alembic usará para criar as tabelas.
 flask db migrate -m "Initial migration"
 
-# Aplica as migrações no banco de dados.
-# Agora, haverá um arquivo para o Alembic aplicar, resolvendo o erro anterior.
+# Aplica as migrações no banco de dados agora limpo.
 flask db upgrade
 
 # Roda o script para criar os planos iniciais no banco de dados
