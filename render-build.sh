@@ -4,14 +4,12 @@
 set -o errexit
 
 # Entra no diretório 'src' onde o pyproject.toml deve estar
+# Embora pyproject.toml não exista, é uma boa prática
+# manter o cd para a raiz do projeto.
 cd /opt/render/project/src
 
-# Definir a variável de ambiente para que o Poetry não crie o ambiente virtual
-# dentro do diretório do projeto, pois o Render já faz isso.
-export POETRY_VIRTUALENVS_IN_PROJECT=false
-
-# Instalar as dependências do projeto
-poetry install --no-dev
+# Instalar as dependências do projeto usando pip
+pip install -r requirements.txt
 
 # Coletar os arquivos estáticos para o Gunicorn
 python manage.py collectstatic --noinput
