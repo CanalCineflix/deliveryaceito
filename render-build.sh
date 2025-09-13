@@ -12,16 +12,18 @@ pip install -r requirements.txt
 # Remove o diretório de migrações para evitar conflitos de histórico
 rm -rf migrations
 
-# Cria um novo diretório de migrações
+# Cria um novo diretório de migrações.
+# Isso não cria a tabela, apenas a estrutura.
 flask db init
 
-# Cria a migração inicial com base nos modelos atuais.
-# Este é o passo crucial que estava faltando.
-flask db migrate -m "Initial migration"
+# **CRÍTICO:** Marca o banco de dados como "atualizado" com o head.
+# Isso sincroniza o histórico remoto com o local, resolvendo o erro de revisão.
+flask db stamp head
 
 # Aplica as migrações no banco de dados.
-# Agora, haverá um arquivo para o Alembic aplicar.
+# Este passo agora deve ser bem-sucedido, pois o banco de dados
+# está sincronizado com a versão mais recente do seu código.
 flask db upgrade
 
-# Você pode rodar outros scripts de setup aqui se precisar
-# Exemplo: python create_plans.py
+# Roda o script para criar os planos iniciais no banco de dados
+python create_plans.py
