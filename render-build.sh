@@ -15,13 +15,11 @@ rm -rf migrations
 # Cria um novo diretório de migrações
 flask db init
 
-# Cria uma nova migração autogerada
-flask db migrate -m "Sincronizando banco de dados com os modelos atuais"
-
 # Marca o banco de dados como atualizado para a revisão mais recente
 flask db stamp head
 
-# Aplica as migrações no banco de dados
+# Aplica as migrações no banco de dados.
+# Isso garante que qualquer alteração no modelo seja refletida no DB.
 flask db upgrade
 
 # Você pode rodar outros scripts de setup aqui se precisar
