@@ -15,12 +15,12 @@ rm -rf migrations
 # Cria um novo diretório de migrações
 flask db init
 
-# **CRÍTICO:** Marca o banco de dados como "atualizado". Isso sincroniza o histórico local
-# com o banco de dados remoto, resolvendo o erro de revisão não encontrada.
-flask db stamp head
+# Cria a migração inicial com base nos modelos atuais.
+# Este é o passo crucial que estava faltando.
+flask db migrate -m "Initial migration"
 
 # Aplica as migrações no banco de dados.
-# Isso garante que qualquer alteração no modelo seja refletida no DB.
+# Agora, haverá um arquivo para o Alembic aplicar.
 flask db upgrade
 
 # Você pode rodar outros scripts de setup aqui se precisar
