@@ -15,8 +15,9 @@ rm -rf migrations
 # Cria um novo diretório de migrações
 flask db init
 
-# **NOVO PASSO:** Cria uma nova migração a partir dos seus modelos
-flask db migrate -m "Initial migration"
+# **CRÍTICO:** Marca o banco de dados como "atualizado". Isso sincroniza o histórico local
+# com o banco de dados remoto, resolvendo o erro de revisão não encontrada.
+flask db stamp head
 
 # Aplica as migrações no banco de dados.
 # Isso garante que qualquer alteração no modelo seja refletida no DB.
