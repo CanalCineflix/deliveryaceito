@@ -3,6 +3,9 @@
 # Sair imediatamente se um comando falhar
 set -o errexit
 
+# Entra no diretório 'src' onde o pyproject.toml deve estar
+cd /opt/render/project/src
+
 # Definir a variável de ambiente para que o Poetry não crie o ambiente virtual
 # dentro do diretório do projeto, pois o Render já faz isso.
 export POETRY_VIRTUALENVS_IN_PROJECT=false
