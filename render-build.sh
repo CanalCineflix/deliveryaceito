@@ -16,13 +16,12 @@ rm -rf migrations
 # Isso não cria a tabela, apenas a estrutura.
 flask db init
 
-# **CRÍTICO:** Marca o banco de dados como "atualizado" com o head.
-# Isso sincroniza o histórico remoto com o local, resolvendo o erro de revisão.
-flask db stamp head
+# **CRÍTICO:** Cria a migração inicial com base nos modelos atuais.
+# Este comando gera o arquivo .py que o Alembic usará para criar as tabelas.
+flask db migrate -m "Initial migration"
 
 # Aplica as migrações no banco de dados.
-# Este passo agora deve ser bem-sucedido, pois o banco de dados
-# está sincronizado com a versão mais recente do seu código.
+# Agora, haverá um arquivo para o Alembic aplicar, resolvendo o erro anterior.
 flask db upgrade
 
 # Roda o script para criar os planos iniciais no banco de dados
