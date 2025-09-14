@@ -18,7 +18,6 @@ def create_initial_plans():
             name='Freemium',
             price=0.00,
             description='Acesso básico com recursos limitados.',
-            is_active=True,
             features='Gerenciamento de Pedidos;Relatórios Básicos;1 Usuário'
         )
 
@@ -27,7 +26,6 @@ def create_initial_plans():
             name='Premium',
             price=29.90,
             description='Acesso completo a todos os recursos.',
-            is_active=True,
             features='Todos os Recursos do Plano Gratuito;Relatórios Avançados;Suporte Prioritário;Acesso Ilimitado a Funcionalidades Futuras'
         )
 
