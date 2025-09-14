@@ -1,10 +1,26 @@
-# forms.py
-# Você pode usar Flask-WTF ou WTForms para criar formulários
-# Para este exemplo, vamos definir uma classe de formulário simples
-
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, DecimalField, FileField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Optional
+from wtforms import StringField, TextAreaField, DecimalField, FileField, SubmitField, BooleanField, PasswordField
+from wtforms.validators import DataRequired, Optional, Email, EqualTo, Length
+
+class RegistrationForm(FlaskForm):
+    """
+    Formulário de registro de usuário.
+    """
+    name = StringField('Nome', validators=[DataRequired(), Length(min=2, max=50)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Senha', validators=[DataRequired(), Length(min=6)])
+    password_confirm = PasswordField('Confirmar Senha',
+                                     validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Registrar')
+
+class LoginForm(FlaskForm):
+    """
+    Formulário de login de usuário.
+    """
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Senha', validators=[DataRequired()])
+    remember = BooleanField('Lembrar-me')
+    submit = SubmitField('Login')
 
 class ProductForm(FlaskForm):
     """
@@ -18,4 +34,3 @@ class ProductForm(FlaskForm):
     is_delivery = BooleanField('Disponível para Delivery')
     is_balcao = BooleanField('Disponível para Balcão')
     submit = SubmitField('Salvar')
-
