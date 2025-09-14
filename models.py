@@ -9,7 +9,7 @@ import enum
 class OrderStatus(enum.Enum):
     PENDING = 'Pendente'
     PREPARING = 'Em Preparo'
-    SENT = 'Enviado' 
+    SENT = 'Enviado'
     ON_THE_WAY = 'Em Rota de Entrega'
     DELIVERED = 'Entregue'
     CANCELLED = 'Cancelado'
@@ -33,7 +33,7 @@ class User(UserMixin, db.Model):
     products = db.relationship('Product', backref='user', lazy=True)
     cash_movements = db.relationship('CashMovement', backref='user', lazy=True)
     cash_sessions = db.relationship('CashSession', backref='user', lazy=True)
-    customers = db.relationship('Customer', backref='user', lazy=True) 
+    customers = db.relationship('Customer', backref='user', lazy=True)
     config = db.relationship('RestaurantConfig', backref='user', uselist=False, lazy=True)
     neighborhoods = db.relationship('Neighborhood', backref='user', lazy=True)
 
@@ -70,7 +70,7 @@ class Customer(db.Model):
     address = db.Column(db.String(200), nullable=True)
     notes = db.Column(db.Text, nullable=True)
     
-    orders = db.relationship('Order', backref='customer', lazy=True) 
+    orders = db.relationship('Order', backref='customer', lazy=True)
 
 # Modelo de Plano de Assinatura
 class Plan(db.Model):
@@ -118,7 +118,7 @@ class Product(db.Model):
     description = db.Column(db.Text)
     price = db.Column(db.Float, nullable=False)
     is_active = db.Column(db.Boolean, default=True)
-    category = db.Column(db.String(50), nullable=True) 
+    category = db.Column(db.String(50), nullable=True)
     photo_url = db.Column(db.String(255), nullable=True)
     is_delivery = db.Column(db.Boolean, default=True)
     is_balcao = db.Column(db.Boolean, default=True)
@@ -135,19 +135,19 @@ class Order(db.Model):
     client_phone = db.Column(db.String(20))
     client_address = db.Column(db.String(200))
     total_price = db.Column(db.Float, nullable=False)
-    delivery_fee = db.Column(db.Float, nullable=False, default=0.0) 
+    delivery_fee = db.Column(db.Float, nullable=False, default=0.0)
     status = db.Column(db.Enum(OrderStatus), default=OrderStatus.PENDING)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    completed_at = db.Column(db.DateTime, nullable=True) 
+    completed_at = db.Column(db.DateTime, nullable=True)
     canceled_at = db.Column(db.DateTime, nullable=True)
     
     payment_method = db.Column(db.String(50), nullable=True)
     change_for = db.Column(db.Float, nullable=True)
-    notes = db.Column(db.Text, nullable=True) 
+    notes = db.Column(db.Text, nullable=True)
     
     items = db.relationship('OrderItem', backref='order', lazy=True, cascade="all, delete-orphan")
     
-    complement_note = db.Column(db.Text, nullable=True) 
+    complement_note = db.Column(db.Text, nullable=True)
 
 # Modelo de Item do Pedido
 class OrderItem(db.Model):
@@ -164,7 +164,7 @@ class CashMovement(db.Model):
     __tablename__ = 'cash_movements'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    type = db.Column(db.String(20), nullable=False) 
+    type = db.Column(db.String(20), nullable=False)
     description = db.Column(db.String(200), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=True)
