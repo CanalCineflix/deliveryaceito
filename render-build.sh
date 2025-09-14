@@ -1,24 +1,24 @@
 #!/usr/bin/env bash
 
-Sair imediatamente se um comando falhar
+Exit immediately if a command fails
 set -o errexit
 
-Entra no diretório 'src'
+Enter the 'src' directory
 cd /opt/render/project/src
 
-Instala as dependências do projeto usando pip
+Install project dependencies using pip
 pip install -r requirements.txt
 
-Cria a estrutura inicial de migrações do Alembic se ela não existir
-Isso é seguro para rodar múltiplas vezes
+Create the initial Alembic migration structure if it doesn't exist
+This is safe to run multiple times
 flask db init || true
 
-Cria uma nova migração com base nas mudanças nos modelos
-A flag '--autogenerate' automatiza a detecção de alterações
+Create a new migration based on model changes
+The '--autogenerate' flag automates the detection of changes
 flask db migrate --autogenerate -m "Aplicação de migrações automáticas"
 
-Aplica as migrações pendentes no banco de dados
+Apply the pending database migrations
 flask db upgrade
 
-Roda o script para criar os planos iniciais no banco de dados, se necessário
+Run the script to create initial plans in the database, if necessary
 python create_plans.py
