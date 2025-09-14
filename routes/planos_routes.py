@@ -12,14 +12,20 @@ planos_bp = Blueprint('planos', __name__, url_prefix='/planos')
 def choose():
     """
     Exibe a lista de planos de assinatura disponíveis.
-    Se o usuário já tiver uma assinatura ativa, o redireciona.
+    Redireciona para o dashboard se o usuário já tiver um plano ativo.
     """
+    if current_user.has_active_plan():
+        flash('Seu plano já está ativo! Bem-vindo de volta.', 'info')
+        return redirect(url_for('dashboard'))
+    
     plans = Plan.query.all()
-    # Verifica se o usuário já tem uma assinatura ativa, buscando a primeira
-    user_subscription = current_user.subscriptions.first()
-    if user_subscription and user_subscription.is_active:
-        return redirect(url_for('planos.my_plan'))
-    return render_template('planos/choose.html', plans=plans)
+    # Verifica se o usuário ainda está no período de teste de 15 dias
+    is_trial_active = (datetime.utcnow() - current_user.created_at) <= timedelta(days=15)
+    
+    # Verifica se o usuário já teve uma assinatura paga
+    paid_subscription_exists = Subscription.query.filter_by(user_id=current_user.id).first()
+    
+    return render_template('planos/choose.html', plans=plans, is_trial_active=is_trial_active, paid_subscription_exists=paid_subscription_exists)
 
 @planos_bp.route('/my')
 @login_required
@@ -27,8 +33,17 @@ def my_plan():
     """
     Exibe o plano de assinatura atual do usuário logado.
     """
-    user_subscription = Subscription.query.filter_by(user_id=current_user.id).first()
-    return render_template('planos/my_plan.html', subscription=user_subscription)
+    subscription = Subscription.query.filter_by(user_id=current_user.id, status='active').order_by(db.desc(Subscription.end_date)).first()
+    
+    # Adiciona a lógica para o plano de teste
+    if not subscription:
+        is_trial_active = (datetime.utcnow() - current_user.created_at) <= timedelta(days=15)
+        if is_trial_active:
+            # Cria um objeto de assinatura temporário para a visualização
+            subscription = Subscription(status='trial', end_date=current_user.created_at + timedelta(days=15))
+            subscription.plan = Plan(name='Freemium', price=0.0, description='Período de teste')
+
+    return render_template('planos/my_plan.html', subscription=subscription)
 
 @planos_bp.route('/upgrade')
 @login_required
@@ -57,8 +72,9 @@ def checkout(plan_id):
         return redirect(url_for('planos.choose'))
 
     # Adiciona o email do usuário na URL de checkout para preenchimento automático
-    # e passa o user_id como um parâmetro de referência
-    redirect_url = f"{kirvano_checkout_url}?customer_email={current_user.email}&user_id={current_user.id}"
+    # e passa o user_id como um parâmetro de referência. O nome do parâmetro deve ser 'source_id'
+    # para ser reconhecido corretamente pelo webhook da Kirvano.
+    redirect_url = f"{kirvano_checkout_url}?customer_email={current_user.email}&source_id={current_user.id}"
     
     return redirect(redirect_url)
 
