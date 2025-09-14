@@ -1,28 +1,31 @@
+
+
 #!/usr/bin/env bash
 
-Exit immediately if a command exits with a non-zero status.
+# Sair imediatamente se um comando falhar
 set -o errexit
 
-Change to the application directory
+# Entra no diretório 'src'
 cd /opt/render/project/src
 
-Install Python dependencies
+# Instala as dependências do projeto usando pip
 pip install -r requirements.txt
 
-Initialize the migrations directory if it doesn't exist
-if [ ! -d "migrations" ]; then
-echo "Migrations directory not found. Initializing..."
+# **CRÍTICO:** Limpa completamente o banco de dados, apagando todas as tabelas.
+# Isso garante que não haverá conflitos com migrações antigas.
+psql $DATABASE_URL -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+
+# Remove o diretório de migrações para evitar conflitos de histórico
+rm -rf migrations
+
+# Cria a estrutura inicial de migrações do Alembic.
 flask db init
-fi
 
-Apply automatic database migrations
-echo "Applying automatic migrations..."
-flask db migrate --autogenerate -m "Aplicação de migrações automáticas"
+# Cria a migração inicial com base nos modelos atuais.
+flask db migrate -m "Initial migration"
 
-Run all pending migrations
-echo "Executing database upgrade..."
+# Aplica as migrações no banco de dados agora limpo.
 flask db upgrade
 
-Run the create plans script
-echo "Creating plans in the database..."
+# Roda o script para criar os planos iniciais no banco de dados
 python create_plans.py
