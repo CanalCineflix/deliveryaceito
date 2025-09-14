@@ -1,28 +1,28 @@
 #!/usr/bin/env bash
 
-Sair imediatamente se um comando falhar
+Exit immediately if a command exits with a non-zero status.
 set -o errexit
 
-Entrar no diretório da aplicação
+Change to the application directory
 cd /opt/render/project/src
 
-Instalar as dependências do Python
+Install Python dependencies
 pip install -r requirements.txt
 
-Inicializar o diretório de migrações se ele não existir
+Initialize the migrations directory if it doesn't exist
 if [ ! -d "migrations" ]; then
-echo "Diretório de migrações não encontrado. Inicializando..."
+echo "Migrations directory not found. Initializing..."
 flask db init
 fi
 
-Aplicar as migrações automáticas do banco de dados
-echo "Aplicando migrações automáticas..."
+Apply automatic database migrations
+echo "Applying automatic migrations..."
 flask db migrate --autogenerate -m "Aplicação de migrações automáticas"
 
-Executar todas as migrações pendentes
-echo "Executando upgrade do banco de dados..."
+Run all pending migrations
+echo "Executing database upgrade..."
 flask db upgrade
 
-Executar o script de criação de planos
-echo "Criando planos no banco de dados..."
+Run the create plans script
+echo "Creating plans in the database..."
 python create_plans.py
