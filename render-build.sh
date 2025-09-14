@@ -1,29 +1,29 @@
 #!/usr/bin/env bash
 
-Sair imediatamente se um comando falhar
+Exit immediately if a command fails
 set -o errexit
 
-Entra no diretório 'src'
+Change to the 'src' directory
 cd /opt/render/project/src
 
-Instala as dependências do projeto usando pip
+Install project dependencies using pip
 pip install -r requirements.txt
 
-CRÍTICO: Limpa completamente o banco de dados, apagando todas as tabelas.
-Isso garante que não haverá conflitos com migrações antigas.
+CRITICAL: Completely wipes the database, deleting all tables.
+This ensures there will be no conflicts with old migrations.
 psql $DATABASE_URL -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 
-Remove o diretório de migrações para evitar conflitos de histórico
+Remove the migrations directory to avoid history conflicts
 rm -rf migrations
 
-Cria a estrutura inicial de migrações do Alembic.
+Create the initial Alembic migrations structure.
 flask db init
 
-Cria a migração inicial com base nos modelos atuais.
+Create the initial migration based on current models.
 flask db migrate -m "Initial migration"
 
-Aplica as migrações no banco de dados agora limpo.
+Apply migrations to the now-clean database.
 flask db upgrade
 
-Roda o script para criar os planos iniciais no banco de dados
+Run the script to create initial plans in the database
 python create_plans.py
