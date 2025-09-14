@@ -17,16 +17,14 @@ def create_initial_plans():
         free_plan = Plan(
             name='Freemium',
             price=0.00,
-            description='Acesso básico com recursos limitados.',
-            features='Gerenciamento de Pedidos;Relatórios Básicos;1 Usuário'
+            description='Acesso básico com recursos limitados.'
         )
 
         # Plano Premium
         premium_plan = Plan(
             name='Premium',
             price=29.90,
-            description='Acesso completo a todos os recursos.',
-            features='Todos os Recursos do Plano Gratuito;Relatórios Avançados;Suporte Prioritário;Acesso Ilimitado a Funcionalidades Futuras'
+            description='Acesso completo a todos os recursos.'
         )
 
         # Adiciona os planos à sessão do banco de dados
