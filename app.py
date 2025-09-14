@@ -1,5 +1,8 @@
 import os
 from dotenv import load_dotenv
+from flask import Flask, render_template, redirect, url_for, flash, request, session
+from flask_login import current_user
+from datetime import datetime, timedelta
 
 # Carrega as variáveis de ambiente com lógica para ambiente local e produção
 if os.environ.get('RENDER'):
@@ -14,9 +17,6 @@ else:
     load_dotenv('.env.local', override=True)
 
 
-from flask import Flask, render_template, redirect, url_for, flash, request, session
-from flask_login import current_user
-from datetime import datetime, timedelta
 # Importe o objeto de configuração
 from config import Config
 
@@ -66,15 +66,16 @@ app.register_blueprint(produtos_bp)
 app.register_blueprint(payments_bp, url_prefix='/webhooks/payments')
 app.register_blueprint(blocked_bp)
 
+@app.context_processor
+def inject_globals():
+    """Injeta variáveis globais em todos os templates."""
+    return dict(current_user=current_user, now=datetime.utcnow())
+
 @app.route('/')
 def index():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard.index'))
     return render_template('index.html')
-
-@app.context_processor
-def inject_user():
-    return dict(current_user=current_user)
 
 @app.before_request
 def check_plan_access():
