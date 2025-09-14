@@ -1,48 +1,53 @@
-# Importa o db do seu arquivo de app (assumindo que o db é instanciado em app.py)
-from app import db, app
+from app import app, db
 from models import Plan
 from sqlalchemy.exc import IntegrityError
+import logging
+
+# Configuração de logging
+logging.basicConfig(level=logging.INFO)
+
+# Dados dos planos a serem criados
+PLANS_DATA = [
+    {
+        "name": "Plano Essencial",
+        "description": "Ideal para iniciantes",
+        "price": 19.90,
+        "duration_days": 30,
+        "kirvano_checkout_url": "https://pay.kirvano.com/39a60786-8b2c-4731-97b4-3c87e5b5c7e1"
+    },
+    {
+        "name": "Plano Premium",
+        "description": "Recursos completos",
+        "price": 49.90,
+        "duration_days": 30,
+        "kirvano_checkout_url": "https://pay.kirvano.com/d650117b-d298-48b4-9279-d3e75e54d5b7"
+    }
+]
 
 def create_initial_plans():
-    """Cria os planos iniciais no banco de dados se eles não existirem."""
+    """
+    Cria os planos iniciais no banco de dados se eles não existirem.
+    """
     with app.app_context():
-        # Verifica se já existem planos
-        if Plan.query.count() > 0:
-            print("Planos já existem. Nenhum novo plano será criado.")
-            return
-
-        print("Criando planos iniciais...")
-
-        # Plano Gratuito (Freemium)
-        free_plan = Plan(
-            name='Freemium',
-            price=0.00,
-            description='Acesso básico com recursos limitados.'
-        )
-
-        # Plano Premium
-        premium_plan = Plan(
-            name='Premium',
-            price=29.90,
-            description='Acesso completo a todos os recursos.'
-        )
-
-        # Adiciona os planos à sessão do banco de dados
-        db.session.add(free_plan)
-        db.session.add(premium_plan)
-
         try:
-            # Comita a transação para salvar os planos
+            for plan_data in PLANS_DATA:
+                existing_plan = Plan.query.filter_by(kirvano_checkout_url=plan_data['kirvano_checkout_url']).first()
+                if not existing_plan:
+                    new_plan = Plan(**plan_data)
+                    db.session.add(new_plan)
+                    logging.info(f"Plano '{plan_data['name']}' criado com sucesso.")
+                else:
+                    logging.info(f"Plano '{plan_data['name']}' já existe. Ignorando a criação.")
+            
             db.session.commit()
-            print("Planos iniciais criados com sucesso!")
+            logging.info("Todos os planos iniciais foram processados.")
+
         except IntegrityError:
-            # Isso pode acontecer se o script for executado várias vezes em paralelo
             db.session.rollback()
-            print("Erro de integridade. Planos podem já ter sido criados por outra transação.")
+            logging.error("Erro de integridade. Planos podem já ter sido criados por outra transação.")
         except Exception as e:
-            # Lida com outros possíveis erros durante o commit
             db.session.rollback()
-            print(f"Erro ao criar planos: {e}")
+            logging.error(f"Ocorreu um erro inesperado: {e}")
 
 if __name__ == '__main__':
     create_initial_plans()
