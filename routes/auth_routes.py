@@ -1,75 +1,80 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+import os
+from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
-from models import db, User
+from werkzeug.security import generate_password_hash, check_password_hash
+from models import db, User, Plan, Subscription
+from forms import RegistrationForm, LoginForm
+import uuid
 from datetime import datetime
+from sqlalchemy.exc import IntegrityError
+from datetime import date
+from flask import Flask, redirect, url_for, flash
+import requests
+import json
+import logging
 
 auth_bp = Blueprint('auth', __name__)
 
-@auth_bp.route('/login', methods=['GET', 'POST'])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('dashboard.index'))
-    
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        remember = bool(request.form.get('remember'))
-        
-        user = User.query.filter_by(email=email).first()
-        
-        if user and user.check_password(password):
-            login_user(user, remember=remember)
-            flash('Login realizado com sucesso!', 'success')
-            next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('dashboard.index'))
-        else:
-            flash('Email ou senha inválidos.', 'danger')
-    
-    return render_template('auth/login.html')
+# Configuração do logger
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# URL da API de integração Kirvano
+KIRVANO_API_URL = "https://integrations.kirvano.com/v1"
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('dashboard.index'))
-    
-    if request.method == 'POST':
-        name = request.form['name']
-        email = request.form['email']
-        phone = request.form['phone']
-        restaurant_name = request.form['restaurant_name']
-        password = request.form['password']
-        confirm_password = request.form['confirm_password']
+    form = RegistrationForm()
+    if form.validate_on_submit():
         
-        # Validações
-        if User.query.filter_by(email=email).first():
-            flash('Este email já está cadastrado.', 'danger')
-            return render_template('auth/register.html')
+        # Gera o hash da senha
+        hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
         
-        if password != confirm_password:
-            flash('As senhas não coincidem.', 'danger')
-            return render_template('auth/register.html')
-        
-        # Criar usuário
-        user = User(
-            name=name,
-            email=email,
-            phone=phone,
-            restaurant_name=restaurant_name
+        # Cria a instância do usuário
+        new_user = User(
+            name=form.name.data,
+            email=form.email.data,
+            password_hash=hashed_password,
+            is_active=True,
+            created_at=datetime.utcnow()
         )
-        user.set_password(password)
         
-        db.session.add(user)
-        db.session.commit()
-        
-        flash('Cadastro realizado com sucesso! Agora escolha seu plano.', 'success')
-        login_user(user)
-        return redirect(url_for('planos.choose'))
-    
-    return render_template('auth/register.html')
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            flash('Cadastro realizado com sucesso! Escolha um plano para continuar.', 'success')
+            return redirect(url_for('planos.choose_plan'))
+        except IntegrityError:
+            db.session.rollback()
+            flash('Este e-mail já está cadastrado. Tente outro ou faça login.', 'danger')
+            return redirect(url_for('auth.register'))
+            
+    return render_template('auth/register.html', form=form)
+
+@auth_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and check_password_hash(user.password_hash, form.password.data):
+            login_user(user, remember=form.remember.data)
+            next_page = request.args.get('next')
+            flash(f'Bem-vindo de volta, {user.name}!', 'success')
+            return redirect(next_page or url_for('dashboard.index'))
+        else:
+            flash('Login ou senha inválidos. Por favor, tente novamente.', 'danger')
+            
+    return render_template('auth/login.html', form=form)
 
 @auth_bp.route('/logout')
 @login_required
 def logout():
     logout_user()
-    flash('Logout realizado com sucesso!', 'info')
-    return redirect(url_for('index'))
+    flash('Você foi desconectado com sucesso.', 'info')
+    return redirect(url_for('auth.login'))
+
+@auth_bp.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    # Lógica a ser implementada para solicitação de redefinição de senha
+    flash('Funcionalidade de recuperação de senha em desenvolvimento.', 'info')
+    return redirect(url_for('auth.login'))
