@@ -1,4 +1,3 @@
-# models.py
 # Importações necessárias
 from extensions import db  # Importação corrigida para o novo arquivo de extensões
 from datetime import datetime, timedelta
