@@ -12,7 +12,8 @@ def choose_plan():
     plans = Plan.query.order_by(Plan.price.asc()).all()
     # Verifica se o usuário já tem uma assinatura ativa
     # Se sim, redireciona para a página de gerenciamento de assinatura
-    if current_user.subscription and current_user.subscription.is_active:
+    active_subscription = Subscription.query.filter_by(user_id=current_user.id, status='active').first()
+    if active_subscription:
         return redirect(url_for('dashboard.index'))
     return render_template('planos/choose.html', plans=plans)
 
