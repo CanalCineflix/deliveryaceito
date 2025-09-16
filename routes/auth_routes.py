@@ -30,12 +30,13 @@ def register():
         # Gera o hash da senha
         hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
         
-        # Cria a instância do usuário
+        # Cria a instância do usuário, incluindo o telefone e o nome do restaurante
         new_user = User(
             name=form.name.data,
             email=form.email.data,
             password_hash=hashed_password,
-            is_active=True,
+            phone=form.phone.data,
+            restaurant_name=form.restaurant_name.data,
             created_at=datetime.utcnow()
         )
         
@@ -43,7 +44,7 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             flash('Cadastro realizado com sucesso! Escolha um plano para continuar.', 'success')
-            return redirect(url_for('planos.choose_plan'))
+            return redirect(url_for('plan_bp.choose_plan'))
         except IntegrityError:
             db.session.rollback()
             flash('Este e-mail já está cadastrado. Tente outro ou faça login.', 'danger')
