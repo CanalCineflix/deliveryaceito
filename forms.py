@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, DecimalField, FileField, SubmitField, BooleanField, PasswordField
-from wtforms.validators import DataRequired, Optional, Email, EqualTo, Length
+from wtforms.validators import DataRequired, Optional, Email, EqualTo, Length, ValidationError
+from models import User
 
 class RegistrationForm(FlaskForm):
     """
@@ -8,10 +9,16 @@ class RegistrationForm(FlaskForm):
     """
     name = StringField('Nome', validators=[DataRequired(), Length(min=2, max=50)])
     email = StringField('Email', validators=[DataRequired(), Email()])
+    phone = StringField('Telefone', validators=[DataRequired()])
+    restaurant_name = StringField('Nome do Restaurante', validators=[DataRequired(), Length(min=2, max=100)])
     password = PasswordField('Senha', validators=[DataRequired(), Length(min=6)])
-    password_confirm = PasswordField('Confirmar Senha',
-                                     validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Registrar')
+    confirm_password = PasswordField('Confirmar Senha', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Criar Conta')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user:
+            raise ValidationError('Este email já está registrado. Por favor, escolha um diferente.')
 
 class LoginForm(FlaskForm):
     """
