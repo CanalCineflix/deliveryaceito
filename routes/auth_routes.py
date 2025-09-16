@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Plan, Subscription
 from forms import RegistrationForm, LoginForm
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy.exc import IntegrityError
 from datetime import date
 from flask import Flask, redirect, url_for, flash
@@ -43,8 +43,28 @@ def register():
         try:
             db.session.add(new_user)
             db.session.commit()
-            flash('Cadastro realizado com sucesso! Escolha um plano para continuar.', 'success')
-            return redirect(url_for('planos.choose_plan'))
+            
+            # --- Lógica adicionada para o plano Freemium ---
+            freemium_plan = Plan.query.filter_by(name='Freemium').first()
+            if freemium_plan:
+                new_subscription = Subscription(
+                    user_id=new_user.id,
+                    plan_id=freemium_plan.id,
+                    status='active',
+                    start_date=datetime.utcnow(),
+                    end_date=datetime.utcnow() + timedelta(days=freemium_plan.duration_days)
+                )
+                db.session.add(new_subscription)
+                db.session.commit()
+                logging.info(f'Plano Freemium atribuído ao usuário {new_user.email}.')
+                flash('Cadastro realizado com sucesso! Seu plano de 15 dias já está ativo. Bem-vindo(a)!', 'success')
+                login_user(new_user)
+                return redirect(url_for('dashboard.index'))
+            else:
+                flash('Erro ao atribuir o plano inicial. Por favor, entre em contato com o suporte.', 'danger')
+                return redirect(url_for('auth.login'))
+            # --- Fim da lógica Freemium ---
+            
         except IntegrityError:
             db.session.rollback()
             flash('Este e-mail já está cadastrado. Tente outro ou faça login.', 'danger')
