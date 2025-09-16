@@ -1,13 +1,23 @@
-from app import app, db
+import os
+from flask import Flask
+from extensions import db
 from models import Plan
 from sqlalchemy.exc import IntegrityError
 import logging
+from config import Config
 
 # Configuração de logging
 logging.basicConfig(level=logging.INFO)
 
 # Dados dos planos a serem criados
 PLANS_DATA = [
+    {
+        "name": "Freemium",
+        "description": "Plano gratuito por 15 dias para testar a plataforma.",
+        "price": 0.00,
+        "duration_days": 15,
+        "kirvano_checkout_url": None
+    },
     {
         "name": "Plano Essencial",
         "description": "Ideal para iniciantes",
@@ -24,14 +34,15 @@ PLANS_DATA = [
     }
 ]
 
-def create_initial_plans():
+def create_initial_plans(app):
     """
     Cria os planos iniciais no banco de dados se eles não existirem.
     """
     with app.app_context():
         try:
             for plan_data in PLANS_DATA:
-                existing_plan = Plan.query.filter_by(kirvano_checkout_url=plan_data['kirvano_checkout_url']).first()
+                # Usa o nome do plano para a verificação, pois o URL pode ser nulo no Freemium
+                existing_plan = Plan.query.filter_by(name=plan_data['name']).first()
                 if not existing_plan:
                     new_plan = Plan(**plan_data)
                     db.session.add(new_plan)
@@ -50,4 +61,8 @@ def create_initial_plans():
             logging.error(f"Ocorreu um erro inesperado: {e}")
 
 if __name__ == '__main__':
-    create_initial_plans()
+    # Cria uma instância do Flask e configura para uso autônomo.
+    app = Flask(__name__)
+    app.config.from_object(Config)
+    db.init_app(app)
+    create_initial_plans(app)
