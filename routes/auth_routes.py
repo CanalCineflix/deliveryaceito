@@ -44,7 +44,7 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             flash('Cadastro realizado com sucesso! Escolha um plano para continuar.', 'success')
-            return redirect(url_for('plan_bp.choose_plan'))
+            return redirect(url_for('planos.choose_plan'))
         except IntegrityError:
             db.session.rollback()
             flash('Este e-mail já está cadastrado. Tente outro ou faça login.', 'danger')
