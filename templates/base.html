@@ -133,7 +133,7 @@
                         <li><a class="dropdown-item" href="{{ url_for('perfil.index') }}">
                             <i class="bi bi-person"></i> Perfil
                         </a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('planos.choose') }}">
+                        <li><a class="dropdown-item" href="{{ url_for('planos.choose_plan') }}">
                             <i class="bi bi-credit-card"></i> Planos
                         </a></li>
                         <li><hr class="dropdown-divider"></li>
@@ -178,7 +178,7 @@
                         </li>
 <li class="nav-item">
                             <a class="nav-link {{ 'active' if 'products' in request.endpoint }}" 
-                               href="{{ url_for('perfil.products') }}">
+                               href="{{ url_for('produtos.index') }}">
                                 <i class="bi bi-box-seam"></i> Produtos
                             </a>
                         </li>
