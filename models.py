@@ -49,7 +49,7 @@ class User(UserMixin, db.Model):
 
     def has_active_plan(self):
         """
-        Verifica se o usuário tem um plano ativo, seja o Freemium ou um plano pago.
+        Verifica se o usuário tem um plano ativo.
         A verificação é feita buscando um registro de assinatura ativo e válido.
         """
         active_subscription = self.subscriptions.filter_by(status='active').first()
@@ -75,7 +75,7 @@ class Plan(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(255), nullable=False)
-    price = db.Column(Numeric(10, 2), nullable=False) # Tipo alterado para Numeric
+    price = db.Column(Numeric(10, 2), nullable=False)
     duration_days = db.Column(db.Integer, nullable=False)
     kirvano_checkout_url = db.Column(db.String(255), nullable=True)
 
@@ -87,7 +87,7 @@ class Subscription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     plan_id = db.Column(db.Integer, db.ForeignKey('plans.id'), nullable=False)
-    status = db.Column(db.String(50), default='pending') # Valores: 'active', 'pending', 'canceled'
+    status = db.Column(db.String(50), default='pending')
     
     # ID da transação da Kirvano
     kirvano_transaction_id = db.Column(db.String(255), nullable=True, unique=True)
@@ -113,7 +113,7 @@ class Product(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
-    price = db.Column(Numeric(10, 2), nullable=False) # Tipo alterado para Numeric
+    price = db.Column(Numeric(10, 2), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
     category = db.Column(db.String(50), nullable=True)
     photo_url = db.Column(db.String(255), nullable=True)
@@ -131,15 +131,15 @@ class Order(db.Model):
     client_name = db.Column(db.String(100))
     client_phone = db.Column(db.String(20))
     client_address = db.Column(db.String(200))
-    total_price = db.Column(Numeric(10, 2), nullable=False) # Tipo alterado para Numeric
-    delivery_fee = db.Column(Numeric(10, 2), nullable=False, default=0.0) # Tipo alterado para Numeric
+    total_price = db.Column(Numeric(10, 2), nullable=False)
+    delivery_fee = db.Column(Numeric(10, 2), nullable=False, default=0.0)
     status = db.Column(db.Enum(OrderStatus), default=OrderStatus.PENDING)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     completed_at = db.Column(db.DateTime, nullable=True)
     canceled_at = db.Column(db.DateTime, nullable=True)
     
     payment_method = db.Column(db.String(50), nullable=True)
-    change_for = db.Column(Numeric(10, 2), nullable=True) # Tipo alterado para Numeric
+    change_for = db.Column(Numeric(10, 2), nullable=True)
     notes = db.Column(db.Text, nullable=True)
     
     items = db.relationship('OrderItem', backref='order', lazy=True, cascade="all, delete-orphan")
@@ -153,7 +153,7 @@ class OrderItem(db.Model):
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    price_at_order = db.Column(Numeric(10, 2), nullable=False) # Tipo alterado para Numeric
+    price_at_order = db.Column(Numeric(10, 2), nullable=False)
     notes = db.Column(db.Text, nullable=True)
     
 # Modelo de Movimentação de Caixa
@@ -163,7 +163,7 @@ class CashMovement(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     type = db.Column(db.String(20), nullable=False)
     description = db.Column(db.String(200), nullable=False)
-    amount = db.Column(Numeric(10, 2), nullable=False) # Tipo alterado para Numeric
+    amount = db.Column(Numeric(10, 2), nullable=False)
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     session_id = db.Column(db.Integer, db.ForeignKey('cash_sessions.id'), nullable=True)
@@ -173,8 +173,8 @@ class CashSession(db.Model):
     __tablename__ = 'cash_sessions'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    opening_amount = db.Column(Numeric(10, 2), nullable=False) # Tipo alterado para Numeric
-    closing_amount = db.Column(Numeric(10, 2), nullable=True) # Tipo alterado para Numeric
+    opening_amount = db.Column(Numeric(10, 2), nullable=False)
+    closing_amount = db.Column(Numeric(10, 2), nullable=True)
     opened_at = db.Column(db.DateTime, default=datetime.utcnow)
     closed_at = db.Column(db.DateTime, nullable=True)
     is_active = db.Column(db.Boolean, default=True)
@@ -190,8 +190,8 @@ class RestaurantConfig(db.Model):
     restaurant_status = db.Column(db.String(20), default='offline')
     description = db.Column(db.Text, default='')
     cover_url = db.Column(db.String(255), nullable=True)
-    default_delivery_fee = db.Column(Numeric(10, 2), default=0.0) # Tipo alterado para Numeric
-    free_delivery_threshold = db.Column(Numeric(10, 2), default=0.0) # Tipo alterado para Numeric
+    default_delivery_fee = db.Column(Numeric(10, 2), default=0.0)
+    free_delivery_threshold = db.Column(Numeric(10, 2), default=0.0)
     categories = db.Column(db.Text, default='[]')
     email_notifications = db.Column(db.Boolean, default=False)
     sms_notifications = db.Column(db.Boolean, default=False)
@@ -213,4 +213,4 @@ class Neighborhood(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
-    delivery_fee = db.Column(Numeric(10, 2), nullable=False, default=0.0) # Tipo alterado para Numeric
+    delivery_fee = db.Column(Numeric(10, 2), nullable=False, default=0.0)
