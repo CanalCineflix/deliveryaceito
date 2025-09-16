@@ -1,54 +1,41 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escolher Plano</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa;
-        }
-    </style>
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
-    <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-2xl text-center">
-        <h1 class="text-3xl font-bold mb-6 text-gray-800">Escolha seu Plano</h1>
-        
-        <!-- Mensagens do Flask (flash) -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-            <div class="p-4 rounded-lg mb-4 text-sm {% if category == 'danger' %}bg-red-100 text-red-700{% elif category == 'success' %}bg-green-100 text-green-700{% elif category == 'info' %}bg-blue-100 text-blue-700{% endif %}">
-                {{ message }}
-            </div>
-            {% endfor %}
-        {% endif %}
-        {% endwith %}
+{% extends 'base.html' %}
 
-        <div class="grid md:grid-cols-2 gap-6">
-            {% for plano in planos %}
-            <div class="bg-gray-50 p-6 rounded-xl border-2 border-gray-200 hover:border-blue-500 transition-all duration-300">
-                <h2 class="text-2xl font-semibold text-gray-700 mb-2">{{ plano.nome }}</h2>
-                <p class="text-3xl font-extrabold text-blue-600 mb-4">
-                    {% if plano.valor == 0 %}
-                        Gratuito
-                    {% else %}
-                        R$ {{ "%.2f"|format(plano.valor) }}<span class="text-lg font-normal text-gray-500">/mês</span>
-                    {% endif %}
-                </p>
-                {% if plano.nome == 'Premium' %}
-                    <p class="text-gray-500 text-sm mb-4">Acesso total a todos os recursos.</p>
-                    <a href="{{ url_for('planos.select_plan', plano_id=plano.id) }}" class="inline-block w-full py-3 px-6 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300 transform hover:-translate-y-1">Assinar Plano</a>
-                {% else %}
-                    <p class="text-gray-500 text-sm mb-4">Recursos limitados.</p>
-                    <button disabled class="w-full py-3 px-6 bg-gray-300 text-gray-600 font-bold rounded-lg cursor-not-allowed">Plano Atual</button>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
+{% block title %}Escolha seu Plano{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="text-center mb-10">
+        <h1 class="text-4xl font-extrabold text-gray-900">Escolha o seu Plano</h1>
+        <p class="mt-4 text-lg text-gray-600">Comece com o plano que mais se adapta ao seu negócio.</p>
     </div>
-</body>
-</html>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {% for plan in plans %}
+        <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col justify-between transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">{{ plan.name }}</h2>
+                <p class="text-gray-500 mb-6">{{ plan.description }}</p>
+                <div class="flex items-center text-gray-900 mb-4">
+                    <span class="text-4xl font-extrabold">{{ 'Grátis' if plan.price == 0 else 'R$' + '%.2f'|format(plan.price) }}</span>
+                    {% if plan.price > 0 %}
+                    <span class="ml-2 text-gray-500">/ Mês</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <form action="{{ url_for('planos.select_plan', plan_id=plan.id) }}" method="POST">
+                {% if plan.name == 'Plano Gratuito' %}
+                <button type="submit" class="w-full bg-indigo-600 text-white font-semibold py-3 px-6 rounded-full shadow-md hover:bg-indigo-700 transition-colors">
+                    Acessar Plano
+                </button>
+                {% else %}
+                <button type="submit" class="w-full bg-gray-200 text-indigo-600 font-semibold py-3 px-6 rounded-full shadow-md hover:bg-gray-300 transition-colors">
+                    Assinar Agora
+                </button>
+                {% endif %}
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
