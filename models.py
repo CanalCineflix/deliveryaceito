@@ -1,4 +1,3 @@
-# Importações necessárias
 from extensions import db
 from datetime import datetime, timedelta
 from flask_login import UserMixin
@@ -16,14 +15,19 @@ class OrderStatus(enum.Enum):
     CANCELLED = 'Cancelado'
     COMPLETED = 'Concluído'
 
-# Modelo de Usuário (Restaurante)
+# Relação N:N para permissões de usuários
+user_permissions = db.Table('user_permissions',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    db.Column('permission_id', db.Integer, db.ForeignKey('permission.id'), primary_key=True)
+)
+
+# Modelo de Usuário
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     phone = db.Column(db.String(20), nullable=False)
-    restaurant_name = db.Column(db.String(100), nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     whatsapp = db.Column(db.String(20), nullable=True)
@@ -35,7 +39,7 @@ class User(UserMixin, db.Model):
     cash_movements = db.relationship('CashMovement', backref='user', lazy=True)
     cash_sessions = db.relationship('CashSession', backref='user', lazy=True)
     customers = db.relationship('Customer', backref='user', lazy=True)
-    config = db.relationship('RestaurantConfig', backref='user', uselist=False, lazy=True)
+    restaurants = db.relationship('Restaurant', backref='owner', uselist=False, lazy=True)
     neighborhoods = db.relationship('Neighborhood', backref='user', lazy=True)
 
     def set_password(self, password):
@@ -48,14 +52,27 @@ class User(UserMixin, db.Model):
         return f"/cardapio/{self.id}"
 
     def has_active_plan(self):
-        """
-        Verifica se o usuário tem um plano ativo.
-        A verificação é feita buscando um registro de assinatura ativo e válido.
-        """
         active_subscription = self.subscriptions.filter_by(status='active').first()
         if active_subscription and active_subscription.end_date and active_subscription.end_date > datetime.utcnow():
             return True
         return False
+
+# Modelo de Restaurante
+class Restaurant(db.Model):
+    __tablename__ = 'restaurants'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relações com outros modelos de configuração e dados do restaurante
+    config = db.relationship('RestaurantConfig', backref='restaurant', uselist=False, lazy=True)
+
+class Permission(db.Model):
+    __tablename__ = 'permission'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    description = db.Column(db.String(200))
 
 # Modelo para Clientes
 class Customer(db.Model):
@@ -89,16 +106,12 @@ class Subscription(db.Model):
     plan_id = db.Column(db.Integer, db.ForeignKey('plans.id'), nullable=False)
     status = db.Column(db.String(50), default='pending')
     
-    # ID da transação da Kirvano
     kirvano_transaction_id = db.Column(db.String(255), nullable=True, unique=True)
-    
-    # ID da recorrência na Kirvano
     kirvano_subscription_id = db.Column(db.String(255), nullable=True, unique=True)
     
     start_date = db.Column(db.DateTime, default=datetime.utcnow)
     end_date = db.Column(db.DateTime, nullable=True)
     
-    # Métodos para alterar o status da assinatura
     def set_active(self, duration_days):
         self.status = 'active'
         self.end_date = datetime.utcnow() + timedelta(days=duration_days)
