@@ -57,12 +57,13 @@ def register():
 
             db.session.commit()
             
-            flash('Cadastro realizado com sucesso! Você foi automaticamente inscrito no Plano Essencial.', 'success')
+            flash('Cadastro realizado com sucesso! Escolha um plano para continuar.', 'success')
             logging.info(f"User {new_user.email} registered and subscribed to 'Plano Essencial' successfully.")
             
             # Login automático após o cadastro
             login_user(new_user)
-            return redirect(url_for('dashboard.index'))
+            # Redirecionamento corrigido para a página de escolha de planos
+            return redirect(url_for('plans.choose_plan'))
             
         except IntegrityError:
             db.session.rollback()
