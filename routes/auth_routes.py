@@ -5,7 +5,7 @@ from extensions import db
 from models import User, Restaurant, Subscription, Plan # Adicionado 'Restaurant' aqui
 from forms import LoginForm, RegisterForm, ChangePasswordForm, RequestPasswordResetForm, ResetPasswordForm
 from sqlalchemy.exc import IntegrityError
-from datetime import datetime # Importado datetime
+from datetime import datetime, timedelta
 import logging
 
 auth_bp = Blueprint('auth', __name__)
@@ -50,7 +50,7 @@ def register():
                 user_id=new_user.id,
                 plan_id=trial_plan.id,
                 start_date=datetime.utcnow(),
-                end_date=datetime.utcnow() + datetime.timedelta(days=trial_plan.duration_days),
+                end_date = datetime.utcnow() + timedelta(days=trial_plan.duration_days)
                 is_active=True
             )
             db.session.add(new_subscription)
