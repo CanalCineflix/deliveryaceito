@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from extensions import db
-from models import User, Restaurant, Subscription, Plan # Adicionado 'Restaurant' aqui
+from models import User, Restaurant, Subscription, Plan
 from forms import LoginForm, RegisterForm, ChangePasswordForm, RequestPasswordResetForm, ResetPasswordForm
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timedelta
@@ -39,30 +39,30 @@ def register():
             )
             db.session.add(new_restaurant)
             
-            # Criação de uma assinatura vazia para o novo usuário
+            # Criação de uma assinatura para o novo usuário com o plano 'Plano Essencial'
             trial_plan = Plan.query.filter_by(name="Plano Essencial").first()
             if not trial_plan:
-                 trial_plan = Plan(name="Plano Essencial", price=0.00, features="Acesso básico", duration_days=30, is_active=True)
-                 db.session.add(trial_plan)
-                 db.session.commit()
-                 
+                logging.info("Plano 'Plano Essencial' não encontrado. Criando um novo.")
+                trial_plan = Plan(name="Plano Essencial", price=0.00, features="Acesso básico", duration_days=30)
+                db.session.add(trial_plan)
+                db.session.commit()
+
             new_subscription = Subscription(
                 user_id=new_user.id,
                 plan_id=trial_plan.id,
                 start_date=datetime.utcnow(),
-                end_date = datetime.utcnow() + timedelta(days=trial_plan.duration_days),
-                is_active=True
+                end_date=datetime.utcnow() + timedelta(days=trial_plan.duration_days)
             )
             db.session.add(new_subscription)
 
             db.session.commit()
             
-            flash('Cadastro realizado com sucesso! Escolha um plano para continuar.', 'success')
-            logging.info(f"User {new_user.email} registered successfully.")
+            flash('Cadastro realizado com sucesso! Você foi automaticamente inscrito no Plano Essencial.', 'success')
+            logging.info(f"User {new_user.email} registered and subscribed to 'Plano Essencial' successfully.")
             
             # Login automático após o cadastro
             login_user(new_user)
-            return redirect(url_for('plans.choose_plan'))
+            return redirect(url_for('dashboard.index'))
             
         except IntegrityError:
             db.session.rollback()
@@ -70,7 +70,7 @@ def register():
             logging.error(f"Registration failed for email {form.email.data} due to IntegrityError.")
         except Exception as e:
             db.session.rollback()
-            flash('Ocorreu um erro inesperado. Tente novamente mais tarde.', 'danger')
+            flash(f'Ocorreu um erro inesperado. Tente novamente mais tarde. Erro: {e}', 'danger')
             logging.error(f"Registration failed for email {form.email.data}. Error: {e}")
             
     return render_template('auth/register.html', form=form)
