@@ -3,6 +3,9 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, redirect, url_for, flash, request, session
 from flask_login import current_user
 from datetime import datetime, timedelta
+from routes.webhook_routes import webhook_bp
+
+app.register_blueprint(webhook_bp)
 
 # Carrega as variáveis de ambiente com lógica para ambiente local e produção
 if os.environ.get('RENDER'):
