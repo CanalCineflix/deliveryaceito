@@ -4,6 +4,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import enum
 from sqlalchemy import Numeric
+from sqlalchemy.orm import relationship
 
 # Enum para status de pedidos
 class OrderStatus(enum.Enum):
@@ -65,8 +66,38 @@ class Restaurant(db.Model):
     name = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Relações com outros modelos de configuração e dados do restaurante
+    # Este relacionamento foi corrigido para usar backref, que é mais simples
+    # para a relação de um-para-um já que o relacionamento já existe
+    # na classe de User
     config = db.relationship('RestaurantConfig', backref='restaurant', uselist=False, lazy=True)
+
+
+# Modelo de Configurações do Restaurante
+class RestaurantConfig(db.Model):
+    __tablename__ = 'restaurant_configs'
+    id = db.Column(db.Integer, primary_key=True)
+    # A chave estrangeira CRÍTICA que linka com o Restaurante
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'), unique=True, nullable=False)
+    
+    restaurant_status = db.Column(db.String(20), default='offline')
+    description = db.Column(db.Text, default='')
+    cover_url = db.Column(db.String(255), nullable=True)
+    default_delivery_fee = db.Column(Numeric(10, 2), default=0.0)
+    free_delivery_threshold = db.Column(Numeric(10, 2), default=0.0)
+    categories = db.Column(db.Text, default='[]')
+    email_notifications = db.Column(db.Boolean, default=False)
+    sms_notifications = db.Column(db.Boolean, default=False)
+
+    logo_url = db.Column(db.String(255), nullable=True)
+    address = db.Column(db.String(255), nullable=True)
+    delivery_time_min = db.Column(db.Integer, default=30)
+    delivery_time_max = db.Column(db.Integer, default=60)
+    pickup_time = db.Column(db.Integer, default=20)
+    payment_methods = db.Column(db.Text, default='{}')
+    business_hours = db.Column(db.Text, default='{}')
+    phone = db.Column(db.String(20), nullable=True)
+    pix_key = db.Column(db.String(255), nullable=True)
+    manual_status_override = db.Column(db.String(10), default='auto')
 
 class Permission(db.Model):
     __tablename__ = 'permission'
@@ -193,32 +224,6 @@ class CashSession(db.Model):
     is_active = db.Column(db.Boolean, default=True)
 
     movements = db.relationship('CashMovement', backref='session', lazy=True)
-
-# Modelo de Configurações do Restaurante
-class RestaurantConfig(db.Model):
-    __tablename__ = 'restaurant_configs'
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
-    
-    restaurant_status = db.Column(db.String(20), default='offline')
-    description = db.Column(db.Text, default='')
-    cover_url = db.Column(db.String(255), nullable=True)
-    default_delivery_fee = db.Column(Numeric(10, 2), default=0.0)
-    free_delivery_threshold = db.Column(Numeric(10, 2), default=0.0)
-    categories = db.Column(db.Text, default='[]')
-    email_notifications = db.Column(db.Boolean, default=False)
-    sms_notifications = db.Column(db.Boolean, default=False)
-
-    logo_url = db.Column(db.String(255), nullable=True)
-    address = db.Column(db.String(255), nullable=True)
-    delivery_time_min = db.Column(db.Integer, default=30)
-    delivery_time_max = db.Column(db.Integer, default=60)
-    pickup_time = db.Column(db.Integer, default=20)
-    payment_methods = db.Column(db.Text, default='{}')
-    business_hours = db.Column(db.Text, default='{}')
-    phone = db.Column(db.String(20), nullable=True)
-    pix_key = db.Column(db.String(255), nullable=True)
-    manual_status_override = db.Column(db.String(10), default='auto')
 
 # Modelo de Bairro para Entrega
 class Neighborhood(db.Model):
