@@ -50,7 +50,7 @@ def register():
                 user_id=new_user.id,
                 plan_id=trial_plan.id,
                 start_date=datetime.utcnow(),
-                end_date = datetime.utcnow() + timedelta(days=trial_plan.duration_days)
+                end_date = datetime.utcnow() + timedelta(days=trial_plan.duration_days),
                 is_active=True
             )
             db.session.add(new_subscription)
