@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from extensions import db
-from models import User
+from models import User, Restaurant, Subscription, Plan
 from forms import LoginForm, RegisterForm, ChangePasswordForm, RequestPasswordResetForm, ResetPasswordForm
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timedelta
@@ -31,16 +31,21 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             
+            # --- SEÇÃO ATUALIZADA ---
             # As etapas de criação de Restaurante e Assinatura foram removidas daqui.
             # Elas devem ser feitas após o usuário escolher um plano na próxima página.
             
+            # As informações do restaurante (name=form.restaurant_name.data)
+            # devem ser utilizadas para criar o Restaurant após a seleção do plano.
+            # É necessário armazenar esse dado temporariamente ou obtê-lo novamente.
+
             flash('Cadastro realizado com sucesso! Escolha um plano para continuar.', 'success')
             logging.info(f"User {new_user.email} registered successfully.")
             
             # Login automático após o cadastro
             login_user(new_user)
             # Redirecionamento para a página de escolha de planos
-            return redirect(url_for('planos.choose'))
+            return redirect(url_for('planos.choose_plan'))
             
         except IntegrityError:
             db.session.rollback()
