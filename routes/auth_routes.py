@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard.index'))
-        
+    
     form = RegisterForm()
     if form.validate_on_submit():
         try:
@@ -31,39 +31,21 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             
-            # Criação do restaurante vinculado ao novo usuário
-            new_restaurant = Restaurant(
-                user_id=new_user.id,
-                name=form.restaurant_name.data,
-                created_at=datetime.utcnow()
-            )
-            db.session.add(new_restaurant)
+            # --- SEÇÃO ATUALIZADA ---
+            # As etapas de criação de Restaurante e Assinatura foram removidas daqui.
+            # Elas devem ser feitas após o usuário escolher um plano na próxima página.
             
-            # Criação de uma assinatura para o novo usuário com o plano 'Plano Essencial'
-            trial_plan = Plan.query.filter_by(name="Plano Essencial").first()
-            if not trial_plan:
-                logging.info("Plano 'Plano Essencial' não encontrado. Criando um novo.")
-                trial_plan = Plan(name="Plano Essencial", price=0.00, features="Acesso básico", duration_days=30)
-                db.session.add(trial_plan)
-                db.session.commit()
+            # As informações do restaurante (name=form.restaurant_name.data)
+            # devem ser utilizadas para criar o Restaurant após a seleção do plano.
+            # É necessário armazenar esse dado temporariamente ou obtê-lo novamente.
 
-            new_subscription = Subscription(
-                user_id=new_user.id,
-                plan_id=trial_plan.id,
-                start_date=datetime.utcnow(),
-                end_date=datetime.utcnow() + timedelta(days=trial_plan.duration_days)
-            )
-            db.session.add(new_subscription)
-
-            db.session.commit()
-            
             flash('Cadastro realizado com sucesso! Escolha um plano para continuar.', 'success')
-            logging.info(f"User {new_user.email} registered and subscribed to 'Plano Essencial' successfully.")
+            logging.info(f"User {new_user.email} registered successfully.")
             
             # Login automático após o cadastro
             login_user(new_user)
-            # Redirecionamento corrigido para a página de escolha de planos
-            return redirect(url_for('planos.choose_plan'))
+            # Redirecionamento para a página de escolha de planos
+            return redirect(url_for('planos.choose'))
             
         except IntegrityError:
             db.session.rollback()
