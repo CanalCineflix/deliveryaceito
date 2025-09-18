@@ -45,7 +45,7 @@ def register():
             # Login automático após o cadastro
             login_user(new_user)
             # Redirecionamento para a página de escolha de planos
-            rreturn redirect(url_for('planos.choose_plan'))
+            return redirect(url_for('planos.choose_plan'))
             
         except IntegrityError:
             db.session.rollback()
