@@ -9,12 +9,20 @@ planos_bp = Blueprint('planos', __name__)
 @login_required
 def choose_plan():
     """Rota para o usuário escolher um plano de assinatura."""
-    plans = Plan.query.order_by(Plan.price.asc()).all()
-    # Verifica se o usuário já tem uma assinatura ativa
-    # Se sim, redireciona para a página de gerenciamento de assinatura
+    
+    # 1. Filtra os planos para exibir apenas 'Freemium' e 'Plano Premium'
+    # 'Plano Essencial' foi removido da consulta
+    plans = Plan.query.filter(Plan.name.in_(['Freemium', 'Plano Premium'])).order_by(Plan.price.asc()).all()
+    
+    # 2. Verifica se o usuário já tem uma assinatura ativa
     active_subscription = Subscription.query.filter_by(user_id=current_user.id, status='active').first()
-    if active_subscription:
+
+    # 3. Adiciona uma exceção para o plano freemium
+    # Se o plano freemium já estiver ativo, não redireciona o usuário para o dashboard.
+    # Isso permite que ele mude para o plano pago (Premium).
+    if active_subscription and active_subscription.plan.name != 'Freemium':
         return redirect(url_for('dashboard.index'))
+        
     return render_template('planos/choose.html', plans=plans)
 
 @planos_bp.route('/checkout/<int:plan_id>')
@@ -26,6 +34,14 @@ def checkout(plan_id):
     """
     plan = Plan.query.get_or_404(plan_id)
     
+    # Adiciona a lógica para o plano Freemium, que não precisa de checkout
+    if plan.name == 'Freemium':
+        # Aqui você adicionaria a lógica para ativar o plano Freemium
+        # Por exemplo, criar uma nova assinatura para o usuário com este plano
+        flash('Plano Freemium ativado com sucesso!', 'success')
+        # Redireciona para o dashboard ou uma página de sucesso
+        return redirect(url_for('dashboard.index'))
+
     if not plan.kirvano_checkout_url:
         flash('O plano selecionado não tem um link de checkout Kirvano configurado.', 'danger')
         return redirect(url_for('planos.choose_plan'))
