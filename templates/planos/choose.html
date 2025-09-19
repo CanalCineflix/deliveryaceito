@@ -57,11 +57,20 @@
                 </div>
                 
                 <div class="text-center mt-6">
-                    {% if plan.name == 'Freemium' %}
+                    {# A lógica para desabilitar o botão foi centralizada na verificação da assinatura ativa #}
+                    {% if active_subscription and active_subscription.plan_id == plan.id %}
+                        <button class="w-full py-3 px-6 rounded-full bg-gray-300 text-gray-700 font-semibold cursor-not-allowed shadow-md" disabled>Plano Atual</button>
+                    {% elif active_subscription and active_subscription.plan.name == 'Freemium' and plan.name == 'Freemium' %}
+                        {# Se o usuário está no Fremium, o botão do Fremium fica "Plano Atual" #}
                         <button class="w-full py-3 px-6 rounded-full bg-gray-300 text-gray-700 font-semibold cursor-not-allowed shadow-md" disabled>Plano Atual</button>
                     {% else %}
+                        {# Exibe o link de checkout para todos os outros casos #}
                         <a href="{{ url_for('planos.checkout', plan_id=plan.id) }}" class="w-full inline-block py-3 px-6 rounded-full bg-blue-600 text-white font-semibold shadow-lg hover:bg-blue-700 transition-colors duration-300 transform hover:scale-100">
-                            Assinar Plano
+                            {% if plan.name == 'Freemium' %}
+                                Acessar Plano
+                            {% else %}
+                                Assinar Agora
+                            {% endif %}
                         </a>
                     {% endif %}
                 </div>
