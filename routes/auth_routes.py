@@ -29,15 +29,23 @@ def register():
                 created_at=datetime.utcnow()
             )
             db.session.add(new_user)
-            db.session.commit()
-            
-            # --- SEÇÃO ATUALIZADA ---
-            # As etapas de criação de Restaurante e Assinatura foram removidas daqui.
-            # Elas devem ser feitas após o usuário escolher um plano na próxima página.
-            
-            # As informações do restaurante (name=form.restaurant_name.data)
-            # devem ser utilizadas para criar o Restaurant após a seleção do plano.
-            # É necessário armazenar esse dado temporariamente ou obtê-lo novamente.
+            db.session.commit() # Salva o usuário no banco de dados para que tenha um ID.
+
+            # === LÓGICA DE CRIAÇÃO AUTOMÁTICA DA ASSINATURA FREEMIUM ===
+            freemium_plan = Plan.query.filter_by(name='Freemium').first()
+
+            if freemium_plan:
+                new_subscription = Subscription(
+                    user_id=new_user.id,
+                    plan_id=freemium_plan.id,
+                    status='active',
+                    start_date=datetime.utcnow(),
+                    end_date=datetime.utcnow() + timedelta(days=freemium_plan.duration_days)
+                )
+                db.session.add(new_subscription)
+                db.session.commit() # Salva a nova assinatura.
+                logging.info(f"Plano Freemium ativado para o novo usuário {new_user.email}")
+            # ==========================================================
 
             flash('Cadastro realizado com sucesso! Escolha um plano para continuar.', 'success')
             logging.info(f"User {new_user.email} registered successfully.")
