@@ -53,10 +53,30 @@ class User(UserMixin, db.Model):
         return f"/cardapio/{self.id}"
 
     def has_active_plan(self):
+        # 1. Encontra a assinatura ativa do usuário
         active_subscription = self.subscriptions.filter_by(status='active').first()
-        if active_subscription and active_subscription.end_date and active_subscription.end_date > datetime.utcnow():
-            return True
+        
+        if not active_subscription:
+            return False
+            
+        # 2. Se a assinatura tem uma data de término e já expirou...
+        if active_subscription.end_date and active_subscription.end_date < datetime.utcnow():
+            # Atualiza o status para 'expired'
+            active_subscription.status = 'expired'
+            db.session.commit()
+            return False # O plano não está mais ativo
+
+        # 3. Se a assinatura tem uma data de término e ainda é válida...
+        if active_subscription.end_date and active_subscription.end_date > datetime.utcnow():
+            return True # O plano está ativo
+
+        # 4. Se a assinatura não tem data de término (plano pago por recorrência, por exemplo)
+        if not active_subscription.end_date:
+            return True # O plano é considerado ativo até que seja cancelado
+
         return False
+
+# ... (restante do código permanece inalterado)
 
 # Modelo de Restaurante
 class Restaurant(db.Model):
@@ -65,20 +85,13 @@ class Restaurant(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
     name = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    # Este relacionamento foi corrigido para usar backref, que é mais simples
-    # para a relação de um-para-um já que o relacionamento já existe
-    # na classe de User
     config = db.relationship('RestaurantConfig', backref='restaurant', uselist=False, lazy=True)
-
 
 # Modelo de Configurações do Restaurante
 class RestaurantConfig(db.Model):
     __tablename__ = 'restaurant_configs'
     id = db.Column(db.Integer, primary_key=True)
-    # A chave estrangeira CRÍTICA que linka com o Restaurante
     restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'), unique=True, nullable=False)
-    
     restaurant_status = db.Column(db.String(20), default='offline')
     description = db.Column(db.Text, default='')
     cover_url = db.Column(db.String(255), nullable=True)
@@ -87,7 +100,6 @@ class RestaurantConfig(db.Model):
     categories = db.Column(db.Text, default='[]')
     email_notifications = db.Column(db.Boolean, default=False)
     sms_notifications = db.Column(db.Boolean, default=False)
-
     logo_url = db.Column(db.String(255), nullable=True)
     address = db.Column(db.String(255), nullable=True)
     delivery_time_min = db.Column(db.Integer, default=30)
@@ -114,7 +126,6 @@ class Customer(db.Model):
     phone = db.Column(db.String(20), nullable=False)
     address = db.Column(db.String(200), nullable=True)
     notes = db.Column(db.Text, nullable=True)
-    
     orders = db.relationship('Order', backref='customer', lazy=True)
 
 # Modelo de Plano de Assinatura
@@ -126,7 +137,6 @@ class Plan(db.Model):
     price = db.Column(Numeric(10, 2), nullable=False)
     duration_days = db.Column(db.Integer, nullable=False)
     kirvano_checkout_url = db.Column(db.String(255), nullable=True)
-
     subscriptions = db.relationship('Subscription', backref='plan', lazy=True)
     
 # Modelo de Assinatura
@@ -163,7 +173,6 @@ class Product(db.Model):
     photo_url = db.Column(db.String(255), nullable=True)
     is_delivery = db.Column(db.Boolean, default=True)
     is_balcao = db.Column(db.Boolean, default=True)
-    
     order_items = db.relationship('OrderItem', backref='product', lazy=True)
 
 # Modelo de Pedido
@@ -181,13 +190,10 @@ class Order(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     completed_at = db.Column(db.DateTime, nullable=True)
     canceled_at = db.Column(db.DateTime, nullable=True)
-    
     payment_method = db.Column(db.String(50), nullable=True)
     change_for = db.Column(Numeric(10, 2), nullable=True)
     notes = db.Column(db.Text, nullable=True)
-    
     items = db.relationship('OrderItem', backref='order', lazy=True, cascade="all, delete-orphan")
-    
     complement_note = db.Column(db.Text, nullable=True)
 
 # Modelo de Item do Pedido
@@ -222,7 +228,6 @@ class CashSession(db.Model):
     opened_at = db.Column(db.DateTime, default=datetime.utcnow)
     closed_at = db.Column(db.DateTime, nullable=True)
     is_active = db.Column(db.Boolean, default=True)
-
     movements = db.relationship('CashMovement', backref='session', lazy=True)
 
 # Modelo de Bairro para Entrega
