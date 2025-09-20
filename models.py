@@ -42,6 +42,10 @@ class User(UserMixin, db.Model):
     customers = db.relationship('Customer', backref='user', lazy=True)
     restaurants = db.relationship('Restaurant', backref='owner', uselist=False, lazy=True)
     neighborhoods = db.relationship('Neighborhood', backref='user', lazy=True)
+    
+    # ADICIONADO: Relacionamento com RestaurantConfig para acesso direto
+    # Usando `uselist=False` para indicar um relacionamento um-para-um
+    config = db.relationship('RestaurantConfig', back_populates='user', uselist=False, lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -83,13 +87,17 @@ class Restaurant(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
     name = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    config = db.relationship('RestaurantConfig', backref='restaurant', uselist=False, lazy=True)
+    
+    # Removido o relacionamento 'config' daqui
+    # config = db.relationship('RestaurantConfig', backref='restaurant', uselist=False, lazy=True)
 
 # Modelo de Configurações do Restaurante
 class RestaurantConfig(db.Model):
     __tablename__ = 'restaurant_configs'
     id = db.Column(db.Integer, primary_key=True)
-    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'), unique=True, nullable=False)
+    # Alterado de `restaurant_id` para `user_id` para vincular diretamente
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
+    
     restaurant_status = db.Column(db.String(20), default='offline')
     description = db.Column(db.Text, default='')
     cover_url = db.Column(db.String(255), nullable=True)
@@ -108,6 +116,9 @@ class RestaurantConfig(db.Model):
     phone = db.Column(db.String(20), nullable=True)
     pix_key = db.Column(db.String(255), nullable=True)
     manual_status_override = db.Column(db.String(10), default='auto')
+    
+    # ADICIONADO: Relacionamento de volta para o usuário
+    user = db.relationship('User', back_populates='config')
 
 class Permission(db.Model):
     __tablename__ = 'permission'
@@ -135,7 +146,7 @@ class Plan(db.Model):
     price = db.Column(Numeric(10, 2), nullable=False)
     duration_days = db.Column(db.Integer, nullable=False)
     kirvano_checkout_url = db.Column(db.String(255), nullable=True)
-    is_free = db.Column(db.Boolean, default=False)  # Linha que resolve o problema
+    is_free = db.Column(db.Boolean, default=False)
     subscriptions = db.relationship('Subscription', backref='plan', lazy=True)
     
 # Modelo de Assinatura
