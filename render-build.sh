@@ -15,17 +15,18 @@ pip install -r requirements.txt
 # Limpa o banco de dados completamente.
 psql $DATABASE_URL -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 
-# Remove o diretório de migrações (importante para recriar as tabelas corretamente)
+# Remove o diretório de migrações para evitar conflitos de histórico
 rm -rf migrations
 
 # Inicia as migrações
 flask db init
 
-# Cria uma nova migração com as alterações dos modelos (incluindo is_free)
-flask db migrate -m "Added is_free to Plan model"
+# Cria uma nova migração com as alterações dos modelos
+flask db migrate -m "Initial migration"
 
 # Aplica as migrações no banco de dados.
 flask db upgrade
 
 # Roda o comando para criar os planos iniciais no banco de dados.
+# Esta é a etapa crucial que popula a URL de checkout e os planos.
 flask create_plans
