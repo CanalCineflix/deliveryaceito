@@ -137,7 +137,6 @@ class Plan(db.Model):
     price = db.Column(Numeric(10, 2), nullable=False)
     duration_days = db.Column(db.Integer, nullable=False)
     kirvano_checkout_url = db.Column(db.String(255), nullable=True)
-    is_free = db.Column(db.Boolean, default=False) # Adicione esta linha
     subscriptions = db.relationship('Subscription', backref='plan', lazy=True)
     
 # Modelo de Assinatura
