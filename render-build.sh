@@ -28,3 +28,6 @@ flask db upgrade
 
 # Roda o script para criar os planos iniciais no banco de dados
 python create_plans.py
+
+pip install Flask-Click
+flask create_plans
