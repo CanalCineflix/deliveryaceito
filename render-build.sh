@@ -13,21 +13,19 @@ export FLASK_APP=run.py
 pip install -r requirements.txt
 
 # Limpa o banco de dados completamente.
-# Nota: Esta linha apaga todos os dados, use com cautela.
 psql $DATABASE_URL -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 
-# Remove o diretório de migrações para evitar conflitos de histórico
+# Remove o diretório de migrações (importante para recriar as tabelas corretamente)
 rm -rf migrations
 
-# Inicia as migrações, criando a pasta 'migrations'
+# Inicia as migrações
 flask db init
 
-# Cria a migração inicial com base nos modelos atuais.
-flask db migrate -m "Initial migration"
+# Cria uma nova migração com as alterações dos modelos (incluindo is_free)
+flask db migrate -m "Added is_free to Plan model"
 
 # Aplica as migrações no banco de dados.
 flask db upgrade
 
 # Roda o comando para criar os planos iniciais no banco de dados.
-# Agora o Flask vai reconhecer o comando 'create_plans'.
 flask create_plans
