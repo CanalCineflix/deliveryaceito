@@ -29,4 +29,7 @@ flask db upgrade
 # Roda o script para criar os planos iniciais no banco de dados
 python create_plans.py
 
+python run.py db upgrade
+python run.py db migrate
 flask create_plans
+python run.py
