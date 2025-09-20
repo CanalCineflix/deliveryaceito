@@ -3,7 +3,7 @@ import json
 from werkzeug.utils import secure_filename
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app, abort
 from flask_login import login_required, current_user
-from models import db, User, Product, Neighborhood, RestaurantConfig
+from models import db, User, Product, Neighborhood, RestaurantConfig, Restaurant
 
 perfil_bp = Blueprint('perfil', __name__, url_prefix='/perfil')
 
@@ -33,8 +33,13 @@ def index():
         except (json.JSONDecodeError, TypeError):
             return fallback_value
 
+    # VERIFICA O NOME DO RESTAURANTE ATRAVÉS DA RELAÇÃO COM O MODELO 'RESTAURANT'
+    # E PEGA O NOME OU USA 'N/A' COMO PADRÃO
+    restaurant = current_user.restaurants
+    restaurant_name = restaurant.name if restaurant else 'N/A'
+
     user_data = {
-        'restaurant_name': current_user.restaurant_name,
+        'restaurant_name': restaurant_name,
         'whatsapp': current_user.whatsapp,
         'address': config.address,
         'logo_url': config.logo_url,
@@ -69,8 +74,16 @@ def update_profile():
         if not config:
             config = RestaurantConfig(user_id=current_user.id)
             db.session.add(config)
+        
+        # O NOME DO RESTAURANTE DEVE SER ATUALIZADO VIA O OBJETO RESTAURANT
+        restaurant = current_user.restaurants
+        if restaurant:
+            restaurant.name = request.form.get('restaurant_name')
+        else:
+            # Cria um novo restaurante se ele não existir
+            new_restaurant = Restaurant(user_id=current_user.id, name=request.form.get('restaurant_name'))
+            db.session.add(new_restaurant)
 
-        current_user.restaurant_name = request.form.get('restaurant_name')
         current_user.whatsapp = request.form.get('whatsapp')
         config.address = request.form.get('address')
 
