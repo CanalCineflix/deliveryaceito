@@ -46,7 +46,7 @@ from routes.cardapio_routes import cardapio_bp
 from routes.produtos_routes import produtos_bp
 from routes.payments_routes import payments_bp
 from routes.blocked_routes import blocked_bp
-from rotas.webhooks_bp import webhooks_bp
+from rotas.webhooks_bp import webhooks_bp # Importação correta
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
@@ -58,7 +58,7 @@ app.register_blueprint(planos_bp, url_prefix='/planos')
 app.register_blueprint(cardapio_bp)
 app.register_blueprint(produtos_bp)
 app.register_blueprint(payments_bp, url_prefix='/payments')  # checkout
-app.register_blueprint(webhook_bp, url_prefix='/webhooks')   # webhooks externos
+app.register_blueprint(webhooks_bp, url_prefix='/webhooks')   # webhooks externos (Registro corrigido)
 app.register_blueprint(blocked_bp)
 
 # === Contexto Global ===
