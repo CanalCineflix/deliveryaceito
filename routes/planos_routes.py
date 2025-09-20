@@ -1,89 +1,125 @@
 import os
-from flask import Blueprint, render_template, redirect, url_for, flash, request
-from flask_login import current_user, login_required
-from models import db, Plan, User, Subscription
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_required, current_user
+from models import db, Plan, Subscription, User
 from datetime import datetime, timedelta
-import logging
 
-planos_bp = Blueprint('planos', __name__)
-logging.basicConfig(level=logging.INFO)
+# Blueprint para rotas de planos
+planos_bp = Blueprint('planos', __name__, url_prefix='/planos')
 
 @planos_bp.route('/choose')
 @login_required
-def choose_plan():
-    """Rota para o usuário escolher um plano de assinatura."""
+def choose():
+    """
+    Exibe a lista de planos de assinatura disponíveis.
+    Se o usuário já tiver uma assinatura ativa e não for Freemium expirado, o redireciona.
+    """
+    # 1. Busca todos os planos
+    all_plans = Plan.query.all()
     
-    # Verifica se o usuário tem alguma assinatura ativa.
-    active_subscription = Subscription.query.filter_by(user_id=current_user.id, status='active').first()
+    # 2. Verifica se o usuário tem uma assinatura ativa, buscando a primeira
+    user_subscription = current_user.subscriptions.filter_by(status='active').first()
     
-    # Verifica se o plano freemium já foi usado (está expirado ou cancelado).
-    freemium_used = Subscription.query.filter(
-        Subscription.user_id == current_user.id,
-        db.exists().where(Plan.id == Subscription.plan_id).where(Plan.name == 'Freemium')
+    # Se o usuário já tiver um plano ativo (que não seja Freemium)
+    if user_subscription and not user_subscription.plan.is_free:
+        return redirect(url_for('planos.my_plan'))
+
+    # 3. Lógica para determinar quais planos exibir
+    freemium_plan = Plan.query.filter_by(is_free=True).first()
+    premium_plan = Plan.query.filter_by(is_free=False).first()
+    
+    plans_to_display = []
+    
+    # Adiciona o plano Premium sempre
+    if premium_plan:
+        plans_to_display.append(premium_plan)
+        
+    # Verifica se o Freemium já foi assinado.
+    # Se a assinatura freemium existe (ativa, expirada ou cancelada), não exibe a opção novamente.
+    freemium_subscription_exists = Subscription.query.filter_by(
+        user_id=current_user.id, 
+        plan_id=freemium_plan.id
     ).first()
     
-    # Carrega os planos Fremium e Premium.
-    plans = Plan.query.filter(Plan.name.in_(['Freemium', 'Plano Premium'])).order_by(Plan.price.asc()).all()
+    if freemium_plan and not freemium_subscription_exists:
+        plans_to_display.append(freemium_plan)
+
+    return render_template('planos/choose.html', plans=plans_to_display)
+
+@planos_bp.route('/subscribe_freemium', methods=['POST'])
+@login_required
+def subscribe_freemium():
+    """
+    Processa a assinatura do plano Freemium.
+    """
+    freemium_plan = Plan.query.filter_by(is_free=True).first()
+    if not freemium_plan:
+        flash('Plano gratuito não encontrado.', 'danger')
+        return redirect(url_for('planos.choose'))
+
+    # Impede que o usuário assine o Freemium mais de uma vez.
+    if Subscription.query.filter_by(user_id=current_user.id, plan_id=freemium_plan.id).first():
+        flash('Você já utilizou o seu período gratuito. Por favor, escolha um plano pago.', 'warning')
+        return redirect(url_for('planos.choose'))
+
+    # Cria a nova assinatura
+    new_subscription = Subscription(
+        user_id=current_user.id,
+        plan_id=freemium_plan.id,
+        status='active',
+        start_date=datetime.utcnow(),
+        end_date=datetime.utcnow() + timedelta(days=freemium_plan.duration_days)
+    )
+    db.session.add(new_subscription)
+    db.session.commit()
     
-    # Se o plano freemium já foi usado, remove-o da lista para que não seja exibido novamente.
-    if freemium_used and freemium_used.status != 'active':
-        plans = [p for p in plans if p.name != 'Freemium']
-    
-    # Se o usuário já tem um plano pago ativo, redireciona para o dashboard.
-    if active_subscription and active_subscription.plan.name != 'Freemium':
-        return redirect(url_for('dashboard.index'))
-    
-    return render_template('planos/choose.html', plans=plans, active_subscription=active_subscription)
+    flash('Seu plano gratuito foi ativado! Aproveite os 15 dias.', 'success')
+    return redirect(url_for('dashboard.home'))
+
+@planos_bp.route('/my')
+@login_required
+def my_plan():
+    """
+    Exibe o plano de assinatura atual do usuário logado.
+    """
+    user_subscription = Subscription.query.filter_by(user_id=current_user.id).order_by(db.desc(Subscription.start_date)).first()
+    return render_template('planos/my_plan.html', subscription=user_subscription)
 
 @planos_bp.route('/checkout/<int:plan_id>')
 @login_required
 def checkout(plan_id):
     """
-    Rota para iniciar o checkout de um plano de assinatura.
-    Redireciona para o link de checkout da Kirvano ou ativa o plano Freemium.
+    Redireciona o usuário para a página de checkout da Kirvano.
     """
     plan = Plan.query.get_or_404(plan_id)
     
-    # Verifica se o usuário já tem um plano ativo.
-    existing_subscription = Subscription.query.filter_by(user_id=current_user.id, status='active').first()
-    if existing_subscription:
-        flash(f'Você já tem uma assinatura ativa ({existing_subscription.plan.name}).', 'info')
-        return redirect(url_for('planos.choose_plan'))
-    
-    if plan.name == 'Freemium':
-        # Verifica se o usuário já usou o plano Freemium alguma vez.
-        freemium_history = Subscription.query.filter_by(user_id=current_user.id, plan_id=plan.id).first()
-        if freemium_history:
-            flash('Você já usou seu período de teste do plano Freemium. Por favor, assine o plano Premium para continuar.', 'warning')
-            return redirect(url_for('planos.choose_plan'))
-        
-        # Cria e ativa a assinatura do plano Freemium.
-        new_subscription = Subscription(
-            user_id=current_user.id,
-            plan_id=plan.id,
-            status='active',
-            start_date=datetime.utcnow(),
-            end_date=datetime.utcnow() + timedelta(days=plan.duration_days)
-        )
-        db.session.add(new_subscription)
-        db.session.commit()
-        
-        flash('Plano Freemium ativado com sucesso!', 'success')
-        return redirect(url_for('dashboard.index'))
+    if plan.is_free:
+        # Se por algum motivo o checkout for chamado com o plano freemium
+        return redirect(url_for('planos.subscribe_freemium'))
 
-    if not plan.kirvano_checkout_url:
+    kirvano_checkout_url = plan.kirvano_checkout_url
+    
+    if not kirvano_checkout_url:
         flash('O plano selecionado não tem um link de checkout Kirvano configurado.', 'danger')
-        return redirect(url_for('planos.choose_plan'))
-    
-    # Adiciona parâmetros de rastreamento e dados do cliente ao URL da Kirvano.
-    kirvano_url = f"{plan.kirvano_checkout_url}?customer_email={current_user.email}&user_id={current_user.id}"
-    return redirect(kirvano_url)
+        return redirect(url_for('planos.choose'))
 
-@planos_bp.route('/cancel')
-@login_required
-def cancel_plan():
+    # Adiciona o email do usuário na URL de checkout para preenchimento automático
+    redirect_url = f"{kirvano_checkout_url}?customer_email={current_user.email}&user_id={current_user.id}"
+    
+    return redirect(redirect_url)
+
+@planos_bp.route('/payment-feedback')
+def payment_feedback():
     """
-    Rota para o usuário cancelar sua assinatura.
+    Exibe uma mensagem ao usuário após o pagamento.
     """
-    # Lógica de cancelamento (a ser implementada).
-    pass
+    status = request.args.get('status')
+    
+    if status == 'approved':
+        flash('Pagamento aprovado! Sua assinatura será ativada em breve.', 'success')
+    elif status == 'pending':
+        flash('Seu pagamento está pendente. A ativação ocorrerá em breve.', 'info')
+    else:
+        flash('O pagamento falhou. Por favor, tente novamente.', 'danger')
+        
+    return redirect(url_for('planos.my_plan'))
