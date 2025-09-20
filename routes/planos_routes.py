@@ -74,7 +74,9 @@ def subscribe_freemium():
     db.session.commit()
     
     flash('Seu plano gratuito foi ativado! Aproveite os 15 dias.', 'success')
-    return redirect(url_for('dashboard.home'))
+    
+    # CORREÇÃO: Altera 'dashboard.home' para 'dashboard.index'
+    return redirect(url_for('dashboard.index'))
 
 @planos_bp.route('/my')
 @login_required
