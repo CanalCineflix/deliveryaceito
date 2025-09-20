@@ -46,7 +46,7 @@ from routes.cardapio_routes import cardapio_bp
 from routes.produtos_routes import produtos_bp
 from routes.payments_routes import payments_bp
 from routes.blocked_routes import blocked_bp
-from routes.webhook_routes import webhook_bp   # 🔥 novo
+from webhooks_bp import webhooks_bp  # 🔥 novo
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
