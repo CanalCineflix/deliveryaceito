@@ -4,32 +4,27 @@
 set -o errexit
 
 # Define a variável de ambiente PYTHONPATH para incluir o diretório src
-# Isso permite que o Python encontre o pacote 'rotas'
 export PYTHONPATH=/opt/render/project/src:$PYTHONPATH
 
 # Instala as dependências do projeto usando pip
 pip install -r requirements.txt
 
-# Limpa completamente o banco de dados.
-# Isso garante que não haverá conflitos com migrações antigas.
+# Limpa o banco de dados. Isso pode ser agressivo.
+# Se você quiser manter os dados em deploys subsequentes, remova esta linha.
 psql $DATABASE_URL -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 
-# Remove o diretório de migrações para evitar conflitos de histórico
+# Remove o diretório de migrações (se existir) para evitar conflitos de histórico
 rm -rf migrations
 
-# Inicia as migrações, criando a pasta 'migrations'
+# Inicia as migrações, cria a pasta 'migrations'
 flask db init
 
-# Cria a migração inicial com base nos modelos atuais.
+# Cria a migração inicial (se houver alterações nos modelos)
 flask db migrate -m "Initial migration"
 
 # Aplica as migrações no banco de dados.
 flask db upgrade
 
-# Roda o script para criar os planos iniciais no banco de dados
-python create_plans.py
-
-python run.py db upgrade
-python run.py db migrate
+# Roda o comando para criar os planos no banco de dados.
+# Esta é a etapa crucial que popula a URL de checkout.
 flask create_plans
-python run.py
