@@ -27,7 +27,7 @@ def initdb_command(drop):
 def create_plans_command():
     """Cria os planos Freemium e Premium se eles não existirem."""
     with app.app_context():
-        # Verifica e cria o Plano Gratuito (Freemium)
+        # Verifica e cria/atualiza o Plano Gratuito (Freemium)
         free_plan = Plan.query.filter_by(name='Plano Gratuito').first()
         if not free_plan:
             free_plan = Plan(
@@ -39,14 +39,17 @@ def create_plans_command():
             )
             db.session.add(free_plan)
             click.echo('Plano Gratuito criado.')
-            
-        # Verifica e cria o Plano Premium
+        else:
+            free_plan.is_free = True
+            click.echo('Plano Gratuito atualizado.')
+
+        # Verifica e cria/atualiza o Plano Premium
         premium_plan = Plan.query.filter_by(name='Plano Premium').first()
         if not premium_plan:
             premium_plan = Plan(
                 name='Plano Premium',
                 price=49.90,
-                duration_days=30,  # Duração de um mês
+                duration_days=30,
                 description='Recursos completos',
                 is_free=False,
                 kirvano_checkout_url='https://pay.kirvano.com/7344c061-5d52-49c6-8989-ab73b215687f'
@@ -56,14 +59,11 @@ def create_plans_command():
         else:
             # Se o plano já existe, apenas atualiza a URL de checkout
             premium_plan.kirvano_checkout_url = 'https://pay.kirvano.com/7344c061-5d52-49c6-8989-ab73b215687f'
+            premium_plan.is_free = False
             click.echo('URL do Plano Premium atualizada.')
             
         db.session.commit()
         click.echo('Planos atualizados com sucesso.')
 
-
 if __name__ == '__main__':
-    # Você pode rodar a aplicação com `flask run` agora,
-    # já que a maioria das funcionalidades está nos comandos CLI.
-    # No entanto, a forma abaixo também funciona.
     app.run(debug=True, host='0.0.0.0', port=5000)
