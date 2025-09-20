@@ -1,3 +1,4 @@
+import os
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
@@ -35,8 +36,8 @@ def register():
             logging.info(f"User {new_user.email} registered successfully.")
             
             login_user(new_user)
-            # Redirecionamento para a página de escolha de planos
-            return redirect(url_for('planos.choose_plan'))
+            # CORREÇÃO: Altera 'planos.choose_plan' para 'planos.choose'
+            return redirect(url_for('planos.choose'))
             
         except IntegrityError:
             db.session.rollback()
