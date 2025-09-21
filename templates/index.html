@@ -5,20 +5,15 @@
 {% block head %}
     {{ super() }}
     <style>
-        /* Cores e estilos personalizados para as seções */
-        .bg-purple {
-            background-color: #6a0dad; /* Roxo escuro */
-            color: white; /* Cor do texto para garantir legibilidade */
+        /* Cor personalizada para o roxo */
+        .bg-roxo {
+            background-color: #6a0dad;
         }
-        .neon-border {
-            box-shadow: 0 0 15px 5px #a140f0; /* Efeito de brilho neon */
-        }
-        /* Ajuste de cor de texto para os cartões dentro das seções roxas */
-        .bg-purple .card-text,
-        .bg-purple .card-title,
-        .bg-purple .text-muted,
-        .bg-purple .fw-bold {
-            color: #333 !important; /* Retorna a cor do texto para escuro nos cartões */
+
+        /* Efeito de borda neon para o vídeo */
+        .border-neon {
+            border: 4px solid #a140f0 !important;
+            box-shadow: 0 0 20px rgba(161, 64, 240, 0.8);
         }
     </style>
 {% endblock %}
@@ -52,7 +47,7 @@
     </div>
 </div>
 
-<div class="bg-purple text-white py-5">
+<div class="bg-roxo py-5 text-white">
     <div class="container">
         <div class="row">
             <div class="col-12 text-center mb-5">
@@ -63,7 +58,7 @@
     
         <div class="row g-4">
             <div class="col-md-6 col-lg-4">
-                <div class="card h-100 text-center">
+                <div class="card h-100 text-center shadow-sm">
                     <div class="card-body">
                         <div class="mb-3">
                             <i class="bi bi-speedometer2 display-4 text-primary"></i>
@@ -75,7 +70,7 @@
             </div>
         
             <div class="col-md-6 col-lg-4">
-                <div class="card h-100 text-center">
+                <div class="card h-100 text-center shadow-sm">
                     <div class="card-body">
                         <div class="mb-3">
                             <i class="bi bi-receipt display-4 text-success"></i>
@@ -87,7 +82,7 @@
             </div>
         
             <div class="col-md-6 col-lg-4">
-                <div class="card h-100 text-center">
+                <div class="card h-100 text-center shadow-sm">
                     <div class="card-body">
                         <div class="mb-3">
                             <i class="bi bi-cash-stack display-4 text-warning"></i>
@@ -99,7 +94,7 @@
             </div>
         
             <div class="col-md-6 col-lg-4">
-                <div class="card h-100 text-center">
+                <div class="card h-100 text-center shadow-sm">
                     <div class="card-body">
                         <div class="mb-3">
                             <i class="bi bi-graph-up display-4 text-info"></i>
@@ -111,7 +106,7 @@
             </div>
         
             <div class="col-md-6 col-lg-4">
-                <div class="card h-100 text-center">
+                <div class="card h-100 text-center shadow-sm">
                     <div class="card-body">
                         <div class="mb-3">
                             <i class="bi bi-phone display-4 text-danger"></i>
@@ -123,7 +118,7 @@
             </div>
         
             <div class="col-md-6 col-lg-4">
-                <div class="card h-100 text-center">
+                <div class="card h-100 text-center shadow-sm">
                     <div class="card-body">
                         <div class="mb-3">
                             <i class="bi bi-shield-check display-4 text-secondary"></i>
@@ -147,7 +142,7 @@
                 <p class="lead text-muted">Assista nosso vídeo e entenda como é simples gerenciar seu negócio com o DeliveryAceito.</p>
             </div>
             <div class="col-12 col-lg-8 offset-lg-2">
-                <div class="ratio ratio-16x9 rounded neon-border"> {# Borda neon adicionada aqui #}
+                <div class="ratio ratio-16x9 rounded border-neon"> {# Borda neon adicionada aqui #}
                     <iframe 
                         src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" 
                         title="Como Funciona o DeliveryAceito" 
@@ -163,7 +158,7 @@
 
 ---
 
-<div class="bg-purple text-white py-5">
+<div class="bg-roxo py-5 text-white">
     <div class="container">
         <div class="row">
             <div class="col-12 text-center mb-5">
