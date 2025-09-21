@@ -2,8 +2,28 @@
 
 {% block title %}DeliveryAceito - Sistema de Delivery Profissional{% endblock %}
 
+{% block head %}
+    {{ super() }}
+    <style>
+        /* Cores e estilos personalizados para as seções */
+        .bg-purple {
+            background-color: #6a0dad; /* Roxo escuro */
+            color: white; /* Cor do texto para garantir legibilidade */
+        }
+        .neon-border {
+            box-shadow: 0 0 15px 5px #a140f0; /* Efeito de brilho neon */
+        }
+        /* Ajuste de cor de texto para os cartões dentro das seções roxas */
+        .bg-purple .card-text,
+        .bg-purple .card-title,
+        .bg-purple .text-muted,
+        .bg-purple .fw-bold {
+            color: #333 !important; /* Retorna a cor do texto para escuro nos cartões */
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<!-- Hero Section -->
 <div class="bg-light">
     <div class="container py-5">
         <div class="row align-items-center">
@@ -32,83 +52,85 @@
     </div>
 </div>
 
-<div class="container py-5">
-    <div class="row">
-        <div class="col-12 text-center mb-5">
-            <h2 class="h1 fw-bold">Funcionalidades Completas</h2>
-            <p class="lead text-muted">Tudo que você precisa para gerenciar seu negócio</p>
+<div class="bg-purple text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="h1 fw-bold">Funcionalidades Completas</h2>
+                <p class="lead text-white-50">Tudo que você precisa para gerenciar seu negócio</p>
+            </div>
         </div>
-    </div>
     
-    <div class="row g-4">
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 text-center">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <i class="bi bi-speedometer2 display-4 text-primary"></i>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-speedometer2 display-4 text-primary"></i>
+                        </div>
+                        <h5 class="card-title">Dashboard Completo</h5>
+                        <p class="card-text">Visualize suas vendas, pedidos do dia, ticket médio e produtos mais vendidos em tempo real.</p>
                     </div>
-                    <h5 class="card-title">Dashboard Completo</h5>
-                    <p class="card-text">Visualize suas vendas, pedidos do dia, ticket médio e produtos mais vendidos em tempo real.</p>
                 </div>
             </div>
-        </div>
         
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 text-center">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <i class="bi bi-receipt display-4 text-success"></i>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-receipt display-4 text-success"></i>
+                        </div>
+                        <h5 class="card-title">Gestão de Pedidos</h5>
+                        <p class="card-text">Controle todos os pedidos em andamento, histórico de vendas e pedidos cancelados.</p>
                     </div>
-                    <h5 class="card-title">Gestão de Pedidos</h5>
-                    <p class="card-text">Controle todos os pedidos em andamento, histórico de vendas e pedidos cancelados.</p>
                 </div>
             </div>
-        </div>
         
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 text-center">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <i class="bi bi-cash-stack display-4 text-warning"></i>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-cash-stack display-4 text-warning"></i>
+                        </div>
+                        <h5 class="card-title">Controle de Caixa</h5>
+                        <p class="card-text">Abertura, fechamento e histórico completo de todas as movimentações financeiras.</p>
                     </div>
-                    <h5 class="card-title">Controle de Caixa</h5>
-                    <p class="card-text">Abertura, fechamento e histórico completo de todas as movimentações financeiras.</p>
                 </div>
             </div>
-        </div>
         
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 text-center">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <i class="bi bi-graph-up display-4 text-info"></i>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-graph-up display-4 text-info"></i>
+                        </div>
+                        <h5 class="card-title">Relatórios Avançados</h5>
+                        <p class="card-text">Relatórios de vendas, produtos e financeiro com exportação para CSV.</p>
                     </div>
-                    <h5 class="card-title">Relatórios Avançados</h5>
-                    <p class="card-text">Relatórios de vendas, produtos e financeiro com exportação para CSV.</p>
                 </div>
             </div>
-        </div>
         
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 text-center">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <i class="bi bi-phone display-4 text-danger"></i>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-phone display-4 text-danger"></i>
+                        </div>
+                        <h5 class="card-title">Design Responsivo</h5>
+                        <p class="card-text">Interface moderna que funciona perfeitamente em computadores, tablets e celulares.</p>
                     </div>
-                    <h5 class="card-title">Design Responsivo</h5>
-                    <p class="card-text">Interface moderna que funciona perfeitamente em computadores, tablets e celulares.</p>
                 </div>
             </div>
-        </div>
         
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 text-center">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <i class="bi bi-shield-check display-4 text-secondary"></i>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-shield-check display-4 text-secondary"></i>
+                        </div>
+                        <h5 class="card-title">Seguro e Confiável</h5>
+                        <p class="card-text">Sistema seguro com autenticação robusta e backup automático dos seus dados.</p>
                     </div>
-                    <h5 class="card-title">Seguro e Confiável</h5>
-                    <p class="card-text">Sistema seguro com autenticação robusta e backup automático dos seus dados.</p>
                 </div>
             </div>
         </div>
@@ -117,15 +139,23 @@
 
 ---
 
-<div class="container py-5">
-    <div class="row">
-        <div class="col-12 text-center mb-5">
-            <h2 class="h1 fw-bold">Como funciona</h2>
-            <p class="lead text-muted">Assista nosso vídeo e entenda como é simples gerenciar seu negócio com o DeliveryAceito.</p>
-        </div>
-        <div class="col-12 col-lg-8 offset-lg-2">
-            <div class="ratio ratio-16x9 shadow-lg rounded">
-                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" title="Como Funciona o DeliveryAceito" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<div class="bg-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="h1 fw-bold">Como funciona</h2>
+                <p class="lead text-muted">Assista nosso vídeo e entenda como é simples gerenciar seu negócio com o DeliveryAceito.</p>
+            </div>
+            <div class="col-12 col-lg-8 offset-lg-2">
+                <div class="ratio ratio-16x9 rounded neon-border"> {# Borda neon adicionada aqui #}
+                    <iframe 
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" 
+                        title="Como Funciona o DeliveryAceito" 
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
             </div>
         </div>
     </div>
@@ -133,18 +163,18 @@
 
 ---
 
-<div class="bg-light py-5">
+<div class="bg-purple text-white py-5">
     <div class="container">
         <div class="row">
             <div class="col-12 text-center mb-5">
                 <h2 class="h1 fw-bold">O que nossos clientes dizem</h2>
-                <p class="lead text-muted">Avaliações de quem usa e aprova o DeliveryAceito</p>
+                <p class="lead text-white-50">Avaliações de quem usa e aprova o DeliveryAceito</p>
             </div>
         </div>
-        
+    
         <div class="row g-4 justify-content-center">
             <div class="col-md-6 col-lg-4">
-                <div class="card h-100 p-4">
+                <div class="card h-100 p-4 shadow-sm">
                     <div class="d-flex justify-content-center text-warning mb-3">
                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                     </div>
@@ -156,7 +186,7 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="card h-100 p-4">
+                <div class="card h-100 p-4 shadow-sm">
                     <div class="d-flex justify-content-center text-warning mb-3">
                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                     </div>
@@ -168,7 +198,7 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="card h-100 p-4">
+                <div class="card h-100 p-4 shadow-sm">
                     <div class="d-flex justify-content-center text-warning mb-3">
                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                     </div>
@@ -180,7 +210,7 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="card h-100 p-4">
+                <div class="card h-100 p-4 shadow-sm">
                     <div class="d-flex justify-content-center text-warning mb-3">
                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                     </div>
@@ -192,7 +222,7 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="card h-100 p-4">
+                <div class="card h-100 p-4 shadow-sm">
                     <div class="d-flex justify-content-center text-warning mb-3">
                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                     </div>
@@ -204,7 +234,7 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="card h-100 p-4">
+                <div class="card h-100 p-4 shadow-sm">
                     <div class="d-flex justify-content-center text-warning mb-3">
                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                     </div>
@@ -219,7 +249,7 @@
     </div>
 </div>
 
-<div class="bg-light py-5">
+<div class="bg-white py-5">
     <div class="container">
         <div class="row">
             <div class="col-12 text-center mb-5">
@@ -227,10 +257,10 @@
                 <p class="lead text-muted">Escolha o plano ideal para o seu negócio</p>
             </div>
         </div>
-        
+    
         <div class="row justify-content-center g-4">
             <div class="col-lg-4">
-                <div class="card">
+                <div class="card shadow">
                     <div class="card-body text-center p-4">
                         <h4 class="card-title text-primary">Freemium</h4>
                         <div class="display-6 fw-bold text-success mb-3">
@@ -249,9 +279,9 @@
                     </div>
                 </div>
             </div>
-            
+        
             <div class="col-lg-4">
-                <div class="card border-primary">
+                <div class="card border-primary shadow">
                     <div class="card-header bg-primary text-white text-center">
                         <small>MAIS POPULAR</small>
                     </div>
