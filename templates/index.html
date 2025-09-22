@@ -15,40 +15,41 @@
 
 {% block content %}
  <!-- Hero Section -->
-    <div class="bg-white">
-        <div class="container mx-auto px-4 py-16 lg:py-24">
-            <div class="flex flex-col lg:flex-row items-center gap-12">
-                <div class="lg:w-1/2 text-center lg:text-left">
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-4 leading-tight">
-                        Gerencie seu delivery com <span class="text-secondary">DeliveryAceito</span>
-                    </h1>
-                    <p class="text-lg text-gray-600 mb-8">
-                        Sistema completo para restaurantes e lanchonetes. Controle pedidos, caixa, relatórios e muito mais em uma plataforma moderna e intuitiva.
-                    </p>
-                    <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-                        <a href="#" class="bg-primary text-white py-3 px-8 rounded-full font-semibold shadow-lg hover:bg-indigo-700 transition duration-300">
-                            <i class="bi bi-rocket-takeoff me-2"></i> Começar Grátis
-                        </a>
-                        <a href="#" class="border border-primary text-primary py-3 px-8 rounded-full font-semibold hover:bg-primary hover:text-white transition duration-300">
-                            <i class="bi bi-box-arrow-in-right me-2"></i> Fazer Login
-                        </a>
-                    </div>
+   <div class="bg-light">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold text-primary mb-4">
+                    Gerencie seu delivery com <span class="text-secondary">DeliveryAceito</span>
+                </h1>
+                <p class="lead mb-4">
+                    Sistema completo para restaurantes e lanchonetes. Controle pedidos, caixa, relatórios e muito mais em uma plataforma moderna e intuitiva.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4">
+                        <i class="bi bi-rocket-takeoff"></i> Começar Grátis
+                    </a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg px-4">
+                        <i class="bi bi-box-arrow-in-right"></i> Fazer Login
+                    </a>
                 </div>
-                <div class="lg:w-1/2 text-center lg:text-right">
-                    <i class="bi bi-laptop text-9xl text-primary"></i>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <i class="bi bi-laptop display-1 text-primary"></i>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-<div style="background-color: #6a0dad; color: white;" class="py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center mb-5">
-                <h2 class="h1 fw-bold">Funcionalidades Completas</h2>
-                <p class="lead text-white-50">Tudo que você precisa para gerenciar seu negócio</p>
+<!-- Features Section -->
+    <div class="bg-[#4F46E5] text-white py-16 lg:py-24">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Funcionalidades Completas</h2>
+                <p class="text-lg text-gray-300">Tudo que você precisa para gerenciar seu negócio</p>
             </div>
-        </div>
     
         <div class="row g-4">
             <div class="col-md-6 col-lg-4">
