@@ -1,366 +1,361 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DeliveryAceito - Sistema de Delivery Profissional</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#A140F0',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
         }
-        /* Efeito de borda neon para o vídeo */
+
+        /* Neon border effect for the video */
         .border-neon {
             border: 4px solid #4F46E5 !important;
-            box-shadow: 0 0 20px rgba(79, 70, 229, 0.8);
-        }
-        .text-purple-dark {
-            color: #3f35b2;
-        }
-        .bg-purple-light {
-            background-color: #6a0dad;
+            box-shadow: 0 0 20px rgba(161, 64, 240, 0.8);
         }
     </style>
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
-<body>
+<body class="bg-gray-100">
 
-<!-- Hero Section -->
-<div class="bg-gray-100">
-    <div class="container mx-auto py-16 px-4">
-        <div class="flex flex-col lg:flex-row items-center">
-            <div class="lg:w-1/2">
-                <h1 class="text-4xl lg:text-5xl font-bold text-[#4F46E5] mb-4">
-                    Gerencie seu delivery com <span class="text-purple-dark">DeliveryAceito</span>
-                </h1>
-                <p class="text-lg text-gray-700 mb-6">
-                    Sistema completo para restaurantes e lanchonetes. Controle pedidos, caixa, relatórios e muito mais em uma plataforma moderna e intuitiva.
-                </p>
-                <div class="flex gap-3">
-                    <a href="#" class="inline-flex items-center justify-center rounded-lg bg-[#4F46E5] px-6 py-3 text-lg font-medium text-white transition-colors hover:bg-indigo-700">
-                        <i class="bi bi-rocket-takeoff mr-2"></i> Começar Grátis
-                    </a>
-                    <a href="#" class="inline-flex items-center justify-center rounded-lg border-2 border-[#4F46E5] px-6 py-3 text-lg font-medium text-[#4F46E5] transition-colors hover:bg-[#4F46E5] hover:text-white">
-                        <i class="bi bi-box-arrow-in-right mr-2"></i> Fazer Login
-                    </a>
+    <!-- Hero Section -->
+    <div class="bg-white">
+        <div class="container mx-auto px-4 py-16 lg:py-24">
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <div class="lg:w-1/2 text-center lg:text-left">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-4 leading-tight">
+                        Gerencie seu delivery com <span class="text-secondary">DeliveryAceito</span>
+                    </h1>
+                    <p class="text-lg text-gray-600 mb-8">
+                        Sistema completo para restaurantes e lanchonetes. Controle pedidos, caixa, relatórios e muito mais em uma plataforma moderna e intuitiva.
+                    </p>
+                    <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+                        <a href="#" class="bg-primary text-white py-3 px-8 rounded-full font-semibold shadow-lg hover:bg-indigo-700 transition duration-300">
+                            <i class="bi bi-rocket-takeoff me-2"></i> Começar Grátis
+                        </a>
+                        <a href="#" class="border border-primary text-primary py-3 px-8 rounded-full font-semibold hover:bg-primary hover:text-white transition duration-300">
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Fazer Login
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="lg:w-1/2 mt-8 lg:mt-0 flex justify-center">
-                <i class="bi bi-laptop text-[10rem] text-[#4F46E5]"></i>
+                <div class="lg:w-1/2 text-center lg:text-right">
+                    <i class="bi bi-laptop text-9xl text-primary"></i>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Features Section -->
-    <div class="bg-[#4F46E5] text-white py-16">
+    <!-- Features Section -->
+    <div class="bg-[#6a0dad] text-white py-16 lg:py-24">
         <div class="container mx-auto px-4">
             <div class="text-center mb-12">
-                <h2 class="text-4xl lg:text-5xl font-bold">Funcionalidades Completas</h2>
-                <p class="text-lg text-white/70 mt-2">Tudo que você precisa para gerenciar seu negócio</p>
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Funcionalidades Completas</h2>
+                <p class="text-lg text-gray-300">Tudo que você precisa para gerenciar seu negócio</p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="flex flex-col h-full bg-white text-gray-800 rounded-lg shadow-lg p-6 text-center">
+                <!-- Feature 1 -->
+                <div class="bg-white text-gray-800 rounded-lg shadow-xl p-8 text-center h-full">
                     <div class="mb-4">
-                        <i class="bi bi-speedometer2 text-6xl text-[#4F46E5]"></i>
+                        <i class="bi bi-speedometer2 text-5xl text-primary"></i>
                     </div>
-                    <h5 class="text-xl font-semibold">Dashboard Completo</h5>
-                    <p class="mt-2 text-gray-600">Visualize suas vendas, pedidos do dia, ticket médio e produtos mais vendidos em tempo real.</p>
+                    <h5 class="text-xl font-semibold mb-2">Dashboard Completo</h5>
+                    <p class="text-sm text-gray-600">Visualize suas vendas, pedidos do dia, ticket médio e produtos mais vendidos em tempo real.</p>
                 </div>
-                
-                <div class="flex flex-col h-full bg-white text-gray-800 rounded-lg shadow-lg p-6 text-center">
+                <!-- Feature 2 -->
+                <div class="bg-white text-gray-800 rounded-lg shadow-xl p-8 text-center h-full">
                     <div class="mb-4">
-                        <i class="bi bi-receipt text-6xl text-green-500"></i>
+                        <i class="bi bi-receipt text-5xl text-green-500"></i>
                     </div>
-                    <h5 class="text-xl font-semibold">Gestão de Pedidos</h5>
-                    <p class="mt-2 text-gray-600">Controle todos os pedidos em andamento, histórico de vendas e pedidos cancelados.</p>
+                    <h5 class="text-xl font-semibold mb-2">Gestão de Pedidos</h5>
+                    <p class="text-sm text-gray-600">Controle todos os pedidos em andamento, histórico de vendas e pedidos cancelados.</p>
                 </div>
-                
-                <div class="flex flex-col h-full bg-white text-gray-800 rounded-lg shadow-lg p-6 text-center">
+                <!-- Feature 3 -->
+                <div class="bg-white text-gray-800 rounded-lg shadow-xl p-8 text-center h-full">
                     <div class="mb-4">
-                        <i class="bi bi-cash-stack text-6xl text-yellow-500"></i>
+                        <i class="bi bi-cash-stack text-5xl text-yellow-500"></i>
                     </div>
-                    <h5 class="text-xl font-semibold">Controle de Caixa</h5>
-                    <p class="mt-2 text-gray-600">Abertura, fechamento e histórico completo de todas as movimentações financeiras.</p>
+                    <h5 class="text-xl font-semibold mb-2">Controle de Caixa</h5>
+                    <p class="text-sm text-gray-600">Abertura, fechamento e histórico completo de todas as movimentações financeiras.</p>
                 </div>
-                
-                <div class="flex flex-col h-full bg-white text-gray-800 rounded-lg shadow-lg p-6 text-center">
+                <!-- Feature 4 -->
+                <div class="bg-white text-gray-800 rounded-lg shadow-xl p-8 text-center h-full">
                     <div class="mb-4">
-                        <i class="bi bi-graph-up text-6xl text-blue-500"></i>
+                        <i class="bi bi-graph-up text-5xl text-blue-400"></i>
                     </div>
-                    <h5 class="text-xl font-semibold">Relatórios Avançados</h5>
-                    <p class="mt-2 text-gray-600">Relatórios de vendas, produtos e financeiro com exportação para CSV.</p>
+                    <h5 class="text-xl font-semibold mb-2">Relatórios Avançados</h5>
+                    <p class="text-sm text-gray-600">Relatórios de vendas, produtos e financeiro com exportação para CSV.</p>
                 </div>
-                
-                <div class="flex flex-col h-full bg-white text-gray-800 rounded-lg shadow-lg p-6 text-center">
+                <!-- Feature 5 -->
+                <div class="bg-white text-gray-800 rounded-lg shadow-xl p-8 text-center h-full">
                     <div class="mb-4">
-                        <i class="bi bi-phone text-6xl text-red-500"></i>
+                        <i class="bi bi-phone text-5xl text-red-500"></i>
                     </div>
-                    <h5 class="text-xl font-semibold">Design Responsivo</h5>
-                    <p class="mt-2 text-gray-600">Interface moderna que funciona perfeitamente em computadores, tablets e celulares.</p>
+                    <h5 class="text-xl font-semibold mb-2">Design Responsivo</h5>
+                    <p class="text-sm text-gray-600">Interface moderna que funciona perfeitamente em computadores, tablets e celulares.</p>
                 </div>
-                
-                <div class="flex flex-col h-full bg-white text-gray-800 rounded-lg shadow-lg p-6 text-center">
+                <!-- Feature 6 -->
+                <div class="bg-white text-gray-800 rounded-lg shadow-xl p-8 text-center h-full">
                     <div class="mb-4">
-                        <i class="bi bi-shield-check text-6xl text-gray-500"></i>
+                        <i class="bi bi-shield-check text-5xl text-secondary"></i>
                     </div>
-                    <h5 class="text-xl font-semibold">Seguro e Confiável</h5>
-                    <p class="mt-2 text-gray-600">Sistema seguro com autenticação robusta e backup automático dos seus dados.</p>
+                    <h5 class="text-xl font-semibold mb-2">Seguro e Confiável</h5>
+                    <p class="text-sm text-gray-600">Sistema seguro com autenticação robusta e backup automático dos seus dados.</p>
                 </div>
             </div>
         </div>
     </div>
 
-<!-- Video Section -->
-<div class="bg-white py-16">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl lg:text-5xl font-bold text-gray-800">Como funciona</h2>
-            <p class="text-lg text-gray-500 mt-2">Assista nosso vídeo e entenda como é simples gerenciar seu negócio com o DeliveryAceito.</p>
-        </div>
-        <div class="flex justify-center">
-            <div class="w-full lg:w-2/3">
-                <div class="relative w-full h-0 pb-[56.25%] rounded-xl overflow-hidden border-neon">
-                    <iframe 
-                        class="absolute top-0 left-0 w-full h-full"
-                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" 
-                        title="Como Funciona o DeliveryAceito" 
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                    </iframe>
+    <!-- How it Works Section -->
+    <div class="bg-white py-16 lg:py-24">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">Como funciona</h2>
+                <p class="text-lg text-gray-600">Assista nosso vídeo e entenda como é simples gerenciar seu negócio com o DeliveryAceito.</p>
+            </div>
+            <div class="flex justify-center">
+                <div class="w-full lg:w-2/3">
+                    <div class="relative w-full overflow-hidden rounded-lg border-neon pt-[56.25%]">
+                        <iframe 
+                            class="absolute top-0 left-0 w-full h-full"
+                            src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" 
+                            title="Como Funciona o DeliveryAceito" 
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Testimonials Section -->
-<div class="bg-purple-light text-white py-16">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl lg:text-5xl font-bold">O que nossos clientes dizem</h2>
-            <p class="text-lg text-white/70 mt-2">Avaliações de quem usa e aprova o DeliveryAceito</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="flex flex-col h-full bg-white text-gray-800 rounded-lg shadow-lg p-6">
-                <div class="flex justify-center text-yellow-500 mb-3">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                </div>
-                <p class="italic text-gray-600">"Simplesmente o melhor! A plataforma é super intuitiva, e o controle de pedidos me economiza horas todos os dias."</p>
-                <div class="text-center mt-auto pt-4">
-                    <p class="font-bold mb-0">Carlos M.</p>
-                    <p class="text-gray-500 text-sm">Dono de Pizzaria</p>
-                </div>
+    <!-- Testimonials Section -->
+    <div class="bg-[#6a0dad] text-white py-16 lg:py-24">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">O que nossos clientes dizem</h2>
+                <p class="text-lg text-gray-300">Avaliações de quem usa e aprova o DeliveryAceito</p>
             </div>
-            <div class="flex flex-col h-full bg-white text-gray-800 rounded-lg shadow-lg p-6">
-                <div class="flex justify-center text-yellow-500 mb-3">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+                <!-- Testimonial 1 -->
+                <div class="bg-white text-gray-800 rounded-lg shadow-xl p-8 h-full flex flex-col items-center text-center">
+                    <div class="flex justify-center text-yellow-400 mb-4">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="italic text-gray-700 mb-4">"Simplesmente o melhor! A plataforma é super intuitiva, e o controle de pedidos me economiza horas todos os dias."</p>
+                    <div class="mt-auto">
+                        <p class="font-bold mb-0 text-gray-800">Carlos M.</p>
+                        <p class="text-sm text-gray-500">Dono de Pizzaria</p>
+                    </div>
                 </div>
-                <p class="italic text-gray-600">"O DeliveryAceito me ajudou a organizar o balcão e os relatórios. O suporte é rápido e resolve tudo, nota 10!"</p>
-                <div class="text-center mt-auto pt-4">
-                    <p class="font-bold mb-0">Patrícia S.</p>
-                    <p class="text-gray-500 text-sm">Gerente de Lanchonete</p>
+                <!-- Testimonial 2 -->
+                <div class="bg-white text-gray-800 rounded-lg shadow-xl p-8 h-full flex flex-col items-center text-center">
+                    <div class="flex justify-center text-yellow-400 mb-4">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="italic text-gray-700 mb-4">"O DeliveryAceito me ajudou a organizar o balcão e os relatórios. O suporte é rápido e resolve tudo, nota 10!"</p>
+                    <div class="mt-auto">
+                        <p class="font-bold mb-0 text-gray-800">Patrícia S.</p>
+                        <p class="text-sm text-gray-500">Gerente de Lanchonete</p>
+                    </div>
                 </div>
-            </div>
-            <div class="flex flex-col h-full bg-white text-gray-800 rounded-lg shadow-lg p-6">
-                <div class="flex justify-center text-yellow-500 mb-3">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                <!-- Testimonial 3 -->
+                <div class="bg-white text-gray-800 rounded-lg shadow-xl p-8 h-full flex flex-col items-center text-center">
+                    <div class="flex justify-center text-yellow-400 mb-4">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="italic text-gray-700 mb-4">"Nossas vendas aumentaram desde que começamos a usar o sistema. A parte de controle de caixa é a mais útil para o nosso dia a dia."</p>
+                    <div class="mt-auto">
+                        <p class="font-bold mb-0 text-gray-800">Ricardo F.</p>
+                        <p class="text-sm text-gray-500">Dono de Hamburgueria</p>
+                    </div>
                 </div>
-                <p class="italic text-gray-600">"Nossas vendas aumentaram desde que começamos a usar o sistema. A parte de controle de caixa é a mais útil para o nosso dia a dia."</p>
-                <div class="text-center mt-auto pt-4">
-                    <p class="font-bold mb-0">Ricardo F.</p>
-                    <p class="text-gray-500 text-sm">Dono de Hamburgueria</p>
+                 <!-- Testimonial 4 -->
+                <div class="bg-white text-gray-800 rounded-lg shadow-xl p-8 h-full flex flex-col items-center text-center">
+                    <div class="flex justify-center text-yellow-400 mb-4">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="italic text-gray-700 mb-4">"A interface é limpa e fácil de entender. Em poucos cliques, consigo ver todos os relatórios que preciso. Excelente sistema!"</p>
+                    <div class="mt-auto">
+                        <p class="font-bold mb-0 text-gray-800">Mariana P.</p>
+                        <p class="text-sm text-gray-500">Sócia de Restaurante</p>
+                    </div>
                 </div>
-            </div>
-            <div class="flex flex-col h-full bg-white text-gray-800 rounded-lg shadow-lg p-6">
-                <div class="flex justify-center text-yellow-500 mb-3">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                 <!-- Testimonial 5 -->
+                <div class="bg-white text-gray-800 rounded-lg shadow-xl p-8 h-full flex flex-col items-center text-center">
+                    <div class="flex justify-center text-yellow-400 mb-4">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="italic text-gray-700 mb-4">"O DeliveryAceito é essencial para o meu negócio. Acabou a bagunça nos pedidos e o suporte técnico é super atencioso."</p>
+                    <div class="mt-auto">
+                        <p class="font-bold mb-0 text-gray-800">Fernando B.</p>
+                        <p class="text-sm text-gray-500">Gerente de Açaíteria</p>
+                    </div>
                 </div>
-                <p class="italic text-gray-600">"A interface é limpa e fácil de entender. Em poucos cliques, consigo ver todos os relatórios que preciso. Excelente sistema!"</p>
-                <div class="text-center mt-auto pt-4">
-                    <p class="font-bold mb-0">Mariana P.</p>
-                    <p class="text-gray-500 text-sm">Sócia de Restaurante</p>
-                </div>
-            </div>
-            <div class="flex flex-col h-full bg-white text-gray-800 rounded-lg shadow-lg p-6">
-                <div class="flex justify-center text-yellow-500 mb-3">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                </div>
-                <p class="italic text-gray-600">"O DeliveryAceito é essencial para o meu negócio. Acabou a bagunça nos pedidos e o suporte técnico é super atencioso."</p>
-                <div class="text-center mt-auto pt-4">
-                    <p class="font-bold mb-0">Fernando B.</p>
-                    <p class="text-gray-500 text-sm">Gerente de Açaíteria</p>
-                </div>
-            </div>
-            <div class="flex flex-col h-full bg-white text-gray-800 rounded-lg shadow-lg p-6">
-                <div class="flex justify-center text-yellow-500 mb-3">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                </div>
-                <p class="italic text-gray-600">"Recomendo a todos os meus colegas do ramo. A plataforma é completa e, mesmo assim, muito fácil de usar. Os relatórios ajudam a tomar decisões."</p>
-                <div class="text-center mt-auto pt-4">
-                    <p class="font-bold mb-0">Júlia C.</p>
-                    <p class="text-gray-500 text-sm">Dona de Padaria</p>
+                 <!-- Testimonial 6 -->
+                <div class="bg-white text-gray-800 rounded-lg shadow-xl p-8 h-full flex flex-col items-center text-center">
+                    <div class="flex justify-center text-yellow-400 mb-4">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="italic text-gray-700 mb-4">"Recomendo a todos os meus colegas do ramo. A plataforma é completa e, mesmo assim, muito fácil de usar. Os relatórios ajudam a tomar decisões."</p>
+                    <div class="mt-auto">
+                        <p class="font-bold mb-0 text-gray-800">Júlia C.</p>
+                        <p class="text-sm text-gray-500">Dona de Padaria</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Pricing Section -->
-<div class="bg-white py-16">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl lg:text-5xl font-bold text-gray-800">Planos Simples e Transparentes</h2>
-            <p class="text-lg text-gray-500 mt-2">Escolha o plano ideal para o seu negócio</p>
-        </div>
-        
-        <div class="flex flex-col lg:flex-row justify-center items-center gap-8">
-            <div class="w-full lg:w-1/3 max-w-sm">
-                <div class="bg-white rounded-lg shadow-lg p-8 text-center">
-                    <h4 class="text-2xl font-bold text-[#4F46E5]">Freemium</h4>
-                    <div class="text-5xl font-bold text-green-500 my-4">
+    <!-- Pricing Section -->
+    <div class="bg-white py-16 lg:py-24">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">Planos Simples e Transparentes</h2>
+                <p class="text-lg text-gray-600">Escolha o plano ideal para o seu negócio</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 justify-items-center">
+                <!-- Plan 1 -->
+                <div class="bg-white rounded-lg shadow-xl p-8 text-center h-full flex flex-col">
+                    <h4 class="text-2xl font-bold text-primary mb-2">Freemium</h4>
+                    <div class="text-5xl font-bold text-green-500 mb-4">
                         Grátis
-                        <span class="block text-lg font-normal text-gray-500">por 15 dias</span>
+                        <span class="text-base font-normal text-gray-500">por 15 dias</span>
                     </div>
-                    <ul class="list-none text-left space-y-2">
-                        <li class="flex items-center">
-                            <i class="bi bi-check-circle-fill text-green-500 mr-2"></i> Todas as funcionalidades
-                        </li>
-                        <li class="flex items-center">
-                            <i class="bi bi-check-circle-fill text-green-500 mr-2"></i> Pedidos ilimitados
-                        </li>
-                        <li class="flex items-center">
-                            <i class="bi bi-check-circle-fill text-green-500 mr-2"></i> Relatórios completos
-                        </li>
-                        <li class="flex items-center">
-                            <i class="bi bi-check-circle-fill text-green-500 mr-2"></i> Suporte por email
-                        </li>
+                    <ul class="list-none text-left mb-6">
+                        <li class="mb-2 flex items-center"><i class="bi bi-check-circle text-green-500 me-2"></i> Todas as funcionalidades</li>
+                        <li class="mb-2 flex items-center"><i class="bi bi-check-circle text-green-500 me-2"></i> Pedidos ilimitados</li>
+                        <li class="mb-2 flex items-center"><i class="bi bi-check-circle text-green-500 me-2"></i> Relatórios completos</li>
+                        <li class="mb-2 flex items-center"><i class="bi bi-check-circle text-green-500 me-2"></i> Suporte por email</li>
                     </ul>
-                    <a href="#" class="mt-8 block w-full rounded-lg border-2 border-[#4F46E5] px-6 py-3 text-lg font-medium text-[#4F46E5] transition-colors hover:bg-[#4F46E5] hover:text-white">
+                    <a href="#" class="bg-white border border-primary text-primary py-3 px-8 rounded-full font-semibold hover:bg-primary hover:text-white transition duration-300 w-full mt-auto">
                         Começar Teste Grátis
                     </a>
                 </div>
-            </div>
-            
-            <div class="w-full lg:w-1/3 max-w-sm">
-                <div class="bg-white rounded-lg shadow-lg p-8 text-center border-4 border-[#4F46E5] relative">
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#4F46E5] text-white text-xs font-bold rounded-full px-4 py-1">
+
+                <!-- Plan 2 -->
+                <div class="bg-white rounded-lg shadow-xl p-8 text-center h-full flex flex-col border-4 border-primary relative">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-xs px-4 py-1 rounded-full font-semibold">
                         MAIS POPULAR
                     </div>
-                    <h4 class="text-2xl font-bold text-[#4F46E5]">Premium</h4>
-                    <div class="text-5xl font-bold text-[#4F46E5] my-4">
+                    <h4 class="text-2xl font-bold text-primary mb-2">Premium</h4>
+                    <div class="text-5xl font-bold text-primary mb-4">
                         R$ 49,90
-                        <span class="block text-lg font-normal text-gray-500">/mês</span>
+                        <span class="text-base font-normal text-gray-500">/mês</span>
                     </div>
-                    <ul class="list-none text-left space-y-2">
-                        <li class="flex items-center">
-                            <i class="bi bi-check-circle-fill text-green-500 mr-2"></i> Todas as funcionalidades
-                        </li>
-                        <li class="flex items-center">
-                            <i class="bi bi-check-circle-fill text-green-500 mr-2"></i> Pedidos ilimitados
-                        </li>
-                        <li class="flex items-center">
-                            <i class="bi bi-check-circle-fill text-green-500 mr-2"></i> Relatórios avançados
-                        </li>
-                        <li class="flex items-center">
-                            <i class="bi bi-check-circle-fill text-green-500 mr-2"></i> Suporte prioritário
-                        </li>
-                        <li class="flex items-center">
-                            <i class="bi bi-check-circle-fill text-green-500 mr-2"></i> Backup automático
-                        </li>
+                    <ul class="list-none text-left mb-6">
+                        <li class="mb-2 flex items-center"><i class="bi bi-check-circle text-green-500 me-2"></i> Todas as funcionalidades</li>
+                        <li class="mb-2 flex items-center"><i class="bi bi-check-circle text-green-500 me-2"></i> Pedidos ilimitados</li>
+                        <li class="mb-2 flex items-center"><i class="bi bi-check-circle text-green-500 me-2"></i> Relatórios avançados</li>
+                        <li class="mb-2 flex items-center"><i class="bi bi-check-circle text-green-500 me-2"></i> Suporte prioritário</li>
+                        <li class="mb-2 flex items-center"><i class="bi bi-check-circle text-green-500 me-2"></i> Backup automático</li>
                     </ul>
-                    <a href="#" class="mt-8 block w-full rounded-lg bg-[#4F46E5] px-6 py-3 text-lg font-medium text-white transition-colors hover:bg-indigo-700">
+                    <a href="#" class="bg-primary text-white py-3 px-8 rounded-full font-semibold shadow-lg hover:bg-indigo-700 transition duration-300 w-full mt-auto">
                         Assinar Agora
                     </a>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- CTA Section -->
-<div class="bg-white py-16">
-    <div class="container mx-auto px-4">
-        <div class="bg-[#4F46E5] text-white text-center rounded-lg p-12">
-            <h2 class="text-4xl lg:text-5xl font-bold mb-4">Pronto para começar?</h2>
-            <p class="text-lg mb-6">
+    <!-- CTA Section -->
+    <div class="container mx-auto px-4 py-16 lg:py-24">
+        <div class="bg-primary text-white text-center rounded-2xl shadow-xl p-12 lg:p-20">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Pronto para começar?</h2>
+            <p class="text-lg mb-8">
                 Junte-se a centenas de restaurantes que já usam o GetSolution para crescer seus negócios.
             </p>
-            <a href="#" class="inline-flex items-center justify-center rounded-lg bg-white px-8 py-4 text-lg font-medium text-[#4F46E5] transition-colors hover:bg-gray-200">
-                <i class="bi bi-rocket-takeoff mr-2"></i> Criar Conta Grátis
+            <a href="#" class="bg-white text-primary py-4 px-12 rounded-full font-bold shadow-lg hover:bg-gray-200 transition duration-300">
+                <i class="bi bi-rocket-takeoff me-2"></i> Criar Conta Grátis
             </a>
         </div>
     </div>
-</div>
 
-<!-- Footer -->
-<footer class="bg-gray-900 text-gray-400 py-12 mt-12">
-    <div class="container mx-auto px-4">
-        <div class="flex flex-col md:flex-row justify-between mb-8 border-b border-gray-700 pb-8">
-            <div class="mb-6 md:mb-0">
-                <h4 class="text-2xl font-bold text-[#4F46E5]">DeliveryAceito</h4>
-                <p class="text-sm mt-2 text-gray-500">Sistema de delivery e balcão simples, rápido e eficiente para o seu negócio.</p>
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="border-b border-gray-700 pb-8 mb-8 text-center md:text-left">
+                <h4 class="text-primary text-2xl font-bold">DeliveryAceito</h4>
+                <p class="text-gray-400 mt-2">Sistema de delivery e balcão simples, rápido e eficiente para o seu negócio.</p>
             </div>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div>
-                <h5 class="font-bold mb-4 text-gray-300">Suporte e Contato</h5>
-                <ul class="list-none space-y-2">
-                    <li><a href="https://wa.me/xxxxxxxxxxx" class="text-gray-400 hover:text-white transition-colors"><i class="bi bi-whatsapp mr-2"></i> (xx) xxxx-xxxx</a></li>
-                    <li><a href="mailto:contato@seudominio.com" class="text-gray-400 hover:text-white transition-colors"><i class="bi bi-envelope mr-2"></i> contato@seudominio.com</a></li>
-                    <li><span class="text-gray-400"><i class="bi bi-geo-alt mr-2"></i> Joinville - SC</span></li>
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-gray-300">Navegação Rápida</h5>
-                <ul class="list-none space-y-2">
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Como funciona</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Perguntas frequentes (FAQ)</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Central de ajuda</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Conta</a></li>
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-gray-300">Jurídico</h5>
-                <ul class="list-none space-y-2">
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Termos de uso</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Política de privacidade</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Política de cancelamento</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Avisos legais</a></li>
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-gray-300">Extras</h5>
-                <div class="flex gap-4 mb-4">
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors text-2xl"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors text-2xl"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors text-2xl"><i class="bi bi-youtube"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors text-2xl"><i class="bi bi-whatsapp"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors text-2xl"><i class="bi bi-tiktok"></i></a>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div>
+                    <h5 class="font-bold text-gray-400 mb-4">Suporte e Contato</h5>
+                    <ul class="list-none text-sm text-gray-300">
+                        <li class="mb-2"><a href="#" class="hover:underline transition duration-300"><i class="bi bi-whatsapp me-2"></i> (xx) xxxx-xxxx</a></li>
+                        <li class="mb-2"><a href="#" class="hover:underline transition duration-300"><i class="bi bi-envelope me-2"></i> contato@seudominio.com</a></li>
+                        <li class="mb-2 flex items-center"><i class="bi bi-geo-alt me-2"></i> Joinville - SC</li>
+                    </ul>
                 </div>
-                <div class="flex items-center gap-4">
-                    <div class="text-center">
-                        <i class="bi bi-shield-lock-fill text-green-500 text-3xl"></i>
-                        <p class="text-gray-500 text-sm mt-1">SSL Protegido</p>
+                <div>
+                    <h5 class="font-bold text-gray-400 mb-4">Navegação Rápida</h5>
+                    <ul class="list-none text-sm text-gray-300">
+                        <li class="mb-2"><a href="#" class="hover:underline transition duration-300">Como funciona</a></li>
+                        <li class="mb-2"><a href="#" class="hover:underline transition duration-300">Perguntas frequentes (FAQ)</a></li>
+                        <li class="mb-2"><a href="#" class="hover:underline transition duration-300">Central de ajuda</a></li>
+                        <li class="mb-2"><a href="#" class="hover:underline transition duration-300">Conta</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-bold text-gray-400 mb-4">Jurídico</h5>
+                    <ul class="list-none text-sm text-gray-300">
+                        <li class="mb-2"><a href="#" class="hover:underline transition duration-300">Termos de uso</a></li>
+                        <li class="mb-2"><a href="#" class="hover:underline transition duration-300">Política de privacidade</a></li>
+                        <li class="mb-2"><a href="#" class="hover:underline transition duration-300">Política de cancelamento</a></li>
+                        <li class="mb-2"><a href="#" class="hover:underline transition duration-300">Avisos legais</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-bold text-gray-400 mb-4">Extras</h5>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="text-white text-xl hover:text-gray-400 transition duration-300"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-white text-xl hover:text-gray-400 transition duration-300"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-white text-xl hover:text-gray-400 transition duration-300"><i class="bi bi-youtube"></i></a>
+                        <a href="#" class="text-white text-xl hover:text-gray-400 transition duration-300"><i class="bi bi-whatsapp"></i></a>
+                        <a href="#" class="text-white text-xl hover:text-gray-400 transition duration-300"><i class="bi bi-tiktok"></i></a>
                     </div>
-                    <div class="text-center">
-                        <i class="bi bi-credit-card-fill text-blue-500 text-3xl"></i>
-                        <p class="text-gray-500 text-sm mt-1">Pagamento Kirvano</p>
+                    <div class="flex items-center space-x-6">
+                        <div class="text-center">
+                            <i class="bi bi-shield-lock-fill text-green-500 text-3xl"></i>
+                            <p class="text-xs text-gray-400 mt-1">SSL Protegido</p>
+                        </div>
+                        <div class="text-center">
+                            <i class="bi bi-credit-card-fill text-blue-400 text-3xl"></i>
+                            <p class="text-xs text-gray-400 mt-1">Pagamento Kirvano</p>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <div class="text-center text-gray-500 mt-12 pt-8 border-t border-gray-700">
+                <p class="m-0">© 2025 Deliveryaceito - Todos os direitos reservados.</p>
+            </div>
         </div>
-        <div class="text-center text-gray-500 mt-12 pt-8 border-t border-gray-700">
-            <p class="m-0">© 2025 Deliveryaceito - Todos os direitos reservados.</p>
-        </div>
-    </div>
-</footer>
+    </footer>
 
 </body>
 </html>
