@@ -64,8 +64,8 @@
 <!-- Menu Superior -->
 <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
     <div class="container-fluid py-2 px-4 md:px-12">
-        <a class="navbar-brand text-xl font-bold text-primary-dark" href="#">
-            DeliveryAceito
+        <a class="navbar-brand text-xl font-bold text-primary-dark" href="{{ url_for('index') }}">
+           <i class="bi bi-truck"></i>DeliveryAceito
         </a>
         <div class="d-flex gap-3">
             <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary-dark fw-bold rounded-full px-4">
@@ -296,7 +296,7 @@
                             <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Relatórios completos</li>
                             <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Suporte por e-mail</li>
                         </ul>
-                        <a href="#" class="btn btn-outline-primary-dark w-full fw-bold rounded-full py-3">
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary-dark w-full fw-bold rounded-full py-3">
                             Começar Teste Grátis
                         </a>
                     </div>
@@ -321,7 +321,7 @@
                             <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Suporte prioritário</li>
                             <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Backup automático</li>
                         </ul>
-                        <a href="#" class="btn bg-primary-dark text-white w-full fw-bold rounded-full py-3 shadow-lg hover:opacity-90 transition-opacity">
+                        <a href="{{ url_for('auth.register') }}" class="btn bg-primary-dark text-white w-full fw-bold rounded-full py-3 shadow-lg hover:opacity-90 transition-opacity">
                             Assinar Agora
                         </a>
                     </div>
@@ -340,7 +340,7 @@
                 <p class="lead mb-4">
                     Junte-se a centenas de restaurantes que já usam o DeliveryAceito para crescer seus negócios.
                 </p>
-                <a href="#" class="btn btn-light text-primary-dark btn-lg px-6 rounded-full fw-bold shadow-lg hover:opacity-90 transition-opacity">
+                <a href="{{ url_for('auth.register') }}" class="btn btn-light text-primary-dark btn-lg px-6 rounded-full fw-bold shadow-lg hover:opacity-90 transition-opacity">
                     <i class="bi bi-rocket-takeoff me-2"></i> Criar Conta Grátis
                 </a>
             </div>
