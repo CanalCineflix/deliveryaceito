@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central de Ajuda - DeliveryAceito</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .header-bg {
+            background: linear-gradient(90deg, #4F46E5, #9B5DE5);
+        }
+        .text-blue-purple {
+            color: #4F46E5;
+        }
+        .bg-blue-purple {
+            background-color: #4F46E5;
+        }
+        .bg-blue-purple-light {
+            background-color: #9B5DE5;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #4F46E5, #9B5DE5);
+            transition: transform 0.2s ease-in-out;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+        .faq-item {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 200px; /* Ajuste conforme a necessidade do conteúdo */
+            transition: max-height 0.5s ease-in;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Cabeçalho Fixo -->
+    <header class="header-bg text-white shadow-lg fixed top-0 w-full z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">DeliveryAceito</h1>
+            <nav>
+                <a href="#" class="mx-3 hover:text-gray-300">Início</a>
+                <a href="#" class="mx-3 hover:text-gray-300">Planos</a>
+                <a href="#" class="mx-3 hover:text-gray-300">Ajuda</a>
+                <a href="#" class="mx-3 hover:text-gray-300 py-2 px-4 rounded-full border border-white hover:bg-white hover:text-blue-purple transition-all duration-300">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-grow pt-24 pb-12">
+        <div class="container mx-auto px-6">
+            <!-- Título Principal -->
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-extrabold text-blue-purple">Central de Ajuda</h2>
+                <p class="mt-4 text-xl text-gray-600">Encontre as respostas para suas perguntas sobre o DeliveryAceito.</p>
+            </div>
+
+            <!-- Seção de Introdução -->
+            <section class="bg-white p-8 md:p-12 rounded-2xl shadow-lg mb-12 border-l-4 border-blue-purple">
+                <h3 class="text-3xl font-bold text-gray-800 mb-4">Primeiros Passos com o DeliveryAceito</h3>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    O DeliveryAceito foi desenvolvido para ser intuitivo e fácil de usar. Para começar, basta fazer seu cadastro, escolher o plano que melhor se adapta ao seu negócio e começar a utilizar todas as funcionalidades. Destaque para nosso período <span class="font-bold text-blue-purple">Freemium de 15 dias grátis</span>, perfeito para você testar todas as ferramentas sem compromisso!
+                </p>
+            </section>
+
+            <!-- FAQ (Perguntas Frequentes) -->
+            <section>
+                <h3 class="text-3xl font-bold text-gray-800 mb-6 text-center">Perguntas Frequentes (FAQ)</h3>
+
+                <div class="space-y-4 max-w-3xl mx-auto">
+                    <!-- FAQ: Planos e Pagamentos -->
+                    <div class="faq-item bg-white p-6 rounded-xl shadow-md">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xl font-semibold text-gray-700">Planos e Pagamentos</h4>
+                            <span class="faq-icon text-gray-500 text-3xl font-light leading-none">+</span>
+                        </div>
+                        <div class="faq-answer mt-4">
+                            <p class="text-gray-600 mb-2">
+                                <span class="font-bold">Qual o valor do sistema?</span><br>
+                                O primeiro pagamento é de R$19,90 e, em seguida, uma recorrência mensal de R$49,90.
+                            </p>
+                            <p class="text-gray-600 mb-2">
+                                <span class="font-bold">Existe período de teste grátis?</span><br>
+                                Sim, oferecemos um período Freemium de 15 dias com todas as funcionalidades liberadas para você testar.
+                            </p>
+                            <p class="text-gray-600">
+                                <span class="font-bold">Como funciona a cobrança?</span><br>
+                                A cobrança é uma recorrência mensal de R$49,90 para uso por 30 dias.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ: Funcionalidades do Freemium -->
+                    <div class="faq-item bg-white p-6 rounded-xl shadow-md">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xl font-semibold text-gray-700">Funcionalidades do Freemium</h4>
+                            <span class="faq-icon text-gray-500 text-3xl font-light leading-none">+</span>
+                        </div>
+                        <div class="faq-answer mt-4">
+                            <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                <li>Fluxo de caixa (abertura e fechamento)</li>
+                                <li>Controle de produtos cadastrados</li>
+                                <li>Relatórios financeiros e de produtos</li>
+                                <li>Configuração de cardápio (abrir/fechar)</li>
+                                <li>Link exclusivo para compartilhar cardápio pelo WhatsApp</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- FAQ: Assinatura Premium -->
+                    <div class="faq-item bg-white p-6 rounded-xl shadow-md">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xl font-semibold text-gray-700">Assinatura Premium</h4>
+                            <span class="faq-icon text-gray-500 text-3xl font-light leading-none">+</span>
+                        </div>
+                        <div class="faq-answer mt-4">
+                            <p class="text-gray-600">
+                                <span class="font-bold">O que muda em relação ao Freemium?</span><br>
+                                A assinatura Premium garante o uso contínuo das mesmas funcionalidades que você testou no Freemium, renovando-se a cada 30 dias.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ: Cancelamento -->
+                    <div class="faq-item bg-white p-6 rounded-xl shadow-md">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xl font-semibold text-gray-700">Cancelamento</h4>
+                            <span class="faq-icon text-gray-500 text-3xl font-light leading-none">+</span>
+                        </div>
+                        <div class="faq-answer mt-4">
+                            <p class="text-gray-600">
+                                <span class="font-bold">Como cancelar minha assinatura?</span><br>
+                                Para cancelar, basta entrar em contato com nossa equipe de suporte através do WhatsApp ou e-mail.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção de Suporte -->
+            <section class="mt-12 text-center bg-white p-8 md:p-12 rounded-2xl shadow-lg border-l-4 border-blue-purple-light">
+                <h3 class="text-3xl font-bold text-gray-800 mb-4">Ainda precisa de ajuda?</h3>
+                <p class="text-lg text-gray-600 mb-6">
+                    Nossa equipe de suporte está pronta para te ajudar. Entre em contato conosco pelos canais abaixo:
+                </p>
+                <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
+                    <a href="https://wa.me/5599999999999" target="_blank" class="btn-primary text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
+                        📱 WhatsApp
+                    </a>
+                    <a href="mailto:suporte@deliveryaceito.com" class="bg-gray-200 text-gray-800 font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-gray-300 transition-all duration-300">
+                        📧 E-mail: suporte@deliveryaceito.com
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <div class="mb-4">
+                <h4 class="text-lg font-bold">DeliveryAceito – Sistema de Delivery Inteligente</h4>
+            </div>
+            <nav class="flex justify-center space-x-6 mb-4">
+                <a href="#" class="hover:text-blue-purple-light">Início</a>
+                <a href="#" class="hover:text-blue-purple-light">Planos</a>
+                <a href="#" class="hover:text-blue-purple-light">Central de Ajuda</a>
+                <a href="#" class="hover:text-blue-purple-light">Login</a>
+            </nav>
+            <p class="text-sm text-gray-400">Para suporte, entre em contato via WhatsApp ou e-mail.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    // Toggle the active class on the clicked item
+                    item.classList.toggle('active');
+
+                    // If you want only one item to be open at a time, uncomment the code below
+                    // faqItems.forEach(otherItem => {
+                    //     if (otherItem !== item && otherItem.classList.contains('active')) {
+                    //         otherItem.classList.remove('active');
+                    //     }
+                    // });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
