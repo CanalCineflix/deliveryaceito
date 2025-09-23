@@ -3,160 +3,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Imagens com IA</title>
-    <!-- Inclui a biblioteca Tailwind CSS para estilização -->
+    <title>{% block title %}DeliveryAceito - Sistema de Delivery Profissional{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body {
+        /* Fix para remover as bordas brancas padrão do navegador */
+        html, body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
         }
-        .container {
-            max-width: 800px;
+
+        /* Efeito de borda neon para o vídeo */
+        .border-neon {
+            border: 4px solid #4F46E5 !important;
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.8);
         }
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
+
+        /* Estilos adicionais para o card no modo escuro */
+        .card.dark-mode-card {
+            background-color: #1a202c; /* Cor de fundo escura */
+            color: #ffffff; /* Cor do texto claro */
+            border-color: #2d3748; /* Cor da borda escura */
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .card.dark-mode-card .card-title {
+            color: #63b3ed; /* Cor do título para contraste */
+        }
+        .card.dark-mode-card .text-muted {
+            color: #a0aec0 !important; /* Cor do texto mudo */
         }
     </style>
+    {% block head %}{% endblock %}
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+<body class="bg-gray-100">
 
-    <div class="container bg-white p-8 rounded-3xl shadow-2xl w-full flex flex-col items-center">
-        <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">Gerador de Imagens com IA</h1>
-        <p class="text-gray-600 mb-8 text-center">Descreva a imagem que deseja gerar e a IA fará a mágica!</p>
-
-        <div class="w-full flex flex-col md:flex-row gap-4 mb-6">
-            <input type="text" id="promptInput" placeholder="Ex: Um astronauta a tocar guitarra numa praia tropical" class="flex-grow p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
-            <button id="generateBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105">Gerar Imagem</button>
-        </div>
-
-        <div id="imageContainer" class="w-full h-[400px] md:h-[500px] flex items-center justify-center bg-gray-200 rounded-xl overflow-hidden relative shadow-inner">
-            <div id="statusMessage" class="text-gray-500 text-center p-4">
-                A imagem gerada será exibida aqui.
+{% block content %}
+<!-- Hero Section -->
+<div class="bg-light">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold text-primary mb-4">
+                    Gerencie seu delivery com <span class="text-secondary">DeliveryAceito</span>
+                </h1>
+                <p class="lead mb-4">
+                    Sistema completo para restaurantes e lanchonetes. Controle pedidos, caixa, relatórios e muito mais em uma plataforma moderna e intuitiva.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4">
+                        <i class="bi bi-rocket-takeoff"></i> Começar Grátis
+                    </a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg px-4">
+                        <i class="bi bi-box-arrow-in-right"></i> Fazer Login
+                    </a>
+                </div>
             </div>
-            <img id="generatedImage" class="hidden w-full h-full object-contain fade-in" src="" alt="Imagem gerada por IA">
-
-            <!-- Indicador de carregamento -->
-            <div id="loadingIndicator" class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <svg class="animate-spin -ml-1 mr-3 h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <i class="bi bi-laptop display-1 text-primary"></i>
+                </div>
             </div>
-        </div>
-
-        <div id="errorBox" class="hidden mt-6 w-full p-4 bg-red-100 text-red-700 rounded-xl border border-red-200 fade-in">
-            <p id="errorMessage" class="text-sm font-medium"></p>
         </div>
     </div>
+</div>
 
-    <script>
-        // Variáveis de elementos da UI
-        const promptInput = document.getElementById('promptInput');
-        const generateBtn = document.getElementById('generateBtn');
-        const imageContainer = document.getElementById('imageContainer');
-        const statusMessage = document.getElementById('statusMessage');
-        const generatedImage = document.getElementById('generatedImage');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const errorBox = document.getElementById('errorBox');
-        const errorMessage = document.getElementById('errorMessage');
+<!-- Features Section -->
+<div class="bg-[#4F46E5] text-white py-16 lg:py-24">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Funcionalidades Completas</h2>
+            <p class="text-lg text-gray-300">Tudo que você precisa para gerenciar seu negócio</p>
+        </div>
+        <div class="row g-8 text-center">
+            <div class="col-md-6 col-lg-4 mb-8">
+                <div class="mb-3">
+                    <i class="bi bi-speedometer2 display-4 text-primary"></i>
+                </div>
+                <h5 class="fw-bold fs-4 mb-2">Dashboard Completo</h5>
+                <p class="text-gray-300">Visualize suas vendas, pedidos do dia, ticket médio e produtos mais vendidos em tempo real.</p>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-8">
+                <div class="mb-3">
+                    <i class="bi bi-receipt display-4 text-success"></i>
+                </div>
+                <h5 class="fw-bold fs-4 mb-2">Gestão de Pedidos</h5>
+                <p class="text-gray-300">Controle todos os pedidos em andamento, histórico de vendas e pedidos cancelados.</p>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-8">
+                <div class="mb-3">
+                    <i class="bi bi-cash-stack display-4 text-warning"></i>
+                </div>
+                <h5 class="fw-bold fs-4 mb-2">Controle de Caixa</h5>
+                <p class="text-gray-300">Abertura, fechamento e histórico completo de todas as movimentações financeiras.</p>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-8">
+                <div class="mb-3">
+                    <i class="bi bi-graph-up display-4 text-info"></i>
+                </div>
+                <h5 class="fw-bold fs-4 mb-2">Relatórios Avançados</h5>
+                <p class="text-gray-300">Relatórios de vendas, produtos e financeiro com exportação para CSV.</p>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-8">
+                <div class="mb-3">
+                    <i class="bi bi-phone display-4 text-danger"></i>
+                </div>
+                <h5 class="fw-bold fs-4 mb-2">Design Responsivo</h5>
+                <p class="text-gray-300">Interface moderna que funciona perfeitamente em computadores, tablets e celulares.</p>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-8">
+                <div class="mb-3">
+                    <i class="bi bi-shield-check display-4 text-secondary"></i>
+                </div>
+                <h5 class="fw-bold fs-4 mb-2">Seguro e Confiável</h5>
+                <p class="text-gray-300">Sistema seguro com autenticação robusta e backup automático dos seus dados.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-        // Chave da API (deixada em branco como por instrução)
-        const apiKey = "";
-        // URL da API para o modelo de geração de imagens
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+<div style="background-color: white;" class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="h1 fw-bold">Como funciona</h2>
+                <p class="lead text-muted">Assista nosso vídeo e entenda como é simples gerenciar seu negócio com o DeliveryAceito.</p>
+            </div>
+            <div class="col-12 col-lg-8 offset-lg-2">
+                <div class="ratio ratio-16x9 rounded border-neon">
+                    <iframe
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0"
+                        title="Como Funciona o DeliveryAceito"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-        // Função para mostrar a mensagem de erro
-        function showError(message) {
-            errorBox.classList.remove('hidden');
-            errorMessage.textContent = message;
-        }
 
-        // Função para esconder a mensagem de erro
-        function hideError() {
-            errorBox.classList.add('hidden');
-            errorMessage.textContent = '';
-        }
+<!-- Testimonials Section -->
+<div class="bg-[#4F46E5] text-white py-16 lg:py-24">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">O que nossos clientes dizem</h2>
+            <p class="text-lg text-gray-300">Avaliações de quem usa e aprova o DeliveryAceito</p>
+        </div>
+        <div class="row g-8 justify-content-center">
+            <div class="col-md-6 col-lg-4 text-center mb-8">
+                <div class="d-flex justify-content-center text-warning mb-3">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                </div>
+                <p class="fst-italic">"Simplesmente o melhor! A plataforma é super intuitiva, e o controle de pedidos me economiza horas todos os dias."</p>
+                <div class="mt-4">
+                    <p class="fw-bold mb-0">Carlos M.</p>
+                    <p class="text-muted small">Dono de Pizzaria</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 text-center mb-8">
+                <div class="d-flex justify-content-center text-warning mb-3">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                </div>
+                <p class="fst-italic">"O DeliveryAceito me ajudou a organizar o balcão e os relatórios. O suporte é rápido e resolve tudo, nota 10!"</p>
+                <div class="mt-4">
+                    <p class="fw-bold mb-0">Patrícia S.</p>
+                    <p class="text-muted small">Gerente de Lanchonete</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 text-center mb-8">
+                <div class="d-flex justify-content-center text-warning mb-3">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                </div>
+                <p class="fst-italic">"Nossas vendas aumentaram desde que começamos a usar o sistema. A parte de controle de caixa é a mais útil para o nosso dia a dia."</p>
+                <div class="mt-4">
+                    <p class="fw-bold mb-0">Ricardo F.</p>
+                    <p class="text-muted small">Dono de Hamburgueria</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 text-center mb-8">
+                <div class="d-flex justify-content-center text-warning mb-3">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                </div>
+                <p class="fst-italic">"A interface é limpa e fácil de entender. Em poucos cliques, consigo ver todos os relatórios que preciso. Excelente sistema!"</p>
+                <div class="mt-4">
+                    <p class="fw-bold mb-0">Mariana P.</p>
+                    <p class="text-muted small">Sócia de Restaurante</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 text-center mb-8">
+                <div class="d-flex justify-content-center text-warning mb-3">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                </div>
+                <p class="fst-italic">"O DeliveryAceito é essencial para o meu negócio. Acabou a bagunça nos pedidos e o suporte técnico é super atencioso."</p>
+                <div class="mt-4">
+                    <p class="fw-bold mb-0">Fernando B.</p>
+                    <p class="text-muted small">Gerente de Açaíteria</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 text-center mb-8">
+                <div class="d-flex justify-content-center text-warning mb-3">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                </div>
+                <p class="fst-italic">"Recomendo a todos os meus colegas do ramo. A plataforma é completa e, mesmo assim, muito fácil de usar. Os relatórios ajudam a tomar decisões."</p>
+                <div class="mt-4">
+                    <p class="fw-bold mb-0">Júlia C.</p>
+                    <p class="text-muted small">Dona de Padaria</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-        // Lidar com o clique do botão de gerar
-        generateBtn.addEventListener('click', async () => {
-            const prompt = promptInput.value.trim();
-            if (!prompt) {
-                showError("Por favor, digite uma descrição para a imagem.");
-                return;
-            }
+<div style="background-color: white;" class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="h1 fw-bold">Planos Simples e Transparentes</h2>
+                <p class="lead text-muted">Escolha o plano ideal para o seu negócio</p>
+            </div>
+        </div>
+        <div class="row justify-content-center g-8">
+            <div class="col-lg-4 text-center mb-8">
+                <h4 class="text-primary fw-bold">Freemium</h4>
+                <div class="display-6 fw-bold text-success mb-3">
+                    Grátis
+                    <small class="fs-6 text-muted">por 15 dias</small>
+                </div>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Todas as funcionalidades</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Pedidos ilimitados</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Relatórios completos</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Suporte por email</li>
+                </ul>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary w-100 mt-4">
+                    Começar Teste Grátis
+                </a>
+            </div>
+            <div class="col-lg-4 text-center mb-8">
+                <div class="bg-primary text-white py-2 mb-2 rounded-t">
+                    <small>MAIS POPULAR</small>
+                </div>
+                <h4 class="text-primary fw-bold">Premium</h4>
+                <div class="display-6 fw-bold text-primary mb-3">
+                    R$ 49,90
+                    <small class="fs-6 text-muted">/mês</small>
+                </div>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Todas as funcionalidades</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Pedidos ilimitados</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Relatórios avançados</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Suporte prioritário</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Backup automático</li>
+                </ul>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary w-100 mt-4">
+                    Assinar Agora
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
-            // Esconder imagem anterior e mensagem de erro
-            generatedImage.classList.add('hidden');
-            hideError();
-            statusMessage.classList.add('hidden');
-            loadingIndicator.classList.remove('hidden');
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-primary text-white text-center rounded-3xl">
+                <div class="card-body p-5">
+                    <h2 class="h1 fw-bold mb-3">Pronto para começar?</h2>
+                    <p class="lead mb-4">
+                        Junte-se a centenas de restaurantes que já usam o GetSolution para crescer seus negócios.
+                    </p>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg px-5">
+                        <i class="bi bi-rocket-takeoff"></i> Criar Conta Grátis
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-            try {
-                const payload = {
-                    instances: { prompt: prompt },
-                    parameters: { "sampleCount": 1 }
-                };
+<footer class="bg-dark text-white py-5 mt-5">
+    <div class="container">
+        <div class="row mb-4 border-bottom border-secondary pb-4">
+            <div class="col-12 text-center text-md-start">
+                <h4 class="text-primary fw-bold">DeliveryAceito</h4>
+                <p class="text-secondary">Sistema de delivery e balcão simples, rápido e eficiente para o seu negócio.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4 col-lg-3">
+                <h5 class="fw-bold mb-3 text-secondary">Suporte e Contato</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="https://wa.me/xxxxxxxxxxx" class="text-white text-decoration-none"><i class="bi bi-whatsapp me-2"></i> (xx) xxxx-xxxx</a></li>
+                    <li class="mb-2"><a href="mailto:contato@seudominio.com" class="text-white text-decoration-none"><i class="bi bi-envelope me-2"></i> contato@seudominio.com</a></li>
+                    <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> Joinville - SC</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <h5 class="fw-bold mb-3 text-secondary">Navegação Rápida</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Como funciona</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Perguntas frequentes (FAQ)</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Central de ajuda</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Conta</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <h5 class="fw-bold mb-3 text-secondary">Jurídico</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Termos de uso</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Política de privacidade</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Política de cancelamento</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Avisos legais</a></li>
+                </ul>
+            </div>
+            <div class="col-md-12 col-lg-3">
+                <h5 class="fw-bold mb-3 text-secondary">Extras</h5>
+                <div class="d-flex justify-content-start gap-3 mb-3">
+                    <a href="#" class="text-white fs-4"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-white fs-4"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-white fs-4"><i class="bi bi-youtube"></i></a>
+                    <a href="#" class="text-white fs-4"><i class="bi bi-whatsapp"></i></a>
+                    <a href="#" class="text-white fs-4"><i class="bi bi-tiktok"></i></a>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="text-center">
+                        <i class="bi bi-shield-lock-fill text-success fs-2"></i>
+                        <p class="text-muted small m-0">SSL Protegido</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="bi bi-credit-card-fill text-info fs-2"></i>
+                        <p class="text-muted small m-0">Pagamento Kirvano</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12 text-center text-secondary">
+                <p class="m-0">© 2025 Deliveryaceito - Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </div>
+</footer>
 
-                // Realizar a chamada da API com retentativas (exponential backoff)
-                const fetchWithRetry = async (url, options, retries = 3, delay = 1000) => {
-                    for (let i = 0; i < retries; i++) {
-                        try {
-                            const response = await fetch(url, options);
-                            if (response.status === 429) {
-                                if (i < retries - 1) {
-                                    await new Promise(res => setTimeout(res, delay * Math.pow(2, i)));
-                                    continue;
-                                }
-                            }
-                            return response;
-                        } catch (error) {
-                            if (i < retries - 1) {
-                                await new Promise(res => setTimeout(res, delay * Math.pow(2, i)));
-                                continue;
-                            }
-                            throw error;
-                        }
-                    }
-                };
-
-                const response = await fetchWithRetry(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
-                }
-
-                const result = await response.json();
-                const base64Data = result?.predictions?.[0]?.bytesBase64Encoded;
-
-                if (base64Data) {
-                    const imageUrl = `data:image/png;base64,${base64Data}`;
-                    generatedImage.src = imageUrl;
-                    generatedImage.classList.remove('hidden');
-                } else {
-                    showError("Não foi possível gerar a imagem. Por favor, tente novamente.");
-                }
-
-            } catch (error) {
-                console.error('Erro ao gerar imagem:', error);
-                showError(`Ocorreu um erro: ${error.message}`);
-            } finally {
-                loadingIndicator.classList.add('hidden');
-                if (generatedImage.classList.contains('hidden')) {
-                     statusMessage.classList.remove('hidden');
-                }
-            }
-        });
-    </script>
-
+{% endblock %}
 </body>
 </html>
