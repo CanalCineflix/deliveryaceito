@@ -7,6 +7,12 @@ from models import User, Plan, Subscription, Product, Order, OrderItem, CashMove
 # Configura o Flask-Migrate
 migrate = Migrate(app, db)
 
+from flask import render_template
+
+@app.route('/ajuda')
+def ajuda():
+    return render_template('ajuda.html')
+
 # Adiciona os modelos ao shell_context para facilitar o uso no `flask shell`
 @app.shell_context_processor
 def make_shell_context():
