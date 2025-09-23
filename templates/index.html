@@ -1,399 +1,401 @@
+{% extends "base.html" %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}DeliveryAceito - Sistema de Delivery Profissional{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Fix para remover as bordas brancas padrão do navegador */
-        html, body {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DeliveryAceito - Sistema de Delivery Profissional{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Fix para remover as bordas brancas padrão do navegador */
+        html, body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
-        /* Efeito de borda neon para o vídeo */
-        .border-neon {
-            border: 4px solid #4F46E5 !important;
-            box-shadow: 0 0 20px rgba(79, 70, 229, 0.8);
-        }
+        /* Efeito de borda neon para o vídeo */
+        .border-neon {
+            border: 4px solid #4F46E5 !important;
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.8);
+        }
 
-        /* Estilos adicionais para o card no modo escuro */
-        .card.dark-mode-card {
-            background-color: #1a202c; /* Cor de fundo escura */
-            color: #ffffff; /* Cor do texto claro */
-            border-color: #2d3748; /* Cor da borda escura */
-        }
-        .card.dark-mode-card .card-title {
-            color: #63b3ed; /* Cor do título para contraste */
-        }
-        .card.dark-mode-card .text-muted {
-            color: #a0aec0 !important; /* Cor do texto mudo */
-        }
-    </style>
-    {% block head %}{% endblock %}
+        /* Estilos adicionais para o card no modo escuro */
+        .card.dark-mode-card {
+            background-color: #1a202c; /* Cor de fundo escura */
+            color: #ffffff; /* Cor do texto claro */
+            border-color: #2d3748; /* Cor da borda escura */
+        }
+        .card.dark-mode-card .card-title {
+            color: #63b3ed; /* Cor do título para contraste */
+        }
+        .card.dark-mode-card .text-muted {
+            color: #a0aec0 !important; /* Cor do texto mudo */
+        }
+    </style>
+    {% block head %}{% endblock %}
 </head>
 <body class="bg-gray-100">
 
 {% block content %}
 <!-- Hero Section -->
 <div class="bg-light">
-    <div class="container py-5">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1 class="display-4 fw-bold text-primary mb-4">
-                    Gerencie seu delivery com <span class="text-secondary">DeliveryAceito</span>
-                </h1>
-                <p class="lead mb-4">
-                    Sistema completo para restaurantes e lanchonetes. Controle pedidos, caixa, relatórios e muito mais em uma plataforma moderna e intuitiva.
-                </p>
-                <div class="d-flex gap-3">
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4">
-                        <i class="bi bi-rocket-takeoff"></i> Começar Grátis
-                    </a>
-                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg px-4">
-                        <i class="bi bi-box-arrow-in-right"></i> Fazer Login
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="text-center">
-                    <i class="bi bi-laptop display-1 text-primary"></i>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold text-primary mb-4">
+                    Gerencie seu delivery com <span class="text-secondary">DeliveryAceito</span>
+                </h1>
+                <p class="lead mb-4">
+                    Sistema completo para restaurantes e lanchonetes. Controle pedidos, caixa, relatórios e muito mais em uma plataforma moderna e intuitiva.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4">
+                        <i class="bi bi-rocket-takeoff"></i> Começar Grátis
+                    </a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg px-4">
+                        <i class="bi bi-box-arrow-in-right"></i> Fazer Login
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <i class="bi bi-laptop display-1 text-primary"></i>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Features Section -->
 <div class="bg-[#4F46E5] text-white py-16 lg:py-24">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Funcionalidades Completas</h2>
-            <p class="text-lg text-gray-300">Tudo que você precisa para gerenciar seu negócio</p>
-        </div>
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 text-center shadow-sm">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <i class="bi bi-speedometer2 display-4 text-primary"></i>
-                        </div>
-                        <h5 class="card-title">Dashboard Completo</h5>
-                        <p class="card-text">Visualize suas vendas, pedidos do dia, ticket médio e produtos mais vendidos em tempo real.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 text-center shadow-sm">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <i class="bi bi-receipt display-4 text-success"></i>
-                        </div>
-                        <h5 class="card-title">Gestão de Pedidos</h5>
-                        <p class="card-text">Controle todos os pedidos em andamento, histórico de vendas e pedidos cancelados.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 text-center shadow-sm">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <i class="bi bi-cash-stack display-4 text-warning"></i>
-                        </div>
-                        <h5 class="card-title">Controle de Caixa</h5>
-                        <p class="card-text">Abertura, fechamento e histórico completo de todas as movimentações financeiras.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 text-center shadow-sm">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <i class="bi bi-graph-up display-4 text-info"></i>
-                        </div>
-                        <h5 class="card-title">Relatórios Avançados</h5>
-                        <p class="card-text">Relatórios de vendas, produtos e financeiro com exportação para CSV.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 text-center shadow-sm">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <i class="bi bi-phone display-4 text-danger"></i>
-                        </div>
-                        <h5 class="card-title">Design Responsivo</h5>
-                        <p class="card-text">Interface moderna que funciona perfeitamente em computadores, tablets e celulares.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 text-center shadow-sm">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <i class="bi bi-shield-check display-4 text-secondary"></i>
-                        </div>
-                        <h5 class="card-title">Seguro e Confiável</h5>
-                        <p class="card-text">Sistema seguro com autenticação robusta e backup automático dos seus dados.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Funcionalidades Completas</h2>
+            <p class="text-lg text-gray-300">Tudo que você precisa para gerenciar seu negócio</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-speedometer2 display-4 text-primary"></i>
+                        </div>
+                        <h5 class="card-title">Dashboard Completo</h5>
+                        <p class="card-text">Visualize suas vendas, pedidos do dia, ticket médio e produtos mais vendidos em tempo real.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-receipt display-4 text-success"></i>
+                        </div>
+                        <h5 class="card-title">Gestão de Pedidos</h5>
+                        <p class="card-text">Controle todos os pedidos em andamento, histórico de vendas e pedidos cancelados.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-cash-stack display-4 text-warning"></i>
+                        </div>
+                        <h5 class="card-title">Controle de Caixa</h5>
+                        <p class="card-text">Abertura, fechamento e histórico completo de todas as movimentações financeiras.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-graph-up display-4 text-info"></i>
+                        </div>
+                        <h5 class="card-title">Relatórios Avançados</h5>
+                        <p class="card-text">Relatórios de vendas, produtos e financeiro com exportação para CSV.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-phone display-4 text-danger"></i>
+                        </div>
+                        <h5 class="card-title">Design Responsivo</h5>
+                        <p class="card-text">Interface moderna que funciona perfeitamente em computadores, tablets e celulares.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 text-center shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-shield-check display-4 text-secondary"></i>
+                        </div>
+                        <h5 class="card-title">Seguro e Confiável</h5>
+                        <p class="card-text">Sistema seguro com autenticação robusta e backup automático dos seus dados.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div style="background-color: white;" class="py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center mb-5">
-                <h2 class="h1 fw-bold">Como funciona</h2>
-                <p class="lead text-muted">Assista nosso vídeo e entenda como é simples gerenciar seu negócio com o DeliveryAceito.</p>
-            </div>
-            <div class="col-12 col-lg-8 offset-lg-2">
-                <div class="ratio ratio-16x9 rounded border-neon">
-                    <iframe
-                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0"
-                        title="Como Funciona o DeliveryAceito"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                    </iframe>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="h1 fw-bold">Como funciona</h2>
+                <p class="lead text-muted">Assista nosso vídeo e entenda como é simples gerenciar seu negócio com o DeliveryAceito.</p>
+            </div>
+            <div class="col-12 col-lg-8 offset-lg-2">
+                <div class="ratio ratio-16x9 rounded border-neon">
+                    <iframe
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0"
+                        title="Como Funciona o DeliveryAceito"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 <!-- Testimonials Section -->
 <div class="bg-[#4F46E5] text-white py-16 lg:py-24">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">O que nossos clientes dizem</h2>
-            <p class="text-lg text-gray-300">Avaliações de quem usa e aprova o DeliveryAceito</p>
-        </div>
-        <div class="row g-4 justify-content-center">
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 p-4 shadow-sm">
-                    <div class="d-flex justify-content-center text-warning mb-3">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    </div>
-                    <p class="fst-italic">"Simplesmente o melhor! A plataforma é super intuitiva, e o controle de pedidos me economiza horas todos os dias."</p>
-                    <div class="text-center mt-auto">
-                        <p class="fw-bold mb-0">Carlos M.</p>
-                        <p class="text-muted small">Dono de Pizzaria</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 p-4 shadow-sm">
-                    <div class="d-flex justify-content-center text-warning mb-3">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    </div>
-                    <p class="fst-italic">"O DeliveryAceito me ajudou a organizar o balcão e os relatórios. O suporte é rápido e resolve tudo, nota 10!"</p>
-                    <div class="text-center mt-auto">
-                        <p class="fw-bold mb-0">Patrícia S.</p>
-                        <p class="text-muted small">Gerente de Lanchonete</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 p-4 shadow-sm">
-                    <div class="d-flex justify-content-center text-warning mb-3">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    </div>
-                    <p class="fst-italic">"Nossas vendas aumentaram desde que começamos a usar o sistema. A parte de controle de caixa é a mais útil para o nosso dia a dia."</p>
-                    <div class="text-center mt-auto">
-                        <p class="fw-bold mb-0">Ricardo F.</p>
-                        <p class="text-muted small">Dono de Hamburgueria</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 p-4 shadow-sm">
-                    <div class="d-flex justify-content-center text-warning mb-3">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    </div>
-                    <p class="fst-italic">"A interface é limpa e fácil de entender. Em poucos cliques, consigo ver todos os relatórios que preciso. Excelente sistema!"</p>
-                    <div class="text-center mt-auto">
-                        <p class="fw-bold mb-0">Mariana P.</p>
-                        <p class="text-muted small">Sócia de Restaurante</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 p-4 shadow-sm">
-                    <div class="d-flex justify-content-center text-warning mb-3">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    </div>
-                    <p class="fst-italic">"O DeliveryAceito é essencial para o meu negócio. Acabou a bagunça nos pedidos e o suporte técnico é super atencioso."</p>
-                    <div class="text-center mt-auto">
-                        <p class="fw-bold mb-0">Fernando B.</p>
-                        <p class="text-muted small">Gerente de Açaíteria</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 p-4 shadow-sm">
-                    <div class="d-flex justify-content-center text-warning mb-3">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    </div>
-                    <p class="fst-italic">"Recomendo a todos os meus colegas do ramo. A plataforma é completa e, mesmo assim, muito fácil de usar. Os relatórios ajudam a tomar decisões."</p>
-                    <div class="text-center mt-auto">
-                        <p class="fw-bold mb-0">Júlia C.</p>
-                        <p class="text-muted small">Dona de Padaria</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">O que nossos clientes dizem</h2>
+            <p class="text-lg text-gray-300">Avaliações de quem usa e aprova o DeliveryAceito</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 p-4 shadow-sm">
+                    <div class="d-flex justify-content-center text-warning mb-3">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="fst-italic">"Simplesmente o melhor! A plataforma é super intuitiva, e o controle de pedidos me economiza horas todos os dias."</p>
+                    <div class="text-center mt-auto">
+                        <p class="fw-bold mb-0">Carlos M.</p>
+                        <p class="text-muted small">Dono de Pizzaria</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 p-4 shadow-sm">
+                    <div class="d-flex justify-content-center text-warning mb-3">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="fst-italic">"O DeliveryAceito me ajudou a organizar o balcão e os relatórios. O suporte é rápido e resolve tudo, nota 10!"</p>
+                    <div class="text-center mt-auto">
+                        <p class="fw-bold mb-0">Patrícia S.</p>
+                        <p class="text-muted small">Gerente de Lanchonete</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 p-4 shadow-sm">
+                    <div class="d-flex justify-content-center text-warning mb-3">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="fst-italic">"Nossas vendas aumentaram desde que começamos a usar o sistema. A parte de controle de caixa é a mais útil para o nosso dia a dia."</p>
+                    <div class="text-center mt-auto">
+                        <p class="fw-bold mb-0">Ricardo F.</p>
+                        <p class="text-muted small">Dono de Hamburgueria</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 p-4 shadow-sm">
+                    <div class="d-flex justify-content-center text-warning mb-3">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="fst-italic">"A interface é limpa e fácil de entender. Em poucos cliques, consigo ver todos os relatórios que preciso. Excelente sistema!"</p>
+                    <div class="text-center mt-auto">
+                        <p class="fw-bold mb-0">Mariana P.</p>
+                        <p class="text-muted small">Sócia de Restaurante</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 p-4 shadow-sm">
+                    <div class="d-flex justify-content-center text-warning mb-3">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="fst-italic">"O DeliveryAceito é essencial para o meu negócio. Acabou a bagunça nos pedidos e o suporte técnico é super atencioso."</p>
+                    <div class="text-center mt-auto">
+                        <p class="fw-bold mb-0">Fernando B.</p>
+                        <p class="text-muted small">Gerente de Açaíteria</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 p-4 shadow-sm">
+                    <div class="d-flex justify-content-center text-warning mb-3">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="fst-italic">"Recomendo a todos os meus colegas do ramo. A plataforma é completa e, mesmo assim, muito fácil de usar. Os relatórios ajudam a tomar decisões."</p>
+                    <div class="text-center mt-auto">
+                        <p class="fw-bold mb-0">Júlia C.</p>
+                        <p class="text-muted small">Dona de Padaria</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div style="background-color: white;" class="py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center mb-5">
-                <h2 class="h1 fw-bold">Planos Simples e Transparentes</h2>
-                <p class="lead text-muted">Escolha o plano ideal para o seu negócio</p>
-            </div>
-        </div>
-        <div class="row justify-content-center g-4">
-            <div class="col-lg-4">
-                <div class="card shadow">
-                    <div class="card-body text-center p-4">
-                        <h4 class="card-title text-primary">Freemium</h4>
-                        <div class="display-6 fw-bold text-success mb-3">
-                            Grátis
-                            <small class="fs-6 text-muted">por 15 dias</small>
-                        </div>
-                        <ul class="list-unstyled">
-                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Todas as funcionalidades</li>
-                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Pedidos ilimitados</li>
-                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Relatórios completos</li>
-                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Suporte por email</li>
-                        </ul>
-                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary w-100">
-                            Começar Teste Grátis
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="card border-primary shadow">
-                    <div class="card-header bg-primary text-white text-center">
-                        <small>MAIS POPULAR</small>
-                    </div>
-                    <div class="card-body text-center p-4">
-                        <h4 class="card-title text-primary">Premium</h4>
-                        <div class="display-6 fw-bold text-primary mb-3">
-                            R$ 49,90
-                            <small class="fs-6 text-muted">/mês</small>
-                        </div>
-                        <ul class="list-unstyled">
-                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Todas as funcionalidades</li>
-                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Pedidos ilimitados</li>
-                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Relatórios avançados</li>
-                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Suporte prioritário</li>
-                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Backup automático</li>
-                        </ul>
-                        <a href="{{ url_for('auth.register') }}" class="btn btn-primary w-100">
-                            Assinar Agora
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="h1 fw-bold">Planos Simples e Transparentes</h2>
+                <p class="lead text-muted">Escolha o plano ideal para o seu negócio</p>
+            </div>
+        </div>
+        <div class="row justify-content-center g-4">
+            <div class="col-lg-4">
+                <div class="card shadow">
+                    <div class="card-body text-center p-4">
+                        <h4 class="card-title text-primary">Freemium</h4>
+                        <div class="display-6 fw-bold text-success mb-3">
+                            Grátis
+                            <small class="fs-6 text-muted">por 15 dias</small>
+                        </div>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Todas as funcionalidades</li>
+                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Pedidos ilimitados</li>
+                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Relatórios completos</li>
+                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Suporte por email</li>
+                        </ul>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary w-100">
+                            Começar Teste Grátis
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card border-primary shadow">
+                    <div class="card-header bg-primary text-white text-center">
+                        <small>MAIS POPULAR</small>
+                    </div>
+                    <div class="card-body text-center p-4">
+                        <h4 class="card-title text-primary">Premium</h4>
+                        <div class="display-6 fw-bold text-primary mb-3">
+                            R$ 49,90
+                            <small class="fs-6 text-muted">/mês</small>
+                        </div>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Todas as funcionalidades</li>
+                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Pedidos ilimitados</li>
+                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Relatórios avançados</li>
+                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Suporte prioritário</li>
+                            <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Backup automático</li>
+                        </ul>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-primary w-100">
+                            Assinar Agora
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="container py-5">
-    <div class="row">
-        <div class="col-12">
-            <div class="card bg-primary text-white text-center">
-                <div class="card-body p-5">
-                    <h2 class="h1 fw-bold mb-3">Pronto para começar?</h2>
-                    <p class="lead mb-4">
-                        Junte-se a centenas de restaurantes que já usam o GetSolution para crescer seus negócios.
-                    </p>
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg px-5">
-                        <i class="bi bi-rocket-takeoff"></i> Criar Conta Grátis
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-primary text-white text-center">
+                <div class="card-body p-5">
+                    <h2 class="h1 fw-bold mb-3">Pronto para começar?</h2>
+                    <p class="lead mb-4">
+                        Junte-se a centenas de restaurantes que já usam o GetSolution para crescer seus negócios.
+                    </p>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg px-5">
+                        <i class="bi bi-rocket-takeoff"></i> Criar Conta Grátis
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <footer class="bg-dark text-white py-5 mt-5">
-    <div class="container">
-        <div class="row mb-4 border-bottom border-secondary pb-4">
-            <div class="col-12 text-center text-md-start">
-                <h4 class="text-primary fw-bold">DeliveryAceito</h4>
-                <p class="text-secondary">Sistema de delivery e balcão simples, rápido e eficiente para o seu negócio.</p>
-            </div>
-        </div>
-        <div class="row g-4">
-            <div class="col-md-4 col-lg-3">
-                <h5 class="fw-bold mb-3 text-secondary">Suporte e Contato</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><a href="https://wa.me/xxxxxxxxxxx" class="text-white text-decoration-none"><i class="bi bi-whatsapp me-2"></i> (xx) xxxx-xxxx</a></li>
-                    <li class="mb-2"><a href="mailto:contato@seudominio.com" class="text-white text-decoration-none"><i class="bi bi-envelope me-2"></i> contato@seudominio.com</a></li>
-                    <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> Joinville - SC</li>
-                </ul>
-            </div>
-            <div class="col-md-4 col-lg-3">
-                <h5 class="fw-bold mb-3 text-secondary">Navegação Rápida</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Como funciona</a></li>
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Perguntas frequentes (FAQ)</a></li>
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Central de ajuda</a></li>
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Conta</a></li>
-                </ul>
-            </div>
-            <div class="col-md-4 col-lg-3">
-                <h5 class="fw-bold mb-3 text-secondary">Jurídico</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Termos de uso</a></li>
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Política de privacidade</a></li>
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Política de cancelamento</a></li>
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Avisos legais</a></li>
-                </ul>
-            </div>
-            <div class="col-md-12 col-lg-3">
-                <h5 class="fw-bold mb-3 text-secondary">Extras</h5>
-                <div class="d-flex justify-content-start gap-3 mb-3">
-                    <a href="#" class="text-white fs-4"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="text-white fs-4"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="text-white fs-4"><i class="bi bi-youtube"></i></a>
-                    <a href="#" class="text-white fs-4"><i class="bi bi-whatsapp"></i></a>
-                    <a href="#" class="text-white fs-4"><i class="bi bi-tiktok"></i></a>
-                </div>
-                <div class="d-flex align-items-center gap-3">
-                    <div class="text-center">
-                        <i class="bi bi-shield-lock-fill text-success fs-2"></i>
-                        <p class="text-muted small m-0">SSL Protegido</p>
-                    </div>
-                    <div class="text-center">
-                        <i class="bi bi-credit-card-fill text-info fs-2"></i>
-                        <p class="text-muted small m-0">Pagamento Kirvano</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col-12 text-center text-secondary">
-                <p class="m-0">© 2025 Deliveryaceito - Todos os direitos reservados.</p>
-            </div>
-        </div>
-    </div>
+    <div class="container">
+        <div class="row mb-4 border-bottom border-secondary pb-4">
+            <div class="col-12 text-center text-md-start">
+                <h4 class="text-primary fw-bold">DeliveryAceito</h4>
+                <p class="text-secondary">Sistema de delivery e balcão simples, rápido e eficiente para o seu negócio.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4 col-lg-3">
+                <h5 class="fw-bold mb-3 text-secondary">Suporte e Contato</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="https://wa.me/xxxxxxxxxxx" class="text-white text-decoration-none"><i class="bi bi-whatsapp me-2"></i> (xx) xxxx-xxxx</a></li>
+                    <li class="mb-2"><a href="mailto:contato@seudominio.com" class="text-white text-decoration-none"><i class="bi bi-envelope me-2"></i> contato@seudominio.com</a></li>
+                    <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> Joinville - SC</li>
+                </ul>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <h5 class="fw-bold mb-3 text-secondary">Navegação Rápida</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Como funciona</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Perguntas frequentes (FAQ)</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Central de ajuda</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Conta</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <h5 class="fw-bold mb-3 text-secondary">Jurídico</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Termos de uso</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Política de privacidade</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Política de cancelamento</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none">Avisos legais</a></li>
+                </ul>
+            </div>
+            <div class="col-md-12 col-lg-3">
+                <h5 class="fw-bold mb-3 text-secondary">Extras</h5>
+                <div class="d-flex justify-content-start gap-3 mb-3">
+                    <a href="#" class="text-white fs-4"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-white fs-4"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-white fs-4"><i class="bi bi-youtube"></i></a>
+                    <a href="#" class="text-white fs-4"><i class="bi bi-whatsapp"></i></a>
+                    <a href="#" class="text-white fs-4"><i class="bi bi-tiktok"></i></a>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="text-center">
+                        <i class="bi bi-shield-lock-fill text-success fs-2"></i>
+                        <p class="text-muted small m-0">SSL Protegido</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="bi bi-credit-card-fill text-info fs-2"></i>
+                        <p class="text-muted small m-0">Pagamento Kirvano</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12 text-center text-secondary">
+                <p class="m-0">© 2025 Deliveryaceito - Todos os direitos reservados.</p>
+            </div>
+            
+        </div>
+    </div>
 </footer>
 
 {% endblock %}
