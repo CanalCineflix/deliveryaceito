@@ -68,10 +68,10 @@
             DeliveryAceito
         </a>
         <div class="d-flex gap-3">
-            <a href="#" class="btn btn-outline-primary-dark fw-bold rounded-full px-4">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary-dark fw-bold rounded-full px-4">
                 Fazer Login
             </a>
-            <a href="#" class="btn bg-primary-dark text-white fw-bold rounded-full px-4">
+            <a href="{{ url_for('auth.register') }}" class="btn bg-primary-dark text-white fw-bold rounded-full px-4">
                 Começar Grátis
             </a>
         </div>
@@ -90,10 +90,10 @@
                     Sistema completo para restaurantes e lanchonetes. Controle pedidos, caixa, relatórios e muito mais em uma plataforma moderna e intuitiva.
                 </p>
                 <div class="d-flex gap-3">
-                    <a href="#" class="btn bg-primary-dark text-white btn-lg px-6 rounded-full shadow-lg hover:opacity-90 transition-opacity">
+                    <a href="{{ url_for('auth.register') }}" class="btn bg-primary-dark text-white btn-lg px-6 rounded-full shadow-lg hover:opacity-90 transition-opacity">
                         <i class="bi bi-rocket-takeoff me-2"></i> Começar Grátis
                     </a>
-                    <a href="#" class="btn btn-outline-primary-dark btn-lg px-6 rounded-full hover:bg-primary-dark hover:text-white transition-colors">
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary-dark btn-lg px-6 rounded-full hover:bg-primary-dark hover:text-white transition-colors">
                         <i class="bi bi-box-arrow-in-right me-2"></i> Fazer Login
                     </a>
                 </div>
