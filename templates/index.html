@@ -14,17 +14,49 @@
     <!-- Incluindo Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Estilos personalizados -->
+    <!-- Estilos personalizados, seguindo as "direções" do segundo código -->
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
         }
+        
         .text-primary-dark {
-            color: #4F46E5;
+            color: var(--primary-color) !important;
         }
+        
         .bg-primary-dark {
-            background-color: #4F46E5;
+            background-color: var(--primary-color) !important;
         }
+        
+        .btn-outline-primary-dark {
+            border-color: var(--primary-color) !important;
+            color: var(--primary-color) !important;
+        }
+        
+        .btn-outline-primary-dark:hover {
+            background-color: var(--primary-color) !important;
+            color: white !important;
+        }
+
+        .card-feature {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card-feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
     </style>
 </head>
 <body class="bg-white">
@@ -36,10 +68,10 @@
             DeliveryAceito
         </a>
         <div class="d-flex gap-3">
-            <a href="auth/login.html" class="btn btn-outline-primary fw-bold rounded-full px-4">
+            <a href="#" class="btn btn-outline-primary-dark fw-bold rounded-full px-4">
                 Fazer Login
             </a>
-            <a href="auth/register.html" class="btn btn-primary-dark bg-primary-dark text-white fw-bold rounded-full px-4">
+            <a href="#" class="btn bg-primary-dark text-white fw-bold rounded-full px-4">
                 Começar Grátis
             </a>
         </div>
@@ -58,10 +90,10 @@
                     Sistema completo para restaurantes e lanchonetes. Controle pedidos, caixa, relatórios e muito mais em uma plataforma moderna e intuitiva.
                 </p>
                 <div class="d-flex gap-3">
-                    <a href="auth/register.html" class="btn bg-[#4F46E5] text-white btn-lg px-6 rounded-full shadow-lg hover:opacity-90 transition-opacity">
+                    <a href="#" class="btn bg-primary-dark text-white btn-lg px-6 rounded-full shadow-lg hover:opacity-90 transition-opacity">
                         <i class="bi bi-rocket-takeoff me-2"></i> Começar Grátis
                     </a>
-                    <a href="auth/login.html" class="btn btn-outline-primary-dark text-primary-dark btn-lg px-6 rounded-full hover:bg-primary-dark hover:text-white transition-colors">
+                    <a href="#" class="btn btn-outline-primary-dark btn-lg px-6 rounded-full hover:bg-primary-dark hover:text-white transition-colors">
                         <i class="bi bi-box-arrow-in-right me-2"></i> Fazer Login
                     </a>
                 </div>
@@ -82,7 +114,7 @@
         </div>
         <div class="row g-4">
             <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full transition-transform transform hover:scale-105">
+                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full card-feature">
                     <div class="text-center mb-4">
                         <i class="bi bi-speedometer2 text-primary-dark text-5xl"></i>
                     </div>
@@ -91,7 +123,7 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full transition-transform transform hover:scale-105">
+                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full card-feature">
                     <div class="text-center mb-4">
                         <i class="bi bi-receipt text-green-500 text-5xl"></i>
                     </div>
@@ -100,7 +132,7 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full transition-transform transform hover:scale-105">
+                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full card-feature">
                     <div class="text-center mb-4">
                         <i class="bi bi-cash-stack text-yellow-500 text-5xl"></i>
                     </div>
@@ -109,7 +141,7 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full transition-transform transform hover:scale-105">
+                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full card-feature">
                     <div class="text-center mb-4">
                         <i class="bi bi-graph-up text-blue-500 text-5xl"></i>
                     </div>
@@ -118,7 +150,7 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full transition-transform transform hover:scale-105">
+                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full card-feature">
                     <div class="text-center mb-4">
                         <i class="bi bi-phone text-red-500 text-5xl"></i>
                     </div>
@@ -127,7 +159,7 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full transition-transform transform hover:scale-105">
+                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full card-feature">
                     <div class="text-center mb-4">
                         <i class="bi bi-shield-check text-indigo-500 text-5xl"></i>
                     </div>
@@ -251,7 +283,7 @@
         </div>
         <div class="row justify-content-center g-4">
             <div class="col-lg-5">
-                <div class="card shadow rounded-lg h-full border border-gray-200">
+                <div class="card shadow rounded-lg h-full border border-gray-200 card-feature">
                     <div class="card-body text-center p-6">
                         <h4 class="card-title font-bold text-primary-dark text-2xl mb-2">Freemium</h4>
                         <div class="display-6 font-bold text-green-500 mb-3">
@@ -264,14 +296,14 @@
                             <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Relatórios completos</li>
                             <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Suporte por e-mail</li>
                         </ul>
-                        <a href="auth/register.html" class="btn btn-outline-primary-dark text-primary-dark w-full fw-bold rounded-full py-3">
+                        <a href="#" class="btn btn-outline-primary-dark w-full fw-bold rounded-full py-3">
                             Começar Teste Grátis
                         </a>
                     </div>
                 </div>
             </div>
             <div class="col-lg-5">
-                <div class="card border-2 border-primary-dark shadow-lg rounded-lg h-full">
+                <div class="card border-2 border-primary-dark shadow-lg rounded-lg h-full card-feature">
                     <div class="card-header bg-primary-dark text-white text-center rounded-t-lg font-bold py-2">
                         MAIS POPULAR
                     </div>
@@ -289,7 +321,7 @@
                             <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Suporte prioritário</li>
                             <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Backup automático</li>
                         </ul>
-                        <a href="auth/register.html" class="btn bg-[#4F46E5] text-white w-full fw-bold rounded-full py-3 shadow-lg hover:opacity-90 transition-opacity">
+                        <a href="#" class="btn bg-primary-dark text-white w-full fw-bold rounded-full py-3 shadow-lg hover:opacity-90 transition-opacity">
                             Assinar Agora
                         </a>
                     </div>
@@ -308,7 +340,7 @@
                 <p class="lead mb-4">
                     Junte-se a centenas de restaurantes que já usam o DeliveryAceito para crescer seus negócios.
                 </p>
-                <a href="auth/register.html" class="btn btn-light text-primary-dark btn-lg px-6 rounded-full fw-bold shadow-lg hover:opacity-90 transition-opacity">
+                <a href="#" class="btn btn-light text-primary-dark btn-lg px-6 rounded-full fw-bold shadow-lg hover:opacity-90 transition-opacity">
                     <i class="bi bi-rocket-takeoff me-2"></i> Criar Conta Grátis
                 </a>
             </div>
