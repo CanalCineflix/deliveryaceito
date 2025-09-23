@@ -287,7 +287,7 @@
             <div class="w-full lg:w-1/2 flex">
                 <div class="bg-white card shadow rounded-lg border border-gray-200 card-feature flex-1">
                     <div class="card-body text-center p-6">
-                        <h4 class="card-title font-bold text-primary-dark text-2xl mb-2">Freemium</h4>
+                        <h4 class="card-title font-bold text-indigo-700 text-2xl mb-2">Freemium</h4>
                         <div class="font-bold text-green-500 mb-3 text-4xl">
                             Grátis
                             <small class="text-base text-muted block">por 15 dias</small>
@@ -298,7 +298,7 @@
                             <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Relatórios completos</li>
                             <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Suporte por e-mail</li>
                         </ul>
-                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary-dark w-full fw-bold rounded-full py-3">
+                        <a href="{{ url_for('auth.register') }}" class="btn w-full fw-bold rounded-full py-3 border-2 border-indigo-700 text-indigo-700 hover:bg-indigo-700 hover:text-white transition-colors">
                             Começar Teste Grátis
                         </a>
                     </div>
@@ -307,22 +307,22 @@
 
             <!-- Plano Premium -->
             <div class="w-full lg:w-1/2 flex">
-                <div class="bg-white card border-2 border-primary-dark shadow-lg rounded-lg card-feature flex-1">
-                    <div class="card-header bg-primary-dark text-white text-center rounded-t-lg font-bold py-2">
+                <div class="bg-white card border-2 border-indigo-700 shadow-lg rounded-lg card-feature flex-1">
+                    <div class="card-header bg-indigo-700 text-white text-center rounded-t-lg font-bold py-2">
                         MAIS POPULAR
                     </div>
                     <div class="card-body text-center p-6">
-                        <h4 class="card-title font-bold text-primary-dark text-2xl mb-2">Premium</h4>
+                        <h4 class="card-title font-bold text-indigo-700 text-2xl mb-2">Premium</h4>
                         <div class="mb-4">
-                            <h3 class="text-xl text-primary-dark font-semibold">Oferta Exclusiva!</h3>
+                            <h3 class="text-xl text-indigo-700 font-semibold">Oferta Exclusiva!</h3>
                             <p class="text-red-500 text-lg md:text-xl font-medium line-through">
                                 De R$ 79,90
                             </p>
-                            <p class="text-5xl font-extrabold text-primary-dark mb-1">
+                            <p class="text-5xl font-extrabold text-indigo-700 mb-1">
                                 R$ 19,90
                             </p>
                             <p class="text-sm text-gray-500 mb-2">na primeira assinatura</p>
-                            <p class="text-lg font-bold text-primary-dark">
+                            <p class="text-lg font-bold text-indigo-700">
                                 Depois R$ 49,90/mês
                             </p>
                         </div>
@@ -333,7 +333,7 @@
                             <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Suporte prioritário</li>
                             <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Backup automático</li>
                         </ul>
-                        <a href="{{ url_for('auth.register') }}" class="btn bg-primary-dark text-white w-full fw-bold rounded-full py-3 shadow-lg hover:opacity-90 transition-opacity">
+                        <a href="{{ url_for('auth.register') }}" class="btn bg-indigo-700 text-white w-full fw-bold rounded-full py-3 shadow-lg hover:opacity-90 transition-opacity">
                             Assinar Agora
                         </a>
                     </div>
@@ -342,6 +342,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Seção Final - CTA -->
 <div class="bg-primary-dark py-16 lg:py-24">
