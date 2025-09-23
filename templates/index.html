@@ -276,59 +276,67 @@
 
 <!-- Seção Planos -->
 <div class="bg-white py-16 lg:py-24">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">Planos Simples e Transparentes</h2>
-            <p class="lead text-muted">Escolha o plano ideal para o seu negócio</p>
-        </div>
-        <div class="row justify-content-center g-4">
-            <div class="col-lg-5">
-                <div class="card shadow rounded-lg h-full border border-gray-200 card-feature">
-                    <div class="card-body text-center p-6">
-                        <h4 class="card-title font-bold text-primary-dark text-2xl mb-2">Freemium</h4>
-                        <div class="display-6 font-bold text-green-500 mb-3">
-                            Grátis
-                            <small class="fs-6 text-muted">por 15 dias</small>
-                        </div>
-                        <ul class="list-unstyled text-left mt-4 mb-5">
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Todas as funcionalidades</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Pedidos ilimitados</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Relatórios completos</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Suporte por e-mail</li>
-                        </ul>
-                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary-dark w-full fw-bold rounded-full py-3">
-                            Começar Teste Grátis
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-5">
-                <div class="card border-2 border-primary-dark shadow-lg rounded-lg h-full card-feature">
-                    <div class="card-header bg-primary-dark text-white text-center rounded-t-lg font-bold py-2">
-                        MAIS POPULAR
-                    </div>
-                    <div class="card-body text-center p-6">
-                        <h4 class="card-title font-bold text-primary-dark text-2xl mb-2">Premium</h4>
-                        <div class="display-6 font-bold text-primary-dark mb-3">
-                            R$ 19,90 <small class="fs-6 text-muted line-through">R$ 79,90</small>
-                            <div class="text-xs text-muted">na 1ª assinatura</div>
-                            <div class="fs-6 text-muted">depois R$ 49,90/mês</div>
-                        </div>
-                        <ul class="list-unstyled text-left mt-4 mb-5">
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Todas as funcionalidades</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Pedidos ilimitados</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Relatórios avançados</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Suporte prioritário</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Backup automático</li>
-                        </ul>
-                        <a href="{{ url_for('auth.register') }}" class="btn bg-primary-dark text-white w-full fw-bold rounded-full py-3 shadow-lg hover:opacity-90 transition-opacity">
-                            Assinar Agora
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">Planos Simples e Transparentes</h2>
+            <p class="lead text-muted">Escolha o plano ideal para o seu negócio</p>
+        </div>
+        <div class="row justify-content-center g-4">
+            <div class="col-lg-5">
+                <div class="card shadow rounded-lg h-full border border-gray-200 card-feature">
+                    <div class="card-body text-center p-6">
+                        <h4 class="card-title font-bold text-primary-dark text-2xl mb-2">Freemium</h4>
+                        <div class="display-6 font-bold text-green-500 mb-3">
+                            Grátis
+                            <small class="fs-6 text-muted">por 15 dias</small>
+                        </div>
+                        <ul class="list-unstyled text-left mt-4 mb-5">
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Todas as funcionalidades</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Pedidos ilimitados</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Relatórios completos</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Suporte por e-mail</li>
+                        </ul>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary-dark w-full fw-bold rounded-full py-3">
+                            Começar Teste Grátis
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="card border-2 border-primary-dark shadow-lg rounded-lg h-full card-feature">
+                    <div class="card-header bg-primary-dark text-white text-center rounded-t-lg font-bold py-2">
+                        MAIS POPULAR
+                    </div>
+                    <div class="card-body text-center p-6">
+                        <h4 class="card-title font-bold text-primary-dark text-2xl mb-2">Premium</h4>
+                        <div class="mb-4">
+                            <h3 class="text-xl text-primary-dark font-semibold">Oferta Exclusiva!</h3>
+                            <p class="text-red-500 text-lg md:text-xl font-medium line-through">
+                                De R$ 79,90
+                            </p>
+                            <p class="text-5xl font-extrabold text-primary-dark mb-1">
+                                R$ 19,90
+                            </p>
+                            <p class="text-sm text-gray-500 mb-2">na primeira assinatura</p>
+                            <p class="text-lg font-bold text-primary-dark">
+                                Depois R$ 49,90/mês
+                            </p>
+                        </div>
+                        <ul class="list-unstyled text-left mt-4 mb-5">
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Todas as funcionalidades</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Pedidos ilimitados</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Relatórios avançados</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Suporte prioritário</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-green-500 me-2"></i> Backup automático</li>
+                        </ul>
+                        <a href="{{ url_for('auth.register') }}" class="btn bg-primary-dark text-white w-full fw-bold rounded-full py-3 shadow-lg hover:opacity-90 transition-opacity">
+                            Assinar Agora
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Seção Final - CTA -->
