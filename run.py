@@ -3,13 +3,13 @@ import click
 from app import app, db
 from flask_migrate import Migrate
 from models import User, Plan, Subscription, Product, Order, OrderItem, CashMovement, CashSession, OrderStatus, RestaurantConfig, Neighborhood, Customer
+from flask import render_template
 
 # Configura o Flask-Migrate
 migrate = Migrate(app, db)
 
-from flask import render_template
-
-@app.route('/ajuda')
+# Adicionamos a rota para /ajuda.html para corresponder ao link no HTML
+@app.route('/ajuda.html')
 def ajuda():
     return render_template('ajuda.html')
 
