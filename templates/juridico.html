@@ -35,10 +35,14 @@
             font-weight: 700;
         }
 
+        header .nav-links {
+            display: flex;
+            gap: 1.5rem; /* Ajustei o espaçamento entre os links */
+        }
+        
         header nav a {
             color: white;
             text-decoration: none;
-            margin-left: 0.8rem; /* Reduzi a margem para um espaçamento menor */
             font-weight: 500;
             transition: color 0.3s ease;
         }
@@ -149,10 +153,8 @@
                 flex-direction: column;
                 padding: 1rem;
             }
-            header nav {
+            header .nav-links {
                 margin-top: 1rem;
-                display: flex;
-                flex-wrap: wrap;
                 justify-content: center;
             }
             header nav a {
@@ -177,13 +179,17 @@
 
     <header>
         <div class="logo">DeliveryAceito</div>
-        <nav>
-            <a href="#">Início</a>
-            <a href="#">Planos</a>
-            <a href="#">Central de Ajuda</a>
-            <a href="#" style="font-weight: 700;">Jurídico</a>
-            <a href="#">Login</a>
-        </nav>
+        <div class="nav-links">
+            <nav>
+                <a href="#">Início</a>
+                <a href="#">Planos</a>
+                <a href="#">Central de Ajuda</a>
+                <a href="#" style="font-weight: 700;">Jurídico</a>
+            </nav>
+            <nav>
+                <a href="#">Login</a>
+            </nav>
+        </div>
     </header>
 
     <main class="main-content">
