@@ -183,7 +183,7 @@
             </div>
             <nav class="flex justify-center space-x-6 mb-4">
                 <a href="/" class="hover:text-blue-purple-light">Início</a>
-                <a href="#" class="hover:text-blue-purple-light">Planos</a>
+                <a href="{{ url_for('auth.register') }}" class="hover:text-blue-purple-light">Planos</a>
                 <a href="#" class="hover:text-blue-purple-light">Central de Ajuda</a>
                 <a href="{{ url_for('auth.login') }}" class="hover:text-blue-purple-light">Login</a>
             </nav>
