@@ -4,190 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jurídico - DeliveryAceito</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-
         body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f8f8;
-            color: #333;
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
         }
-
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
+        .header-bg {
+            background: linear-gradient(90deg, #4F46E5, #9B5DE5);
+        }
+        .text-blue-purple {
+            color: #4F46E5;
+        }
+        .bg-blue-purple {
             background-color: #4F46E5;
-            color: white;
-            padding: 1rem 1rem;
-            display: flex;
-            justify-content: space-between; /* Alinha o logo e o menu nas extremidades */
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
         }
-
-        header .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            /* Removida a margem para evitar problemas de espaçamento */
+        .bg-blue-purple-light {
+            background-color: #9B5DE5;
         }
-
-        header .nav-links {
-            display: flex;
-            justify-content: center; /* Centraliza os links dentro do container */
-            gap: 1.5rem; /* Controla o espaço entre os links */
-            flex-grow: 1; /* Permite que o container de links ocupe o espaço disponível */
+        .btn-primary {
+            background: linear-gradient(90deg, #4F46E5, #9B5DE5);
+            transition: transform 0.2s ease-in-out;
         }
-        
-        header .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
+        .btn-primary:hover {
+            transform: translateY(-2px);
         }
-
-        header .nav-links a:hover {
-            color: #a7a1ec;
+        .faq-item {
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-
-        .main-content {
-            padding-top: 100px;
-            padding-bottom: 50px;
-            max-width: 900px;
-            margin: 0 auto;
-            text-align: center;
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
         }
-        
-        .main-title {
-            font-size: 2.5rem;
-            color: #4F46E5;
-            font-weight: 600;
-            margin-bottom: 2rem;
+        .faq-item.active .faq-answer {
+            max-height: 200px; /* Ajuste conforme a necessidade do conteúdo */
+            transition: max-height 0.5s ease-in;
         }
-
-        .legal-container {
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
         }
-
-        .legal-section {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .legal-section h2 {
-            font-size: 1.75rem;
-            color: #4F46E5;
-            font-weight: 600;
-            margin-top: 0;
-            margin-bottom: 1rem;
-        }
-
-        .legal-section p {
-            line-height: 1.6;
-            font-size: 1rem;
-            color: #555;
-        }
-
-        footer {
-            background-color: #212121;
-            color: #ccc;
-            padding: 3rem 2rem;
-            text-align: center;
-            line-height: 1.8;
-        }
-
-        .footer-content {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: flex-start;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .footer-section {
-            flex: 1;
-            min-width: 200px;
-            margin-bottom: 2rem;
-            text-align: left;
-        }
-
-        .footer-logo-text {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-logo-sub {
-            font-size: 0.9rem;
-            color: #888;
-        }
-        
-        .footer-links a, .footer-contact a {
-            display: block;
-            color: #ccc;
-            text-decoration: none;
-            margin-bottom: 0.5rem;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover, .footer-contact a:hover {
-            color: white;
-        }
-        
-        .footer-bottom {
-            border-top: 1px solid #444;
-            padding-top: 1.5rem;
-            margin-top: 1rem;
-            font-size: 0.8rem;
-            text-align: center;
-        }
-        
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                padding: 1rem;
-            }
-            header .nav-links {
-                margin-top: 1rem;
-                justify-content: center;
-            }
-            header .nav-links a {
-                margin: 0 0.5rem;
-            }
-            .main-content {
-                padding-top: 140px;
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-            .footer-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            .footer-section {
-                text-align: center;
-            }
+        .faq-icon {
+            transition: transform 0.3s ease;
         }
     </style>
 </head>
-<body>
+<body class="flex flex-col min-h-screen">
 
-    <header>
-        <div class="logo">DeliveryAceito</div>
-        <div class="nav-links" style="margin-left: 15%;">
-            <a href="index.html">Início</a>
-            <a href=href="{{ url_for('index') }}#planos">Planos</a>
-            <a href="ajuda.html">Central de Ajuda</a>
-            <a href="#" style="font-weight: 700;">Jurídico</a>
-            <a href="auth/login.html">Login</a>
+   <!-- Cabeçalho Fixo -->
+    <header class="header-bg text-white shadow-lg fixed top-0 w-full z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">DeliveryAceito</h1>
+            <nav>
+                <a href="/" class="mx-3 hover:text-gray-300">Início</a>
+                <a href="/planos.html" class="mx-3 hover:text-gray-300">Planos</a>
+                <a href="/ajuda.html" class="mx-3 hover:text-gray-300">Ajuda</a>
+                <a href="#" style="font-weight: 700;">Jurídico</a>
+                <a href="/login.html" class="mx-3 hover:text-gray-300 py-2 px-4 rounded-full border border-white hover:bg-white hover:text-blue-purple transition-all duration-300">Login</a>
+            </nav>
         </div>
     </header>
 
@@ -234,6 +110,7 @@
         </div>
     </main>
 
+    <!-- Rodapé -->
     <footer>
         <div class="footer-content">
             <div class="footer-section">
