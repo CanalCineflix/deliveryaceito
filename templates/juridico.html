@@ -97,60 +97,6 @@
             font-size: 1rem;
             color: #555;
         }
-
-        footer {
-            background-color: #212121;
-            color: #ccc;
-            padding: 3rem 2rem;
-            text-align: center;
-            line-height: 1.8;
-        }
-
-        .footer-content {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: flex-start;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .footer-section {
-            flex: 1;
-            min-width: 200px;
-            margin-bottom: 2rem;
-            text-align: left;
-        }
-
-        .footer-logo-text {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-logo-sub {
-            font-size: 0.9rem;
-            color: #888;
-        }
-        
-        .footer-links a, .footer-contact a {
-            display: block;
-            color: #ccc;
-            text-decoration: none;
-            margin-bottom: 0.5rem;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover, .footer-contact a:hover {
-            color: white;
-        }
-        
-        .footer-bottom {
-            border-top: 1px solid #444;
-            padding-top: 1.5rem;
-            margin-top: 1rem;
-            font-size: 0.8rem;
-            text-align: center;
-        }
         
         @media (max-width: 768px) {
             header {
@@ -169,13 +115,7 @@
                 padding-left: 1rem;
                 padding-right: 1rem;
             }
-            .footer-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            .footer-section {
-                text-align: center;
-            }
+            /* As classes do rodapé antigo foram removidas */
         }
     </style>
 </head>
@@ -238,27 +178,62 @@
         </div>
     </main>
 
-    <!-- Rodapé -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <div class="footer-logo-text">DeliveryAceito</div>
-                <div class="footer-logo-sub">Sistema de Delivery Inteligente</div>
+    <!-- Rodapé (Totalmente em Tailwind CSS) -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <!-- Estrutura de Grid para as Colunas - Ajuste no gap para melhorar responsividade em telas maiores -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-16 border-b border-gray-700 pb-8 mb-8">
+                
+                <!-- Coluna 1: Logo e Descrição -->
+                <div class="space-y-3">
+                    <h5 class="text-lg font-bold text-white">DeliveryAceito</h5>
+                    <p class="text-gray-400 text-sm">Sistema de delivery e balcão simples, rápido e eficiente para o seu negócio.</p>
+                </div>
+
+                <!-- Coluna 2: Suporte e Contato -->
+                <div class="space-y-3">
+                    <h5 class="text-lg font-bold text-white">Suporte e Contato</h5>
+                    <!-- CLASSE text-sm ADICIONADA AQUI -->
+                    <ul class="space-y-2 text-gray-400 text-sm"> 
+                        <!-- O ícone de telefone JÁ TINHA mr-2 -->
+                        <li><a href="https://wa.me/5599999999999" target="_blank" class="hover:text-gray-300 transition-colors flex items-center"><span class="mr-2">📞</span> (xx) xxxx-xxxx</a></li>
+                        <!-- CORREÇÃO APLICADA: Adicionado mr-2 para espaçar o ícone do e-mail do texto -->
+                        <li><a href="mailto:deliveryaceito.sac@gmail.com" class="hover:text-gray-200 transition-colors flex items-center"><span class="mr-2">📧</span> deliveryaceito.sac@gmail.com </a></li>
+                        <!-- O ícone de localização JÁ TINHA mr-2 -->
+                        <li class="flex items-center"><span class="mr-2">📍</span> Joinville - SC</li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 3: Navegação Rápida -->
+                <div class="space-y-3">
+                    <h5 class="text-lg font-bold text-white"> Navegação Rápida</h5>
+                    <!-- CLASSE text-sm ADICIONADA AQUI -->
+                    <ul class="space-y-2 text-gray-400 text-sm"> 
+                        <li><a href="index.html#video-section" class="hover:text-gray-300 transition-colors"> Como funciona</a></li>
+                        <li><a href="#faq" class="hover:text-gray-300 transition-colors"> Perguntas frequentes (FAQ)</a></li>
+                        <li><a href="ajuda.html" class="hover:text-gray-300 transition-colors"> Central de ajuda</a></li>
+                        <!-- CORREÇÃO: Usando link estático para o login -->
+                        <li><a href="/login.html" class="hover:text-gray-300 transition-colors"> Conta / Login</a></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 4: Jurídico -->
+                <div class="space-y-3">
+                    <h5 class="text-lg font-bold text-white">Jurídico</h5>
+                    <!-- CLASSE text-sm ADICIONADA AQUI -->
+                    <ul class="space-y-2 text-gray-400 text-sm"> 
+                        <li><a href="juridico.html#termos" class="hover:text-gray-300 transition-colors">Termos de uso</a></li>
+                        <li><a href="juridico.html#privacidade" class="hover:text-gray-300 transition-colors">Política de privacidade</a></li>
+                        <li><a href="juridico.html#cancelamento" class="hover:text-gray-300 transition-colors">Política de cancelamento</a></li>
+                        <li><a href="juridico.html#avisos" class="hover:text-gray-300 transition-colors">Avisos legais</a></li>
+                    </ul>
+                </div>
             </div>
-            <div class="footer-section footer-links">
-                <a href="#termos">Termos de Uso</a>
-                <a href="#privacidade">Política de Privacidade</a>
-                <a href="#cancelamento">Política de Cancelamento</a>
-                <a href="#avisos">Avisos Legais</a>
+            
+            <!-- Linha de Direitos Autorais -->
+            <div class="text-center text-gray-500 text-sm">
+                <p class="m-0">© 2025 DeliveryAceito - Todos os direitos reservados.</p>
             </div>
-            <div class="footer-section footer-contact">
-                <strong>Contato:</strong>
-                <a href="mailto:suporte@deliveryaceito.com">suporte@deliveryaceito.com</a>
-                <a href="https://wa.me/">WhatsApp</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            &copy; 2024 DeliveryAceito. Todos os direitos reservados.
         </div>
     </footer>
 
