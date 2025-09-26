@@ -274,77 +274,76 @@
     </div>
 </div>
 
-<!-- Seção Planos -->
+< <!-- Seção Planos (Atualizada com a sua versão) -->
     <section id="planos-section" class="py-20 bg-indigo-50">
-<div class="bg-white py-16 lg:py-24">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">Planos Simples e Transparentes</h2>
-            <p class="text-lg text-gray-600">Escolha o plano ideal para o seu negócio</p>
-        </div>
-        <!-- Cards dos Planos -->
-        <div class="flex flex-col lg:flex-row justify-center items-stretch gap-8">
-            <!-- Plano Freemium -->
-            <div class="w-full lg:w-1/2 flex">
-                <div class="bg-white card shadow-2xl rounded-xl border border-gray-200 card-feature flex-1 p-8 flex flex-col justify-between">
-                    <div>
-                        <h4 class="card-title font-extrabold text-2xl text-gray-800 mb-6 text-center">PLANO FREEMIUM</h4>
-                        <div class="font-bold text-green-500 mb-6 text-5xl text-center">
-                            Grátis
-                            <small class="block text-lg font-medium text-gray-500">por 15 dias</small>
+        <div class="bg-white py-16 lg:py-24">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">Planos Simples e Transparentes</h2>
+                    <p class="text-lg text-gray-600">Escolha o plano ideal para o seu negócio</p>
+                </div>
+                <!-- Cards dos Planos -->
+                <div class="flex flex-col lg:flex-row justify-center items-stretch gap-8">
+                    <!-- Plano Freemium -->
+                    <div class="w-full lg:w-1/2 flex">
+                        <div class="bg-white card shadow-2xl rounded-xl border border-gray-200 card-feature flex-1 p-8 flex flex-col justify-between">
+                            <div>
+                                <h4 class="card-title font-extrabold text-2xl text-gray-800 mb-6 text-center">PLANO FREEMIUM</h4>
+                                <div class="font-bold text-green-500 mb-6 text-5xl text-center">
+                                    Grátis
+                                    <small class="block text-lg font-medium text-gray-500">por 15 dias</small>
+                                </div>
+                                <ul class="list-unstyled text-left mb-8">
+                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Todas as funcionalidades</li>
+                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Pedidos ilimitados</li>
+                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Relatórios completos</li>
+                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Suporte por e-mail</li>
+                                </ul>
+                            </div>
+                            <a href="{{ url_for('auth.register') }}" class="btn w-full font-bold rounded-full py-4 border-2 border-indigo-700 text-indigo-700 hover:bg-indigo-700 hover:text-white transition-colors text-center">
+                                Começar Teste Grátis
+                            </a>
                         </div>
-                        <ul class="list-unstyled text-left mb-8">
-                            <li class="mb-3"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Todas as funcionalidades</li>
-                            <li class="mb-3"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Pedidos ilimitados</li>
-                            <li class="mb-3"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Relatórios completos</li>
-                            <li class="mb-3"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Suporte por e-mail</li>
-                        </ul>
                     </div>
-                    <a href="{{ url_for('auth.register') }}" class="btn w-full font-bold rounded-full py-4 border-2 border-indigo-700 text-indigo-700 hover:bg-indigo-700 hover:text-white transition-colors text-center">
-                        Começar Teste Grátis
-                    </a>
+                    
+                    <!-- Plano Premium -->
+                    <div class="w-full lg:w-1/2 flex">
+                        <div class="bg-white card border-2 border-indigo-700 shadow-2xl rounded-xl card-feature flex-1 p-8 flex flex-col justify-between relative">
+                            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-indigo-700 text-white rounded-full px-6 py-2 font-bold text-sm uppercase tracking-wide shadow-lg">
+                                MAIS POPULAR
+                            </div>
+                            <div>
+                                <h4 class="card-title font-extrabold text-2xl text-gray-800 mb-6 text-center">PLANO PREMIUM</h4>
+                                <div class="my-4 text-center">
+                                    <h3 class="text-xl text-indigo-700 font-bold mb-2">Oferta Exclusiva!</h3>
+                                    <p class="text-red-500 text-xl font-bold line-through">
+                                        De R$ 79,90
+                                    </p>
+                                    <p class="text-5xl font-extrabold text-indigo-700 mb-1">
+                                        R$ 19,90
+                                    </p>
+                                    <p class="text-sm text-gray-500 mb-2">na primeira assinatura</p>
+                                    <p class="text-lg font-bold text-indigo-700">
+                                        Depois R$ 49,90/mês
+                                    </p>
+                                </div>
+                                <ul class="list-unstyled text-left mb-8">
+                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Todas as funcionalidades</li>
+                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Pedidos ilimitados</li>
+                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Relatórios avançados</li>
+                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Suporte prioritário</li>
+                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Backup automático</li>
+                                </ul>
+                            </div>
+                            <a href="{{ url_for('auth.register') }}" class="btn bg-indigo-700 text-white w-full font-bold rounded-full py-4 shadow-lg hover:bg-indigo-800 transition-colors text-center">
+                                Assinar Agora
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-
-            <!-- Plano Premium -->
-            <div class="w-full lg:w-1/2 flex">
-                <div class="bg-white card border-2 border-indigo-700 shadow-2xl rounded-xl card-feature flex-1 p-8 flex flex-col justify-between relative">
-                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-indigo-700 text-white rounded-full px-6 py-2 font-bold text-sm uppercase tracking-wide shadow-lg">
-                        MAIS POPULAR
-                    </div>
-                    <div>
-                        <h4 class="card-title font-extrabold text-2xl text-gray-800 mb-6 text-center">PLANO PREMIUM</h4>
-                        <div class="my-4 text-center">
-                            <h3 class="text-xl text-indigo-700 font-bold mb-2">Oferta Exclusiva!</h3>
-                            <p class="text-red-500 text-xl font-bold line-through">
-                                De R$ 79,90
-                            </p>
-                            <p class="text-5xl font-extrabold text-indigo-700 mb-1">
-                                R$ 19,90
-                            </p>
-                            <p class="text-sm text-gray-500 mb-2">na primeira assinatura</p>
-                            <p class="text-lg font-bold text-indigo-700">
-                                Depois R$ 49,90/mês
-                            </p>
-                        </div>
-                        <ul class="list-unstyled text-left mb-8">
-                            <li class="mb-3"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Todas as funcionalidades</li>
-                            <li class="mb-3"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Pedidos ilimitados</li>
-                            <li class="mb-3"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Relatórios avançados</li>
-                            <li class="mb-3"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Suporte prioritário</li>
-                            <li class="mb-3"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Backup automático</li>
-                        </ul>
-                    </div>
-                    <a href="{{ url_for('auth.register') }}" class="btn bg-indigo-700 text-white w-full font-bold rounded-full py-4 shadow-lg hover:bg-indigo-800 transition-colors text-center">
-                        Assinar Agora
-                    </a>
-                </div>
-            </div>
         </div>
-    </div>
-</div>
-</section>
+    </section>
 <!-- Seção Final - CTA -->
 <div class="bg-primary-dark py-16 lg:py-24">
     <div class="container mx-auto px-4 text-center">
