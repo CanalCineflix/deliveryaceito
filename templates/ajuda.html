@@ -177,20 +177,48 @@
     </main>
 
     <!-- Rodapé -->
-    <footer class="bg-gray-800 text-white py-8 mt-12">
-        <div class="container mx-auto px-6 text-center">
-            <div class="mb-4">
-                <h4 class="text-lg font-bold">DeliveryAceito – Sistema de Delivery Inteligente</h4>
+<footer class="bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="row g-5 border-b border-gray-700 pb-8 mb-8">
+            <div class="col-md-6 col-lg-3">
+                <h5 class="fw-bold mb-3 text-white">DeliveryAceito</h5>
+                <p class="text-gray-400 text-sm">Sistema de delivery e balcão simples, rápido e eficiente para o seu negócio.</p>
             </div>
-            <nav class="flex justify-center space-x-6 mb-4">
-                <a href="/" class="hover:text-blue-purple-light">Início</a>
-                <a href="{{ url_for('auth.register') }}" class="hover:text-blue-purple-light">Planos</a>
-                <a href="#" class="hover:text-blue-purple-light">Central de Ajuda</a>
-                <a href="{{ url_for('auth.login') }}" class="hover:text-blue-purple-light">Login</a>
-            </nav>
-            <p class="text-sm text-gray-400">Para suporte, entre em contato via WhatsApp ou e-mail.</p>
+            <div class="col-md-6 col-lg-3">
+                <h5 class="fw-bold mb-3 text-white">Suporte e Contato</h5>
+                <ul class="list-unstyled text-gray-400">
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none hover:text-gray-300"><i class="bi bi-whatsapp me-2"></i> (xx) xxxx-xxxx</a></li>
+                    <li class="mb-2"><a href="#" class="text-white text-decoration-none hover:text-gray-300"><i class="bi bi-envelope me-2"></i> deliveryaceito.sac@gmail.com</a></li>
+                    <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> Joinville - SC</li>
+                </ul>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <h5 class="fw-bold mb-3 text-white">Navegação Rápida</h5>
+                <ul class="list-unstyled text-gray-400">
+                    <li class="mb-2"><a href="#video-section" class="text-white text-decoration-none hover:text-gray-300 transition-colors">Como funciona</a></li>
+                    <li class="mb-2"><a href="ajuda.html" class="text-white text-decoration-none hover:text-gray-300 transition-colors">Perguntas frequentes (FAQ)</a></li>
+                    <li class="mb-2"><a href="ajuda.html" class="text-white text-decoration-none hover:text-gray-300 transition-colors">Central de ajuda</a></li>
+                    <li class="mb-2"><a href="{{ url_for('auth.login') }}" class="text-white text-decoration-none hover:text-gray-300 transition-colors">Conta</a></li>
+                </ul>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <h5 class="fw-bold mb-3 text-white">Jurídico</h5>
+                <ul class="list-unstyled text-gray-400">
+                    <li class="mb-2"><a href="juridico.html" class="text-white text-decoration-none hover:text-gray-300">Termos de uso</a></li>
+                    <li class="mb-2"><a href="juridico.html" class="text-white text-decoration-none hover:text-gray-300">Política de privacidade</a></li>
+                    <li class="mb-2"><a href="juridico.html" class="text-white text-decoration-none hover:text-gray-300">Política de cancelamento</a></li>
+                    <li class="mb-2"><a href="juridico.html" class="text-white text-decoration-none hover:text-gray-300">Avisos legais</a></li>
+                </ul>
+            </div>
         </div>
-    </footer>
+        <div class="row">
+            <div class="col-12 text-center text-gray-500 text-sm">
+                <p class="m-0">© 2025 DeliveryAceito - Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
