@@ -5,31 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DeliveryAceito - Sistema de Delivery Profissional</title>
     
-    <!-- Incluindo Bootstrap 5.3 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Incluindo Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
     <!-- Incluindo Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Estilos personalizados, seguindo as "direções" do segundo código -->
+    <!-- Incluindo Bootstrap Icons (ainda útil para ícones) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Estilos personalizados e configurações de cor -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        /* Importa a fonte Inter para consistência */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
         
         :root {
-            --primary-color: #4f46e5;
-            --secondary-color: #06b6d4;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
+            /* Cores primárias baseadas em indigo-600 */
+            --primary-color: #4f46e5; 
+            /* Cores secundárias baseadas em cyan-500 */
+            --secondary-color: #06b6d4; 
         }
 
         body {
             font-family: 'Inter', sans-serif;
         }
         
+        /* Classes personalizadas para manter a padronização de cores */
         .text-primary-dark {
             color: var(--primary-color) !important;
         }
@@ -38,8 +36,9 @@
             background-color: var(--primary-color) !important;
         }
         
+        /* Estilo para o botão de outline (agora totalmente via CSS customizado para evitar conflito) */
         .btn-outline-primary-dark {
-            border-color: var(--primary-color) !important;
+            border: 2px solid var(--primary-color) !important;
             color: var(--primary-color) !important;
         }
         
@@ -48,379 +47,354 @@
             color: white !important;
         }
 
+        /* Animação de hover para cards de funcionalidade */
         .card-feature {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         
         .card-feature:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2); /* Sombra mais nítida usando a cor primária */
         }
-        
+
+        /* Classe para manter a proporção 16:9 do vídeo, substituindo o ratio do Bootstrap */
+        .ratio-16x9 {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 ratio */
+            height: 0;
+        }
+
+        .ratio-16x9 iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
-<body class="bg-white">
+<body class="bg-white antialiased">
 
-<!-- Menu Superior -->
-<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
-    <div class="container-fluid py-2 px-4 md:px-12">
-        <a class="navbar-brand text-xl font-bold text-primary-dark" href="{{ url_for('index') }}">
-           <i class="bi bi-truck"></i>DeliveryAceito
+<!-- Menu Superior (Header) -->
+<header class="bg-white shadow-md sticky top-0 z-50">
+    <nav class="container mx-auto flex justify-between items-center py-4 px-4 sm:px-6 lg:px-8">
+        <a class="text-2xl font-extrabold text-primary-dark hover:text-indigo-700 transition-colors" href="#">
+            <i class="bi bi-truck me-2"></i>DeliveryAceito
         </a>
-        <div class="d-flex gap-3">
-            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary-dark fw-bold rounded-full px-4">
+        <div class="flex gap-4">
+            <a href="login.html" class="btn-outline-primary-dark font-bold rounded-full py-2 px-5 text-sm md:text-base transition-colors">
                 Fazer Login
             </a>
-            <a href="{{ url_for('auth.register') }}" class="btn bg-primary-dark text-white fw-bold rounded-full px-4">
+            <a href="cadastro.html" class="bg-primary-dark text-white font-bold rounded-full py-2 px-5 text-sm md:text-base shadow-lg hover:bg-indigo-700 transition-colors">
                 Começar Grátis
             </a>
         </div>
-    </div>
-</nav>
+    </nav>
+</header>
 
 <!-- Seção Hero -->
-<div class="bg-light py-20">
-    <div class="container mx-auto px-4">
-        <div class="row items-center">
-            <div class="col-lg-6 mb-8 lg:mb-0">
-                <h1 class="display-4 fw-bold text-primary-dark mb-4">
-                    Gerencie seu delivery com <span class="text-secondary">DeliveryAceito</span>
+<section class="bg-indigo-50 py-16 md:py-24">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Texto e CTA -->
+            <div>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6">
+                    Gerencie seu delivery com <span class="text-secondary-color font-black">DeliveryAceito</span>
                 </h1>
-                <p class="lead mb-4 text-gray-700">
+                <p class="text-xl mb-8 text-gray-700 max-w-lg">
                     Sistema completo para restaurantes e lanchonetes. Controle pedidos, caixa, relatórios e muito mais em uma plataforma moderna e intuitiva.
                 </p>
-                <div class="d-flex gap-3">
-                    <a href="{{ url_for('auth.register') }}" class="btn bg-primary-dark text-white btn-lg px-6 rounded-full shadow-lg hover:opacity-90 transition-opacity">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="cadastro.html" class="bg-primary-dark text-white text-lg font-bold px-8 py-3 rounded-full shadow-xl hover:bg-indigo-700 transition-colors transform hover:scale-105">
                         <i class="bi bi-rocket-takeoff me-2"></i> Começar Grátis
                     </a>
-                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary-dark btn-lg px-6 rounded-full hover:bg-primary-dark hover:text-white transition-colors">
+                    <a href="login.html" class="btn-outline-primary-dark text-lg font-bold px-8 py-3 rounded-full hover:shadow-lg transition-colors">
                         <i class="bi bi-box-arrow-in-right me-2"></i> Fazer Login
                     </a>
                 </div>
             </div>
-            <div class="col-lg-6 text-center">
-                <img src="https://placehold.co/600x400/E0E7FF/4F46E5?text=Dashboard+do+Sistema" alt="Imagem ilustrativa do dashboard do sistema DeliveryAceito" class="rounded-lg shadow-lg max-w-full h-auto">
+            <!-- Imagem -->
+            <div class="text-center">
+                <img 
+                    src="https://placehold.co/600x400/E0E7FF/4F46E5?text=Dashboard+do+Sistema" 
+                    alt="Imagem ilustrativa do dashboard do sistema DeliveryAceito" 
+                    class="rounded-2xl shadow-2xl max-w-full h-auto mx-auto border-4 border-white"
+                >
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Seção Funcionalidades -->
-<div class="bg-primary-dark text-white py-16 lg:py-24">
-    <div class="container mx-auto px-4">
+<section class="bg-primary-dark text-white py-16 md:py-24">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Funcionalidades Completas</h2>
-            <p class="text-lg text-gray-300">Tudo que você precisa para gerenciar seu negócio</p>
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4">Funcionalidades Completas</h2>
+            <p class="text-xl text-indigo-200">Tudo que você precisa para gerenciar seu negócio</p>
         </div>
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full card-feature">
-                    <div class="text-center mb-4">
-                        <i class="bi bi-speedometer2 text-primary-dark text-5xl"></i>
-                    </div>
-                    <h5 class="font-bold text-xl mb-2">Dashboard Completo</h5>
-                    <p class="text-sm">Visualize suas vendas, pedidos do dia, ticket médio e produtos mais vendidos em tempo real.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Card 1: Dashboard -->
+            <div class="bg-white text-gray-800 rounded-xl p-8 shadow-xl h-full card-feature">
+                <div class="text-center mb-4">
+                    <i class="bi bi-speedometer2 text-primary-dark text-5xl"></i>
                 </div>
+                <h5 class="font-bold text-xl mb-2 text-center">Dashboard Completo</h5>
+                <p class="text-sm text-center text-gray-600">Visualize suas vendas, pedidos do dia, ticket médio e produtos mais vendidos em tempo real.</p>
             </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full card-feature">
-                    <div class="text-center mb-4">
-                        <i class="bi bi-receipt text-green-500 text-5xl"></i>
-                    </div>
-                    <h5 class="font-bold text-xl mb-2">Gestão de Pedidos</h5>
-                    <p class="text-sm">Controle todos os pedidos em andamento, histórico de vendas e pedidos cancelados.</p>
+            <!-- Card 2: Gestão de Pedidos -->
+            <div class="bg-white text-gray-800 rounded-xl p-8 shadow-xl h-full card-feature">
+                <div class="text-center mb-4">
+                    <i class="bi bi-receipt text-green-500 text-5xl"></i>
                 </div>
+                <h5 class="font-bold text-xl mb-2 text-center">Gestão de Pedidos</h5>
+                <p class="text-sm text-center text-gray-600">Controle todos os pedidos em andamento, histórico de vendas e pedidos cancelados.</p>
             </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full card-feature">
-                    <div class="text-center mb-4">
-                        <i class="bi bi-cash-stack text-yellow-500 text-5xl"></i>
-                    </div>
-                    <h5 class="font-bold text-xl mb-2">Controle de Caixa</h5>
-                    <p class="text-sm">Abertura, fechamento e histórico completo de todas as movimentações financeiras.</p>
+            <!-- Card 3: Controle de Caixa -->
+            <div class="bg-white text-gray-800 rounded-xl p-8 shadow-xl h-full card-feature">
+                <div class="text-center mb-4">
+                    <i class="bi bi-cash-stack text-yellow-500 text-5xl"></i>
                 </div>
+                <h5 class="font-bold text-xl mb-2 text-center">Controle de Caixa</h5>
+                <p class="text-sm text-center text-gray-600">Abertura, fechamento e histórico completo de todas as movimentações financeiras.</p>
             </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full card-feature">
-                    <div class="text-center mb-4">
-                        <i class="bi bi-graph-up text-blue-500 text-5xl"></i>
-                    </div>
-                    <h5 class="font-bold text-xl mb-2">Relatórios Avançados</h5>
-                    <p class="text-sm">Relatórios de vendas, produtos e financeiro com exportação para CSV.</p>
+            <!-- Card 4: Relatórios -->
+            <div class="bg-white text-gray-800 rounded-xl p-8 shadow-xl h-full card-feature">
+                <div class="text-center mb-4">
+                    <i class="bi bi-graph-up text-secondary-color text-5xl"></i>
                 </div>
+                <h5 class="font-bold text-xl mb-2 text-center">Relatórios Avançados</h5>
+                <p class="text-sm text-center text-gray-600">Relatórios de vendas, produtos e financeiro com exportação para CSV.</p>
             </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full card-feature">
-                    <div class="text-center mb-4">
-                        <i class="bi bi-phone text-red-500 text-5xl"></i>
-                    </div>
-                    <h5 class="font-bold text-xl mb-2">Design Responsivo</h5>
-                    <p class="text-sm">Interface moderna que funciona perfeitamente em computadores, tablets e celulares.</p>
+            <!-- Card 5: Design Responsivo -->
+            <div class="bg-white text-gray-800 rounded-xl p-8 shadow-xl h-full card-feature">
+                <div class="text-center mb-4">
+                    <i class="bi bi-phone text-red-500 text-5xl"></i>
                 </div>
+                <h5 class="font-bold text-xl mb-2 text-center">Design Responsivo</h5>
+                <p class="text-sm text-center text-gray-600">Interface moderna que funciona perfeitamente em computadores, tablets e celulares.</p>
             </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full card-feature">
-                    <div class="text-center mb-4">
-                        <i class="bi bi-shield-check text-indigo-500 text-5xl"></i>
-                    </div>
-                    <h5 class="font-bold text-xl mb-2">Seguro e Confiável</h5>
-                    <p class="text-sm">Sistema seguro com autenticação robusta e backup automático dos seus dados.</p>
+            <!-- Card 6: Seguro -->
+            <div class="bg-white text-gray-800 rounded-xl p-8 shadow-xl h-full card-feature">
+                <div class="text-center mb-4">
+                    <i class="bi bi-shield-check text-indigo-500 text-5xl"></i>
                 </div>
+                <h5 class="font-bold text-xl mb-2 text-center">Seguro e Confiável</h5>
+                <p class="text-sm text-center text-gray-600">Sistema seguro com autenticação robusta e backup automático dos seus dados.</p>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Seção Vídeo -->
-<div id="video-section" class="bg-white py-16 lg:py-24">
-    <div class="container mx-auto px-4 text-center">
+<section id="video-section" class="bg-white py-16 md:py-24">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div class="max-w-3xl mx-auto mb-12">
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">Como funciona</h2>
-            <p class="lead text-muted">Assista nosso vídeo e entenda como é simples gerenciar seu negócio com o DeliveryAceito.</p>
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-800 mb-4">Como funciona</h2>
+            <p class="text-xl text-gray-600">Assista nosso vídeo e entenda como é simples gerenciar seu negócio com o DeliveryAceito.</p>
         </div>
-        <div class="ratio ratio-16x9 rounded-lg overflow-hidden shadow-2xl">
-            <iframe
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0"
-                title="Como Funciona o DeliveryAceito"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen>
-            </iframe>
+        <div class="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl">
+            <div class="ratio-16x9">
+                <!-- Usando o placeholder do YouTube (Rick Roll, mas funcionalmente correto) -->
+                <iframe
+                    src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0"
+                    title="Como Funciona o DeliveryAceito"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Seção Depoimentos -->
-<div class="bg-primary-dark text-white py-16 lg:py-24">
-    <div class="container mx-auto px-4">
+<section class="bg-indigo-50 py-16 md:py-24">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">O que nossos clientes dizem</h2>
-            <p class="text-lg text-gray-300">Avaliações de quem usa e aprova o DeliveryAceito</p>
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-800 mb-4">O que nossos clientes dizem</h2>
+            <p class="text-xl text-gray-600">Avaliações de quem usa e aprova o DeliveryAceito</p>
         </div>
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full">
-                    <div class="d-flex justify-content-center text-warning mb-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Depoimento 1 -->
+            <div class="bg-white rounded-xl p-8 shadow-xl h-full flex flex-col justify-between card-feature">
+                <div>
+                    <div class="flex justify-center text-yellow-500 mb-3 text-xl">
                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                     </div>
-                    <p class="fst-italic mb-4">"Simplesmente o melhor! A plataforma é super intuitiva, e o controle de pedidos me economiza horas todos os dias."</p>
-                    <div class="text-center">
-                        <p class="font-bold mb-0">Carlos M.</p>
-                        <p class="text-sm text-gray-600">Dono de Pizzaria</p>
-                    </div>
+                    <p class="italic mb-4 text-gray-700">"Simplesmente o melhor! A plataforma é super intuitiva, e o controle de pedidos me economiza horas todos os dias."</p>
+                </div>
+                <div class="text-center">
+                    <p class="font-bold text-gray-800 mb-0">Carlos M.</p>
+                    <p class="text-sm text-gray-500">Dono de Pizzaria</p>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full">
-                    <div class="d-flex justify-content-center text-warning mb-3">
+            <!-- Depoimento 2 -->
+            <div class="bg-white rounded-xl p-8 shadow-xl h-full flex flex-col justify-between card-feature">
+                <div>
+                    <div class="flex justify-center text-yellow-500 mb-3 text-xl">
                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                     </div>
-                    <p class="fst-italic mb-4">"O DeliveryAceito me ajudou a organizar o balcão e os relatórios. O suporte é rápido e resolve tudo, nota 10!"</p>
-                    <div class="text-center">
-                        <p class="font-bold mb-0">Patrícia S.</p>
-                        <p class="text-sm text-gray-600">Gerente de Lanchonete</p>
-                    </div>
+                    <p class="italic mb-4 text-gray-700">"O DeliveryAceito me ajudou a organizar o balcão e os relatórios. O suporte é rápido e resolve tudo, nota 10!"</p>
+                </div>
+                <div class="text-center">
+                    <p class="font-bold text-gray-800 mb-0">Patrícia S.</p>
+                    <p class="text-sm text-gray-500">Gerente de Lanchonete</p>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full">
-                    <div class="d-flex justify-content-center text-warning mb-3">
+            <!-- Depoimento 3 -->
+            <div class="bg-white rounded-xl p-8 shadow-xl h-full flex flex-col justify-between card-feature">
+                <div>
+                    <div class="flex justify-center text-yellow-500 mb-3 text-xl">
                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                     </div>
-                    <p class="fst-italic mb-4">"Nossas vendas aumentaram desde que começamos a usar o sistema. A parte de controle de caixa é a mais útil para o nosso dia a dia."</p>
-                    <div class="text-center">
-                        <p class="font-bold mb-0">Ricardo F.</p>
-                        <p class="text-sm text-gray-600">Dono de Hamburgueria</p>
-                    </div>
+                    <p class="italic mb-4 text-gray-700">"Nossas vendas aumentaram desde que começamos a usar o sistema. A parte de controle de caixa é a mais útil para o nosso dia a dia."</p>
                 </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full">
-                    <div class="d-flex justify-content-center text-warning mb-3">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    </div>
-                    <p class="fst-italic mb-4">"A interface é limpa e fácil de entender. Em poucos cliques, consigo ver todos os relatórios que preciso. Excelente sistema!"</p>
-                    <div class="text-center">
-                        <p class="font-bold mb-0">Mariana P.</p>
-                        <p class="text-sm text-gray-600">Sócia de Restaurante</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full">
-                    <div class="d-flex justify-content-center text-warning mb-3">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    </div>
-                    <p class="fst-italic mb-4">"O DeliveryAceito é essencial para o meu negócio. Acabou a bagunça nos pedidos e o suporte técnico é super atencioso."</p>
-                    <div class="text-center">
-                        <p class="font-bold mb-0">Fernando B.</p>
-                        <p class="text-sm text-gray-600">Gerente de Açaíteria</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="bg-white text-gray-800 rounded-lg p-6 shadow-xl h-full">
-                    <div class="d-flex justify-content-center text-warning mb-3">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    </div>
-                    <p class="fst-italic mb-4">"Recomendo a todos os meus colegas do ramo. A plataforma é completa e, mesmo assim, muito fácil de usar. Os relatórios ajudam a tomar decisões."</p>
-                    <div class="text-center">
-                        <p class="font-bold mb-0">Júlia C.</p>
-                        <p class="text-sm text-gray-600">Dona de Padaria</p>
-                    </div>
+                <div class="text-center">
+                    <p class="font-bold text-gray-800 mb-0">Ricardo F.</p>
+                    <p class="text-sm text-gray-500">Dono de Hamburgueria</p>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-< <!-- Seção Planos (Atualizada com a sua versão) -->
-    <section id="planos-section" class="py-20 bg-indigo-50">
-        <div class="bg-white py-16 lg:py-24">
-            <div class="container mx-auto px-4">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">Planos Simples e Transparentes</h2>
-                    <p class="text-lg text-gray-600">Escolha o plano ideal para o seu negócio</p>
-                </div>
-                <!-- Cards dos Planos -->
-                <div class="flex flex-col lg:flex-row justify-center items-stretch gap-8">
-                    <!-- Plano Freemium -->
-                    <div class="w-full lg:w-1/2 flex">
-                        <div class="bg-white card shadow-2xl rounded-xl border border-gray-200 card-feature flex-1 p-8 flex flex-col justify-between">
-                            <div>
-                                <h4 class="card-title font-extrabold text-2xl text-gray-800 mb-6 text-center">PLANO FREEMIUM</h4>
-                                <div class="font-bold text-green-500 mb-6 text-5xl text-center">
-                                    Grátis
-                                    <small class="block text-lg font-medium text-gray-500">por 15 dias</small>
-                                </div>
-                                <ul class="list-unstyled text-left mb-8">
-                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Todas as funcionalidades</li>
-                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Pedidos ilimitados</li>
-                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Relatórios completos</li>
-                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Suporte por e-mail</li>
-                                </ul>
-                            </div>
-                            <a href="{{ url_for('auth.register') }}" class="btn w-full font-bold rounded-full py-4 border-2 border-indigo-700 text-indigo-700 hover:bg-indigo-700 hover:text-white transition-colors text-center">
-                                Começar Teste Grátis
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- Plano Premium -->
-                    <div class="w-full lg:w-1/2 flex">
-                        <div class="bg-white card border-2 border-indigo-700 shadow-2xl rounded-xl card-feature flex-1 p-8 flex flex-col justify-between relative">
-                            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-indigo-700 text-white rounded-full px-6 py-2 font-bold text-sm uppercase tracking-wide shadow-lg">
-                                MAIS POPULAR
-                            </div>
-                            <div>
-                                <h4 class="card-title font-extrabold text-2xl text-gray-800 mb-6 text-center">PLANO PREMIUM</h4>
-                                <div class="my-4 text-center">
-                                    <h3 class="text-xl text-indigo-700 font-bold mb-2">Oferta Exclusiva!</h3>
-                                    <p class="text-red-500 text-xl font-bold line-through">
-                                        De R$ 79,90
-                                    </p>
-                                    <p class="text-5xl font-extrabold text-indigo-700 mb-1">
-                                        R$ 19,90
-                                    </p>
-                                    <p class="text-sm text-gray-500 mb-2">na primeira assinatura</p>
-                                    <p class="text-lg font-bold text-indigo-700">
-                                        Depois R$ 49,90/mês
-                                    </p>
-                                </div>
-                                <ul class="list-unstyled text-left mb-8">
-                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Todas as funcionalidades</li>
-                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Pedidos ilimitados</li>
-                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Relatórios avançados</li>
-                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Suporte prioritário</li>
-                                    <li class="mb-3 flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Backup automático</li>
-                                </ul>
-                            </div>
-                            <a href="{{ url_for('auth.register') }}" class="btn bg-indigo-700 text-white w-full font-bold rounded-full py-4 shadow-lg hover:bg-indigo-800 transition-colors text-center">
-                                Assinar Agora
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- Seção Planos -->
+<section id="planos-section" class="bg-white py-16 md:py-24">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-800 mb-4">Planos Simples e Transparentes</h2>
+            <p class="text-xl text-gray-600">Escolha o plano ideal para o seu negócio</p>
         </div>
-    </section>
-<!-- Seção Final - CTA -->
-<div class="bg-primary-dark py-16 lg:py-24">
-    <div class="container mx-auto px-4 text-center">
-        <div class="card bg-transparent border-0 text-white">
-            <div class="card-body p-5">
-                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-3">Pronto para começar?</h2>
-                <p class="lead mb-4">
-                    Junte-se a centenas de restaurantes que já usam o DeliveryAceito para crescer seus negócios.
-                </p>
-                <a href="{{ url_for('auth.register') }}" class="btn btn-light text-primary-dark btn-lg px-6 rounded-full fw-bold shadow-lg hover:opacity-90 transition-opacity">
-                    <i class="bi bi-rocket-takeoff me-2"></i> Criar Conta Grátis
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Rodapé (Totalmente em Tailwind CSS) -->
-    <footer class="bg-gray-900 text-white py-12">
-        <div class="container mx-auto px-6">
-            <!-- Estrutura de Grid para as Colunas - Ajuste no gap para melhorar responsividade em telas maiores -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-16 border-b border-gray-700 pb-8 mb-8">
-                
-                <!-- Coluna 1: Logo e Descrição -->
-                <div class="space-y-3">
-                    <h5 class="text-lg font-bold text-white">DeliveryAceito</h5>
-                    <p class="text-gray-400 text-sm">Sistema de delivery e balcão simples, rápido e eficiente para o seu negócio.</p>
-                </div>
-
-                <!-- Coluna 2: Suporte e Contato -->
-                <div class="space-y-3">
-                    <h5 class="text-lg font-bold text-white">Suporte e Contato</h5>
-                    <!-- CLASSE text-sm ADICIONADA AQUI -->
-                    <ul class="space-y-2 text-gray-400 text-sm"> 
-                        <!-- O ícone de telefone JÁ TINHA mr-2 -->
-                        <li><a href="https://wa.me/5599999999999" target="_blank" class="hover:text-gray-300 transition-colors flex items-center"><span class="mr-2">📞</span> (xx) xxxx-xxxx</a></li>
-                        <!-- CORREÇÃO APLICADA: Adicionado mr-2 para espaçar o ícone do e-mail do texto -->
-                        <li><a href="mailto:deliveryaceito.sac@gmail.com" class="hover:text-gray-200 transition-colors flex items-center"><span class="mr-2">📧</span> deliveryaceito.sac@gmail.com </a></li>
-                        <!-- O ícone de localização JÁ TINHA mr-2 -->
-                        <li class="flex items-center"><span class="mr-2">📍</span> Joinville - SC</li>
-                    </ul>
-                </div>
-
-                <!-- Coluna 3: Navegação Rápida -->
-                <div class="space-y-3">
-                    <h5 class="text-lg font-bold text-white"> Navegação Rápida</h5>
-                    <!-- CLASSE text-sm ADICIONADA AQUI -->
-                    <ul class="space-y-2 text-gray-400 text-sm"> 
-                        <li><a href="#video-section" class="hover:text-gray-300 transition-colors"> Como funciona</a></li>
-                        <li><a href="ajuda.html" class="hover:text-gray-300 transition-colors"> Perguntas frequentes (FAQ)</a></li>
-                        <li><a href="ajuda.html" class="hover:text-gray-300 transition-colors"> Central de ajuda</a></li>
-                        <li><a href="{{ url_for('auth.login') }}" class="hover:text-gray-300 transition-colors"> Conta / Login</a></li>
-                    </ul>
-                </div>
-
-                <!-- Coluna 4: Jurídico -->
-                <div class="space-y-3">
-                    <h5 class="text-lg font-bold text-white">Jurídico</h5>
-                    <!-- CLASSE text-sm ADICIONADA AQUI -->
-                    <ul class="space-y-2 text-gray-400 text-sm"> 
-                        <li><a href="juridico.html#termos" class="hover:text-gray-300 transition-colors">Termos de uso</a></li>
-                        <li><a href="juridico.html#privacidade" class="hover:text-gray-300 transition-colors">Política de privacidade</a></li>
-                        <li><a href="juridico.html#cancelamento" class="hover:text-gray-300 transition-colors">Política de cancelamento</a></li>
-                        <li><a href="juridico.html#avisos" class="hover:text-gray-300 transition-colors">Avisos legais</a></li>
-                    </ul>
+        <!-- Cards dos Planos -->
+        <div class="flex flex-col lg:flex-row justify-center items-stretch gap-8 max-w-5xl mx-auto">
+            
+            <!-- Plano Freemium (Gratuito) -->
+            <div class="w-full lg:w-1/2 flex">
+                <div class="bg-gray-50 card shadow-xl rounded-2xl border border-gray-200 card-feature flex-1 p-8 flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-black text-2xl text-gray-800 mb-6 text-center border-b pb-4">PLANO FREEMIUM</h4>
+                        <div class="font-black text-green-600 mb-6 text-5xl text-center">
+                            Grátis
+                            <small class="block text-lg font-medium text-gray-500 mt-1">por 15 dias</small>
+                        </div>
+                        <ul class="list-unstyled text-left mb-8 space-y-3">
+                            <li class="flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Todas as funcionalidades</li>
+                            <li class="flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Pedidos ilimitados</li>
+                            <li class="flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Relatórios completos</li>
+                            <li class="flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Suporte por e-mail</li>
+                        </ul>
+                    </div>
+                    <a href="cadastro.html" class="w-full font-bold rounded-full py-4 border-2 border-indigo-700 text-indigo-700 hover:bg-indigo-700 hover:text-white transition-colors text-center text-lg">
+                        Começar Teste Grátis
+                    </a>
                 </div>
             </div>
             
-            <!-- Linha de Direitos Autorais -->
-            <div class="text-center text-gray-500 text-sm">
-                <p class="m-0">© 2025 DeliveryAceito - Todos os direitos reservados.</p>
+            <!-- Plano Premium (Popular) -->
+            <div class="w-full lg:w-1/2 flex">
+                <div class="bg-white card border-4 border-primary-dark shadow-2xl rounded-2xl card-feature flex-1 p-8 flex flex-col justify-between relative">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary-dark text-white rounded-full px-6 py-2 font-bold text-sm uppercase tracking-wider shadow-lg">
+                        MAIS POPULAR
+                    </div>
+                    <div>
+                        <h4 class="font-black text-2xl text-gray-800 mb-6 text-center border-b pb-4">PLANO PREMIUM</h4>
+                        <div class="my-4 text-center">
+                            <h3 class="text-xl text-primary-dark font-black mb-2">Oferta Exclusiva!</h3>
+                            <p class="text-red-500 text-xl font-bold line-through">
+                                De R$ 79,90
+                            </p>
+                            <p class="text-6xl font-black text-primary-dark mb-1">
+                                R$ 19,90
+                            </p>
+                            <p class="text-lg text-gray-500 mb-2 font-semibold">na primeira assinatura</p>
+                            <p class="text-xl font-black text-primary-dark mt-4">
+                                Depois R$ 49,90/mês
+                            </p>
+                        </div>
+                        <ul class="list-unstyled text-left mb-8 space-y-3">
+                            <li class="flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Todas as funcionalidades</li>
+                            <li class="flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Pedidos ilimitados</li>
+                            <li class="flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Relatórios avançados</li>
+                            <li class="flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Suporte prioritário</li>
+                            <li class="flex items-center"><i class="bi bi-check-circle-fill text-green-500 mr-3"></i> Backup automático</li>
+                        </ul>
+                    </div>
+                    <a href="cadastro.html" class="bg-primary-dark text-white w-full font-bold rounded-full py-4 shadow-xl hover:bg-indigo-700 transition-colors text-center text-lg transform hover:scale-[1.02]">
+                        Assinar Agora
+                    </a>
+                </div>
             </div>
         </div>
-    </footer>
+    </div>
+</section>
 
-<!-- Incluindo Bootstrap 5.3 JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Seção Final - CTA -->
+<section class="bg-primary-dark py-16 md:py-24">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="text-white">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4">Pronto para começar?</h2>
+            <p class="text-xl mb-8 text-indigo-100 max-w-3xl mx-auto">
+                Junte-se a centenas de restaurantes que já usam o DeliveryAceito para crescer seus negócios.
+            </p>
+            <a href="cadastro.html" class="bg-white text-primary-dark text-xl font-bold px-10 py-4 rounded-full shadow-2xl hover:opacity-90 transition-opacity transform hover:scale-105">
+                <i class="bi bi-rocket-takeoff me-2"></i> Criar Conta Grátis
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Rodapé (Totalmente em Tailwind CSS) -->
+<footer class="bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-6 sm:px-8">
+        <!-- Estrutura de Grid para as Colunas -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-16 border-b border-gray-700 pb-8 mb-8">
+            
+            <!-- Coluna 1: Logo e Descrição -->
+            <div class="space-y-3">
+                <h5 class="text-xl font-extrabold text-white">DeliveryAceito</h5>
+                <p class="text-gray-400 text-sm">Sistema de delivery e balcão simples, rápido e eficiente para o seu negócio.</p>
+            </div>
+
+            <!-- Coluna 2: Suporte e Contato -->
+            <div class="space-y-3">
+                <h5 class="text-lg font-bold text-white">Suporte e Contato</h5>
+                <ul class="space-y-2 text-gray-400 text-sm"> 
+                    <li><a href="#" class="hover:text-primary-dark transition-colors flex items-center"><span class="mr-2">📞</span> (xx) xxxx-xxxx</a></li>
+                    <li><a href="#" class="hover:text-primary-dark transition-colors flex items-center"><span class="mr-2">📧</span> deliveryaceito.sac@gmail.com </a></li>
+                    <li class="flex items-center"><span class="mr-2">📍</span> Joinville - SC</li>
+                </ul>
+            </div>
+
+            <!-- Coluna 3: Navegação Rápida -->
+            <div class="space-y-3">
+                <h5 class="text-lg font-bold text-white"> Navegação Rápida</h5>
+                <ul class="space-y-2 text-gray-400 text-sm"> 
+                    <li><a href="#video-section" class="hover:text-primary-dark transition-colors"> Como funciona</a></li>
+                    <li><a href="#" class="hover:text-primary-dark transition-colors"> Perguntas frequentes (FAQ)</a></li>
+                    <li><a href="#" class="hover:text-primary-dark transition-colors"> Central de ajuda</a></li>
+                    <li><a href="login.html" class="hover:text-primary-dark transition-colors"> Conta / Login</a></li>
+                </ul>
+            </div>
+
+            <!-- Coluna 4: Jurídico -->
+            <div class="space-y-3">
+                <h5 class="text-lg font-bold text-white">Jurídico</h5>
+                <ul class="space-y-2 text-gray-400 text-sm"> 
+                    <li><a href="#" class="hover:text-primary-dark transition-colors">Termos de uso</a></li>
+                    <li><a href="#" class="hover:text-primary-dark transition-colors">Política de privacidade</a></li>
+                    <li><a href="#" class="hover:text-primary-dark transition-colors">Política de cancelamento</a></li>
+                    <li><a href="#" class="hover:text-primary-dark transition-colors">Avisos legais</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Linha de Direitos Autorais -->
+        <div class="text-center text-gray-500 text-sm">
+            <p class="m-0">© 2025 DeliveryAceito - Todos os direitos reservados.</p>
+        </div>
+    </div>
+</footer>
 
 </body>
 </html>
