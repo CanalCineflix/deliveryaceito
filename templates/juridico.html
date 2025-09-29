@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
         body {
             font-family: 'Inter', sans-serif;
@@ -98,58 +98,57 @@
             color: #555;
         }
         
-        /* NOVO CSS: Espaçamento personalizado para a navbar */
-        .nav-spacer-custom {
-            width: 50%; /* Define a largura exata de 15% */
-        }
-
-        /* Ajuste responsivo para garantir que a barra de navegação funcione em telas pequenas */
         @media (max-width: 768px) {
-            /* No mobile, a navegação quebra em coluna para melhor usabilidade */
-            header .container {
+            header {
                 flex-direction: column;
-                align-items: flex-start;
+                padding: 1rem;
             }
-            /* Oculta o espaçador invisível no mobile */
-            .nav-spacer-custom {
-                display: none;
-            }
-            header nav {
+            header .nav-links {
                 margin-top: 1rem;
-                width: 100%;
-                justify-content: space-around; /* Distribui os links em mobile */
+                justify-content: center;
             }
-             .main-content {
+            header .nav-links a {
+                margin: 0 0.5rem;
+            }
+            .main-content {
                 padding-top: 140px;
                 padding-left: 1rem;
                 padding-right: 1rem;
             }
+            /* As classes do rodapé antigo foram removidas */
         }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <!-- Cabeçalho Fixo (Navbar Atualizada) -->
-    <header class="header-bg text-white shadow-lg fixed top-0 w-full z-50">
-        <!-- O flex justify-between é fundamental para separar logo e navegação -->
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            
-            <!-- 1. LOGO: "DeliveryAceito" (Canto Esquerdo) -->
-            <h1 class="text-2xl font-bold whitespace-nowrap">DeliveryAceito</h1>
-            
-            <!-- 2. NOVO ESPAÇADOR PERSONALIZADO: Usa a classe CSS customizada para 15% -->
-            <!-- Esta div só é visível em telas maiores que 'sm' (sm:block) -->
-            <div class="nav-spacer-custom hidden sm:block"></div>
-            
-            <!-- 3. LINKS DE NAVEGAÇÃO (Empurrados para o Canto Direito) -->
-            <nav class="flex items-center space-x-4">
-                <a href="/" class="hover:text-gray-300 transition-colors hidden sm:block">Início</a>
-                <a href="/#planos-section" class="hover:text-gray-300 transition-colors hidden sm:block">Planos</a>
-                <a href="/ajuda.html" class="hover:text-gray-300 transition-colors">Ajuda</a>
-                <a href="juridico.html" class="hover:text-gray-300 transition-colors">Jurídico</a>
-                <!-- Botão de Login com margem à esquerda para separação final -->
-                <a href="{{ url_for('auth.login') }}" class="py-2 px-4 rounded-full border border-white hover:bg-white hover:text-blue-purple transition-all duration-300 text-sm font-semibold ml-4">Login</a>
-            </nav>
+<!-- Menu Superior -->
+<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
+    <div class="container-fluid py-2 px-4 md:px-12">
+        <a class="navbar-brand text-xl font-bold text-primary-dark" href="{{ url_for('index') }}">
+           <i class="bi bi-truck"></i>DeliveryAceito
+        </a>
+        <div class="d-flex gap-3">
+            <a href="/" class="btn btn-outline-primary-dark fw-bold rounded-full px-4">
+                Início
+            </a>
+            <a href="/#planos-section" class="btn bg-primary-dark text-white fw-bold rounded-full px-4">
+                Planos
+            </a>
+             </a>
+            <a href="/ajuda.html" class="btn bg-primary-dark text-white fw-bold rounded-full px-4">
+                Ajuda
+            </a>
+             </a>
+            <a href="juridico.html" class="btn bg-primary-dark text-white fw-bold rounded-full px-4">
+                Juridico
+            </a>
+             </a>
+            <a href="{{ url_for('auth.login') }}" class="mx-3 hover:text-gray-300 py-2 px-4 rounded-full border border-white hover:bg-white hover:text-blue-purple transition-all duration-300">
+                Login
+            </a>
+        </div>
+    </div>
+</nav>
         </div>
     </header>
 
@@ -187,7 +186,7 @@
             </section>
 
             <section class="legal-section" id="avisos">
-                <h2>⚖️ 4. Avisos Legais </h2>
+                <h2>⚖️ 4. Avisos Legais </h2>
                 <p>O DeliveryAceito é um serviço online que oferece ferramentas de gestão para estabelecimentos de alimentação.</p>
                 <p>Não nos responsabilizamos por falhas decorrentes de má utilização da plataforma ou por indisponibilidade causada por fatores externos (como falhas de internet, servidores de terceiros ou força maior).</p>
                 <p>Oferecemos suporte 24 horas por dia, mas em períodos de alta demanda o tempo de resposta pode ser maior.</p>
