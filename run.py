@@ -1,7 +1,8 @@
 import os
 import click
 from app import app, db
-from flask_migrate import Migrate, upgrade # Importando 'upgrade' para o deploy seguro
+# Importamos 'stamp' e 'upgrade'
+from flask_migrate import Migrate, upgrade, stamp 
 from models import User, Plan, Subscription, Product, Order, OrderItem, CashMovement, CashSession, OrderStatus, RestaurantConfig, Neighborhood, Customer
 from flask import render_template
 
@@ -84,10 +85,17 @@ def create_plans_command(skip_output):
             click.echo('Planos atualizados com sucesso.')
 
 
-# NOVA FUNÇÃO DE DEPLOY: Agora é uma função Python normal, não um comando CLI do Flask
-def main_deploy():
+# NOVA FUNÇÃO DE DEPLOY: Agora com um parâmetro opcional para o stamp
+def main_deploy(stamp_only=False):
     """Roda as tarefas de deploy de produção de forma segura: aplica migrações e cria/atualiza planos."""
     with app.app_context():
+        if stamp_only:
+            # Opção temporária para forçar a sincronização do histórico (fix do erro 'Can't locate revision')
+            stamp('head')
+            click.echo('Database migration history stamped to HEAD. Deployment will fail to start Gunicorn.')
+            click.echo('Please revert the Start Command to the permanent one (Step 2).')
+            return # Sai da função após o stamp
+            
         # 1. Aplica as migrações do banco de dados. Isso atualiza o schema sem apagar os dados existentes.
         upgrade() 
         click.echo('Database migrations applied.')
