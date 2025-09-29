@@ -12,6 +12,7 @@
             background-color: #f3f4f6;
         }
         .header-bg {
+            /* Cor de fundo gradiente */
             background: linear-gradient(90deg, #4F46E5, #9B5DE5);
         }
         .text-blue-purple {
@@ -53,17 +54,29 @@
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <!-- Cabeçalho Fixo -->
+    <!-- Cabeçalho Fixo e Responsivo - CORRIGIDO -->
     <header class="header-bg text-white shadow-lg fixed top-0 w-full z-50">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold">DeliveryAceito</h1>
-            <nav>
-                <!-- Ajuste no href: Use paths relativos para páginas no mesmo nível -->
-                <a href="/" class="mx-3 hover:text-gray-300">Início</a>
-                <a href="/#planos-section" class="mx-3 hover:text-gray-300">Planos</a>
-                <a href="ajuda.html" class="mx-3 hover:text-gray-300">Ajuda</a>
-                <a href="juridico.html" class="mx-3 hover:text-gray-300">Jurídico</a>
-                <a href="{{ url_for('auth.login') }}" class="mx-3 hover:text-gray-300 py-2 px-4 rounded-full border border-white hover:bg-white hover:text-blue-purple transition-all duration-300">Login</a>
+        <!-- 1. Container para ocupar 100% da largura (W-FULL) -->
+        <!-- O container principal foi ajustado para cobrir 100% da largura, e o padding (px-6) foi removido daqui. -->
+        <div class="w-full py-4 flex justify-between items-center">
+            
+            <!-- 2. LOGO: "DeliveryAceito" (Canto Esquerdo) -->
+            <!-- Adicionado 'pl-6' (padding-left) para espaçar o logo da borda esquerda -->
+            <h1 class="text-2xl font-bold whitespace-nowrap pl-6">
+                 DeliveryAceito
+            </h1>
+            
+            <!-- 3. LINKS DE NAVEGAÇÃO (Canto Direito) -->
+            <!-- Adicionado 'pr-6' (padding-right) para espaçar os links da borda direita -->
+            <nav class="flex items-center pr-6">
+                <!-- Ajuste nos links: Removido mx-3 e adicionado espaço usando 'space-x-4' e 'ml-4' no botão de login -->
+                <a href="/" class="hover:text-gray-300 transition-colors hidden sm:block mx-3">Início</a>
+                <a href="/#planos-section" class="hover:text-gray-300 transition-colors hidden sm:block mx-3">Planos</a>
+                <a href="ajuda.html" class="hover:text-gray-300 transition-colors mx-3">Ajuda</a>
+                <a href="juridico.html" class="hover:text-gray-300 transition-colors mx-3">Jurídico</a>
+                
+                <!-- Botão de Login -->
+                <a href="{{ url_for('auth.login') }}" class="py-2 px-4 rounded-full border border-white hover:bg-white hover:text-blue-purple transition-all duration-300 text-sm font-semibold ml-4">Login</a>
             </nav>
         </div>
     </header>
@@ -246,9 +259,9 @@
 
                     // If you want only one item to be open at a time, uncomment the code below
                     // faqItems.forEach(otherItem => {
-                    //      if (otherItem !== item && otherItem.classList.contains('active')) {
-                    //          otherItem.classList.remove('active');
-                    //      }
+                    //     if (otherItem !== item && otherItem.classList.contains('active')) {
+                    //         otherItem.classList.remove('active');
+                    //     }
                     // });
                 });
             });
