@@ -1,7 +1,7 @@
 import os
 import click
 from app import app, db
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade # Importando 'upgrade' para o deploy seguro
 from models import User, Plan, Subscription, Product, Order, OrderItem, CashMovement, CashSession, OrderStatus, RestaurantConfig, Neighborhood, Customer
 from flask import render_template
 
@@ -23,10 +23,11 @@ def juridico():
 def make_shell_context():
     return dict(db=db, User=User, Plan=Plan, Subscription=Subscription, Product=Product, Order=Order, OrderItem=OrderItem, CashMovement=CashMovement, CashSession=CashSession, OrderStatus=OrderStatus, RestaurantConfig=RestaurantConfig, Neighborhood=Neighborhood, Customer=Customer)
 
+# Comando CLI para inicialização (Apenas para uso em desenvolvimento local)
 @app.cli.command('initdb')
 @click.option('--drop', is_flag=True, help='Drops existing tables.')
 def initdb_command(drop):
-    """Initializes the database."""
+    """Initializes the database (Uso recomendado apenas para desenvolvimento/teste local)."""
     if drop:
         click.confirm('Are you sure you want to drop all tables?', abort=True)
         db.drop_all()
@@ -35,7 +36,8 @@ def initdb_command(drop):
     click.echo('Initialized the database.')
     
 @app.cli.command('create_plans')
-def create_plans_command():
+@click.option('--skip-output', is_flag=True, default=False) # Adicionando flag para controle de output
+def create_plans_command(skip_output):
     """Cria os planos Freemium e Premium se eles não existirem."""
     with app.app_context():
         # Verifica e cria/atualiza o Plano Gratuito (Freemium)
@@ -49,10 +51,12 @@ def create_plans_command():
                 is_free=True
             )
             db.session.add(free_plan)
-            click.echo('Plano Gratuito criado.')
+            if not skip_output:
+                click.echo('Plano Gratuito criado.')
         else:
             free_plan.is_free = True
-            click.echo('Plano Gratuito atualizado.')
+            if not skip_output:
+                click.echo('Plano Gratuito atualizado.')
 
         # Verifica e cria/atualiza o Plano Premium
         premium_plan = Plan.query.filter_by(name='Plano Premium').first()
@@ -66,15 +70,38 @@ def create_plans_command():
                 kirvano_checkout_url='https://pay.kirvano.com/7344c061-5d52-49c6-8989-ab73b215687f'
             )
             db.session.add(premium_plan)
-            click.echo('Plano Premium criado.')
+            if not skip_output:
+                click.echo('Plano Premium criado.')
         else:
             # Se o plano já existe, apenas atualiza a URL de checkout
             premium_plan.kirvano_checkout_url = 'https://pay.kirvano.com/7344c061-5d52-49c6-8989-ab73b215687f'
             premium_plan.is_free = False
-            click.echo('URL do Plano Premium atualizada.')
+            if not skip_output:
+                click.echo('URL do Plano Premium atualizada.')
             
         db.session.commit()
-        click.echo('Planos atualizados com sucesso.')
+        if not skip_output:
+            click.echo('Planos atualizados com sucesso.')
 
+
+# NOVA FUNÇÃO DE DEPLOY: Agora é uma função Python normal, não um comando CLI do Flask
+def main_deploy():
+    """Roda as tarefas de deploy de produção de forma segura: aplica migrações e cria/atualiza planos."""
+    with app.app_context():
+        # 1. Aplica as migrações do banco de dados. Isso atualiza o schema sem apagar os dados existentes.
+        upgrade() 
+        click.echo('Database migrations applied.')
+        
+        # 2. Cria os planos (que você já tinha em create_plans)
+        create_plans_command(skip_output=True)
+        
+        click.echo('Deployment successful.')
+        
+# O código principal deve continuar a rodar o servidor, mas podemos usar isso para o deploy
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Se rodarmos diretamente o run.py com o Render, podemos tratar o argumento 'deploy'
+    if os.environ.get('FLASK_ENV') == 'development':
+        app.run(debug=True, host='0.0.0.0', port=5000)
+    else:
+        # Se você está rodando localmente sem gunicorn, ainda pode usar app.run
+        app.run(debug=False, host='0.0.0.0', port=5000)
