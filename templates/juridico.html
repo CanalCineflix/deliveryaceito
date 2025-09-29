@@ -98,42 +98,23 @@
             color: #555;
         }
         
-        /* NOVO CSS PARA A BARRA DE NAVEGAÇÃO */
-        /* Garante que o container da nav use o espaço restante (aproximadamente 30% do container mx-auto) */
-        .nav-container {
-             /* Usa flex-grow para ocupar o espaço entre o logo e os links, 
-             garantindo que os links fiquem à direita */
-            flex-grow: 1; 
-            display: flex;
-            justify-content: flex-end; /* Alinha os links à direita */
-        }
-
-        /* Usando a largura máxima para dar a impressão do espaço de 30% */
-        @media (min-width: 768px) {
-            .nav-container {
-                /* Usamos um w-2/3 para forçar o container dos links a ocupar 66% do espaço, 
-                deixando o logo nos 33% restantes. Isso simula a proporção desejada. */
-                width: 66%; 
-                max-width: 66%;
-            }
-        }
-        /* FIM NOVO CSS */
-
+        /* Ajuste responsivo para garantir que a barra de navegação funcione em telas pequenas */
         @media (max-width: 768px) {
-            header {
-                /* Reverte para a exibição padrão em telas menores */
+            /* No mobile, a navegação quebra em coluna para melhor usabilidade */
+            header .container {
                 flex-direction: column;
-                padding: 1rem;
+                align-items: flex-start;
             }
-            /* Ajuste para navegação em mobile */
-            header .nav-container {
+            /* Oculta o espaçador invisível no mobile */
+            .nav-spacer {
+                display: none;
+            }
+            header nav {
                 margin-top: 1rem;
-                justify-content: center;
-                flex-grow: unset;
                 width: 100%;
-                max-width: 100%;
+                justify-content: space-around; /* Distribui os links em mobile */
             }
-            .main-content {
+             .main-content {
                 padding-top: 140px;
                 padding-left: 1rem;
                 padding-right: 1rem;
@@ -145,25 +126,25 @@
 
     <!-- Cabeçalho Fixo (Navbar Atualizada) -->
     <header class="header-bg text-white shadow-lg fixed top-0 w-full z-50">
-        <!-- Container principal com Flexbox e justify-between para colocar logo na esquerda e navegação na direita -->
+        <!-- O flex justify-between é fundamental para separar logo e navegação -->
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             
-            <!-- 1. LOGO: "DELIVERYACEITO" em maiúsculas (Canto Esquerdo) -->
-            <h1 class="text-2xl font-bold">DELIVERYACEITO</h1>
+            <!-- 1. LOGO: "DeliveryAceito" (Canto Esquerdo) -->
+            <h1 class="text-2xl font-bold whitespace-nowrap">DeliveryAceito</h1>
             
-            <!-- 2. LINKS DE NAVEGAÇÃO (Canto Direito com Espaçamento de 30%) -->
-            <!-- Usamos uma div wrapper (.nav-container) para aplicar o alinhamento e o "espaço" de 30% -->
-            <div class="nav-container">
-                <nav class="flex items-center space-x-4 md:space-x-6 lg:space-x-8">
-                    <!-- Links -->
-                    <a href="/" class="hover:text-gray-300 transition-colors">Início</a>
-                    <a href="/#planos-section" class="hover:text-gray-300 transition-colors">Planos</a>
-                    <a href="/ajuda.html" class="hover:text-gray-300 transition-colors">Ajuda</a>
-                    <a href="juridico.html" class="hover:text-gray-300 transition-colors">Jurídico</a>
-                    <!-- Botão de Login -->
-                    <a href="{{ url_for('auth.login') }}" class="hover:text-gray-300 py-2 px-4 rounded-full border border-white hover:bg-white hover:text-blue-purple transition-all duration-300 text-sm font-semibold">Login</a>
-                </nav>
-            </div>
+            <!-- 2. NOVO ESPAÇADOR: Usa w-4/12 (33.33%) para forçar o recuo dos links em 30% do espaço disponível -->
+            <!-- Esta div só é visível em telas maiores que 'sm' (sm:block) -->
+            <div class="nav-spacer hidden sm:block w-4/12 xl:w-3/12"></div>
+            
+            <!-- 3. LINKS DE NAVEGAÇÃO (Empurrados para o Canto Direito) -->
+            <nav class="flex items-center space-x-4">
+                <a href="/" class="hover:text-gray-300 transition-colors hidden sm:block">Início</a>
+                <a href="/#planos-section" class="hover:text-gray-300 transition-colors hidden sm:block">Planos</a>
+                <a href="/ajuda.html" class="hover:text-gray-300 transition-colors">Ajuda</a>
+                <a href="juridico.html" class="hover:text-gray-300 transition-colors">Jurídico</a>
+                <!-- Botão de Login com margem à esquerda para separação final -->
+                <a href="{{ url_for('auth.login') }}" class="py-2 px-4 rounded-full border border-white hover:bg-white hover:text-blue-purple transition-all duration-300 text-sm font-semibold ml-4">Login</a>
+            </nav>
         </div>
     </header>
 
