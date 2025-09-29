@@ -99,7 +99,7 @@
             </a>
             
             <!-- 2. LINKS DE NAVEGAÇÃO (Canto Direito) -->
-            <!-- nav-lg-spacing foi removido. O 'justify-between' do div pai é que fará o alinhamento. -->
+            <!-- CORREÇÃO: Agrupei todos os links e o botão de login dentro desta tag <nav> para que o justify-between funcione. -->
             <nav class="flex items-center space-x-4">
                 <!-- Links escondidos em mobile e visíveis em tablet/desktop (sm:block) -->
                 <a href="/" class="hover:text-gray-300 transition-colors hidden sm:block">Início</a>
@@ -107,9 +107,10 @@
                 <a href="/ajuda.html" class="hover:text-gray-300 transition-colors">Ajuda</a>
                 <a href="juridico.html" class="hover:text-gray-300 transition-colors">Jurídico</a>
                 
-                <!-- Botão de Login -->
+                <!-- Botão de Login: Agora está DENTRO da tag <nav> -->
                 <a href="{{ url_for('auth.login') }}" class="py-2 px-4 rounded-full border border-white hover:bg-white hover:text-blue-purple transition-all duration-300 text-sm font-semibold ml-4">Login</a>
             </nav>
+            <!-- O botão de Login NÃO está mais aqui fora. -->
         </div>
     </header>
 
