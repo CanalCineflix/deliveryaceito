@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
         body {
             font-family: 'Inter', sans-serif;
@@ -18,43 +18,23 @@
         }
 
        .header-bg {
+            /* Cor de fundo gradiente */
             background: linear-gradient(90deg, #4F46E5, #9B5DE5);
         }
         .text-blue-purple {
             color: #4F46E5;
         }
+        /* Definição de cores secundárias para uso interno, caso necessário */
         .bg-blue-purple {
             background-color: #4F46E5;
         }
         .bg-blue-purple-light {
             background-color: #9B5DE5;
         }
-        .btn-primary {
-            background: linear-gradient(90deg, #4F46E5, #9B5DE5);
-            transition: transform 0.2s ease-in-out;
-        }
         .btn-primary:hover {
             transform: translateY(-2px);
         }
-        .faq-item {
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-        .faq-item.active .faq-answer {
-            max-height: 200px; /* Ajuste conforme a necessidade do conteúdo */
-            transition: max-height 0.5s ease-in;
-        }
-        .faq-item.active .faq-icon {
-            transform: rotate(45deg);
-        }
-        .faq-icon {
-            transition: transform 0.3s ease;
-        }
+        /* Estilos do conteúdo principal */
         .main-content {
             padding-top: 100px;
             padding-bottom: 50px;
@@ -62,28 +42,24 @@
             margin: 0 auto;
             text-align: center;
         }
-        
         .main-title {
             font-size: 2.5rem;
             color: #4F46E5;
             font-weight: 600;
             margin-bottom: 2rem;
         }
-
         .legal-container {
             text-align: left;
             display: flex;
             flex-direction: column;
             gap: 2rem;
         }
-
         .legal-section {
             background-color: white;
             padding: 2rem;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
-
         .legal-section h2 {
             font-size: 1.75rem;
             color: #4F46E5;
@@ -91,64 +67,53 @@
             margin-top: 0;
             margin-bottom: 1rem;
         }
-
         .legal-section p {
             line-height: 1.6;
             font-size: 1rem;
             color: #555;
         }
         
+        /* NOVO CSS: Margem de 15% aplicada à navegação para telas maiores (desktop) */
+        @media (min-width: 1024px) {
+             .nav-lg-spacing {
+                margin-left: 15%; /* Aplica 15% de margem no desktop */
+            }
+        }
+        
+        /* Ajuste responsivo para garantir que a barra de navegação funcione em telas pequenas */
         @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                padding: 1rem;
-            }
-            header .nav-links {
-                margin-top: 1rem;
-                justify-content: center;
-            }
-            header .nav-links a {
-                margin: 0 0.5rem;
-            }
-            .main-content {
+             .main-content {
                 padding-top: 140px;
                 padding-left: 1rem;
                 padding-right: 1rem;
             }
-            /* As classes do rodapé antigo foram removidas */
         }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
-<!-- Menu Superior -->
-<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
-    <div class="container-fluid py-2 px-4 md:px-12">
-        <a class="navbar-brand text-xl font-bold text-primary-dark" href="{{ url_for('index') }}">
-           <i class="bi bi-truck"></i>DeliveryAceito
-        </a>
-        <div class="d-flex gap-3">
-            <a href="/" class="btn btn-outline-primary-dark fw-bold rounded-full px-4">
-                Início
+    <!-- Cabeçalho Fixo e Responsivo com Margem de 15% no Desktop -->
+    <header class="header-bg text-white shadow-lg fixed top-0 w-full z-50">
+        <!-- O container flex é centralizado e usado para separar logo e navegação -->
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            
+            <!-- 1. LOGO: "DeliveryAceito" (Canto Esquerdo) -->
+            <a href="{{ url_for('index') }}" class="text-2xl font-bold whitespace-nowrap hover:text-gray-200 transition-colors">
+                 DeliveryAceito
             </a>
-            <a href="/#planos-section" class="btn bg-primary-dark text-white fw-bold rounded-full px-4">
-                Planos
-            </a>
-             </a>
-            <a href="/ajuda.html" class="btn bg-primary-dark text-white fw-bold rounded-full px-4">
-                Ajuda
-            </a>
-             </a>
-            <a href="juridico.html" class="btn bg-primary-dark text-white fw-bold rounded-full px-4">
-                Juridico
-            </a>
-             </a>
-            <a href="{{ url_for('auth.login') }}" class="mx-3 hover:text-gray-300 py-2 px-4 rounded-full border border-white hover:bg-white hover:text-blue-purple transition-all duration-300">
-                Login
-            </a>
-        </div>
-    </div>
-</nav>
+            
+            <!-- 2. LINKS DE NAVEGAÇÃO (Com margem esquerda de 15% no desktop) -->
+            <!-- nav-lg-spacing aplica a margem de 15% em telas grandes -->
+            <nav class="flex items-center space-x-4 nav-lg-spacing">
+                <!-- Links escondidos em mobile e visíveis em tablet/desktop (sm:block) -->
+                <a href="/" class="hover:text-gray-300 transition-colors hidden sm:block">Início</a>
+                <a href="/#planos-section" class="hover:text-gray-300 transition-colors hidden sm:block">Planos</a>
+                <a href="/ajuda.html" class="hover:text-gray-300 transition-colors">Ajuda</a>
+                <a href="juridico.html" class="hover:text-gray-300 transition-colors">Jurídico</a>
+                
+                <!-- Botão de Login com margem à esquerda para separação final -->
+                <a href="{{ url_for('auth.login') }}" class="py-2 px-4 rounded-full border border-white hover:bg-white hover:text-blue-purple transition-all duration-300 text-sm font-semibold ml-4">Login</a>
+            </nav>
         </div>
     </header>
 
@@ -186,7 +151,7 @@
             </section>
 
             <section class="legal-section" id="avisos">
-                <h2>⚖️ 4. Avisos Legais </h2>
+                <h2>⚖️ 4. Avisos Legais </h2>
                 <p>O DeliveryAceito é um serviço online que oferece ferramentas de gestão para estabelecimentos de alimentação.</p>
                 <p>Não nos responsabilizamos por falhas decorrentes de má utilização da plataforma ou por indisponibilidade causada por fatores externos (como falhas de internet, servidores de terceiros ou força maior).</p>
                 <p>Oferecemos suporte 24 horas por dia, mas em períodos de alta demanda o tempo de resposta pode ser maior.</p>
