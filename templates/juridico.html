@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
         body {
             font-family: 'Inter', sans-serif;
@@ -98,40 +98,72 @@
             color: #555;
         }
         
+        /* NOVO CSS PARA A BARRA DE NAVEGAÇÃO */
+        /* Garante que o container da nav use o espaço restante (aproximadamente 30% do container mx-auto) */
+        .nav-container {
+             /* Usa flex-grow para ocupar o espaço entre o logo e os links, 
+             garantindo que os links fiquem à direita */
+            flex-grow: 1; 
+            display: flex;
+            justify-content: flex-end; /* Alinha os links à direita */
+        }
+
+        /* Usando a largura máxima para dar a impressão do espaço de 30% */
+        @media (min-width: 768px) {
+            .nav-container {
+                /* Usamos um w-2/3 para forçar o container dos links a ocupar 66% do espaço, 
+                deixando o logo nos 33% restantes. Isso simula a proporção desejada. */
+                width: 66%; 
+                max-width: 66%;
+            }
+        }
+        /* FIM NOVO CSS */
+
         @media (max-width: 768px) {
             header {
+                /* Reverte para a exibição padrão em telas menores */
                 flex-direction: column;
                 padding: 1rem;
             }
-            header .nav-links {
+            /* Ajuste para navegação em mobile */
+            header .nav-container {
                 margin-top: 1rem;
                 justify-content: center;
-            }
-            header .nav-links a {
-                margin: 0 0.5rem;
+                flex-grow: unset;
+                width: 100%;
+                max-width: 100%;
             }
             .main-content {
                 padding-top: 140px;
                 padding-left: 1rem;
                 padding-right: 1rem;
             }
-            /* As classes do rodapé antigo foram removidas */
         }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <!-- Cabeçalho Fixo -->
+    <!-- Cabeçalho Fixo (Navbar Atualizada) -->
     <header class="header-bg text-white shadow-lg fixed top-0 w-full z-50">
+        <!-- Container principal com Flexbox e justify-between para colocar logo na esquerda e navegação na direita -->
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold">DeliveryAceito</h1>
-            <nav>
-                <a href="/" class="mx-3 hover:text-gray-300">Início</a>
-                <a href="/#planos-section" class="mx-3 hover:text-gray-300">Planos</a>
-                <a href="/ajuda.html" class="mx-3 hover:text-gray-300">Ajuda</a>
-                 <a href="juridico.html" class="mx-3 hover:text-gray-300">Jurídico</a>
-                <a href="{{ url_for('auth.login') }}" class="mx-3 hover:text-gray-300 py-2 px-4 rounded-full border border-white hover:bg-white hover:text-blue-purple transition-all duration-300">Login</a>
-            </nav>
+            
+            <!-- 1. LOGO: "DELIVERYACEITO" em maiúsculas (Canto Esquerdo) -->
+            <h1 class="text-2xl font-bold">DELIVERYACEITO</h1>
+            
+            <!-- 2. LINKS DE NAVEGAÇÃO (Canto Direito com Espaçamento de 30%) -->
+            <!-- Usamos uma div wrapper (.nav-container) para aplicar o alinhamento e o "espaço" de 30% -->
+            <div class="nav-container">
+                <nav class="flex items-center space-x-4 md:space-x-6 lg:space-x-8">
+                    <!-- Links -->
+                    <a href="/" class="hover:text-gray-300 transition-colors">Início</a>
+                    <a href="/#planos-section" class="hover:text-gray-300 transition-colors">Planos</a>
+                    <a href="/ajuda.html" class="hover:text-gray-300 transition-colors">Ajuda</a>
+                    <a href="juridico.html" class="hover:text-gray-300 transition-colors">Jurídico</a>
+                    <!-- Botão de Login -->
+                    <a href="{{ url_for('auth.login') }}" class="hover:text-gray-300 py-2 px-4 rounded-full border border-white hover:bg-white hover:text-blue-purple transition-all duration-300 text-sm font-semibold">Login</a>
+                </nav>
+            </div>
         </div>
     </header>
 
@@ -169,7 +201,7 @@
             </section>
 
             <section class="legal-section" id="avisos">
-                <h2>⚖️ 4. Avisos Legais </h2>
+                <h2>⚖️ 4. Avisos Legais </h2>
                 <p>O DeliveryAceito é um serviço online que oferece ferramentas de gestão para estabelecimentos de alimentação.</p>
                 <p>Não nos responsabilizamos por falhas decorrentes de má utilização da plataforma ou por indisponibilidade causada por fatores externos (como falhas de internet, servidores de terceiros ou força maior).</p>
                 <p>Oferecemos suporte 24 horas por dia, mas em períodos de alta demanda o tempo de resposta pode ser maior.</p>
