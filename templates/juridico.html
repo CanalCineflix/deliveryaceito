@@ -73,12 +73,8 @@
             color: #555;
         }
         
-        /* NOVO CSS: Margem de 15% aplicada à navegação para telas maiores (desktop) */
-        @media (min-width: 1024px) {
-             .nav-lg-spacing {
-                margin-left: 15%; /* Aplica 15% de margem no desktop */
-            }
-        }
+        /* REMOVENDO CSS: A classe nav-lg-spacing e seu media query foram removidos, 
+           pois estavam forçando uma margem na navegação e impedindo o 'justify-between' de funcionar. */
         
         /* Ajuste responsivo para garantir que a barra de navegação funcione em telas pequenas */
         @media (max-width: 768px) {
@@ -92,9 +88,9 @@
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <!-- Cabeçalho Fixo e Responsivo com Margem de 15% no Desktop -->
+    <!-- Cabeçalho Fixo e Responsivo: Agora usando 'justify-between' para alinhar Logo (esq) e Nav (dir) -->
     <header class="header-bg text-white shadow-lg fixed top-0 w-full z-50">
-        <!-- O container flex é centralizado e usado para separar logo e navegação -->
+        <!-- O container flex com 'justify-between' empurra os dois filhos para as extremidades -->
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             
             <!-- 1. LOGO: "DeliveryAceito" (Canto Esquerdo) -->
@@ -102,16 +98,16 @@
                  DeliveryAceito
             </a>
             
-            <!-- 2. LINKS DE NAVEGAÇÃO (Com margem esquerda de 15% no desktop) -->
-            <!-- nav-lg-spacing aplica a margem de 15% em telas grandes -->
-            <nav class="flex items-center space-x-4 nav-lg-spacing">
+            <!-- 2. LINKS DE NAVEGAÇÃO (Canto Direito) -->
+            <!-- nav-lg-spacing foi removido. O 'justify-between' do div pai é que fará o alinhamento. -->
+            <nav class="flex items-center space-x-4">
                 <!-- Links escondidos em mobile e visíveis em tablet/desktop (sm:block) -->
                 <a href="/" class="hover:text-gray-300 transition-colors hidden sm:block">Início</a>
                 <a href="/#planos-section" class="hover:text-gray-300 transition-colors hidden sm:block">Planos</a>
                 <a href="/ajuda.html" class="hover:text-gray-300 transition-colors">Ajuda</a>
                 <a href="juridico.html" class="hover:text-gray-300 transition-colors">Jurídico</a>
                 
-                <!-- Botão de Login com margem à esquerda para separação final -->
+                <!-- Botão de Login -->
                 <a href="{{ url_for('auth.login') }}" class="py-2 px-4 rounded-full border border-white hover:bg-white hover:text-blue-purple transition-all duration-300 text-sm font-semibold ml-4">Login</a>
             </nav>
         </div>
@@ -195,7 +191,7 @@
                         <li><a href="#faq" class="hover:text-gray-300 transition-colors"> Perguntas frequentes (FAQ)</a></li>
                         <li><a href="ajuda.html" class="hover:text-gray-300 transition-colors"> Central de ajuda</a></li>
                         <!-- CORREÇÃO: Usando link estático para o login -->
-                        <li><a href="/login.html" class="hover:text-gray-300 transition-colors"> Conta / Login</a></li>
+                        <li><a href="{{ url_for('auth.login') }}" class="hover:text-gray-300 transition-colors"> Conta / Login</a></li>
                     </ul>
                 </div>
 
