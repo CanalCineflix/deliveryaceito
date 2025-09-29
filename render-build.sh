@@ -6,26 +6,17 @@ set -o errexit
 # Define a variável de ambiente PYTHONPATH para que o Python encontre os módulos
 export PYTHONPATH=/opt/render/project/src:$PYTHONPATH
 
-# Define a variável FLASK_APP para que o Flask encontre a sua aplicação
-export FLASK_APP=run.py
+# IMPORTANTE: A variável FLASK_APP deve ser definida no painel do Render!
+# Se for definida apenas aqui, ela não persiste para o "Start Command".
+# export FLASK_APP=run.py <-- REMOVA ESTA LINHA E COLOQUE NO PAINEL DO RENDER
 
 # Instala as dependências
 pip install -r requirements.txt
 
-# Limpa o banco de dados para uma nova inicialização
-psql $DATABASE_URL -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+# REMOVER COMANDOS DE BANCO DE DADOS DE BUILD TIME!
+# NUNCA execute comandos que alteram o banco de dados (como DROP SCHEMA, rm -rf migrations, 
+# db init/migrate/upgrade/create_plans) durante a fase de build. 
+# Eles devem ser executados APENAS durante a fase de START pelo comando 'flask deploy'.
 
-# Remove o diretório de migrações (importante para evitar histórico conflitante)
-rm -rf migrations
-
-# Inicia as migrações (cria a pasta 'migrations')
-flask db init
-
-# Cria a migração inicial com base nos modelos atuais (agora com 'is_free')
-flask db migrate -m "Added is_free to Plan model"
-
-# Aplica as migrações no banco de dados
-flask db upgrade
-
-# Roda o comando para criar os planos (agora, ele não vai falhar)
-flask create_plans
+# O Build é apenas para instalar o código.
+echo "Build completo. Migrações serão aplicadas no Start Command."
