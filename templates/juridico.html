@@ -98,6 +98,11 @@
             color: #555;
         }
         
+        /* NOVO CSS: Espaçamento personalizado para a navbar */
+        .nav-spacer-custom {
+            width: 15%; /* Define a largura exata de 15% */
+        }
+
         /* Ajuste responsivo para garantir que a barra de navegação funcione em telas pequenas */
         @media (max-width: 768px) {
             /* No mobile, a navegação quebra em coluna para melhor usabilidade */
@@ -106,7 +111,7 @@
                 align-items: flex-start;
             }
             /* Oculta o espaçador invisível no mobile */
-            .nav-spacer {
+            .nav-spacer-custom {
                 display: none;
             }
             header nav {
@@ -132,9 +137,9 @@
             <!-- 1. LOGO: "DeliveryAceito" (Canto Esquerdo) -->
             <h1 class="text-2xl font-bold whitespace-nowrap">DeliveryAceito</h1>
             
-            <!-- 2. NOVO ESPAÇADOR: Usa w-4/12 (33.33%) para forçar o recuo dos links em 30% do espaço disponível -->
+            <!-- 2. NOVO ESPAÇADOR PERSONALIZADO: Usa a classe CSS customizada para 15% -->
             <!-- Esta div só é visível em telas maiores que 'sm' (sm:block) -->
-            <div class="nav-spacer hidden sm:block w-4/12 xl:w-3/12"></div>
+            <div class="nav-spacer-custom hidden sm:block"></div>
             
             <!-- 3. LINKS DE NAVEGAÇÃO (Empurrados para o Canto Direito) -->
             <nav class="flex items-center space-x-4">
