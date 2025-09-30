@@ -9,33 +9,52 @@ cardapio_bp = Blueprint('cardapio', __name__, url_prefix='/cardapio')
 def get_restaurant_status(opening_hours, manual_status):
     """
     Determina o status de funcionamento do restaurante (Aberto/Fechado/Indisponível).
+    
+    O status manual (manual_status) tem prioridade absoluta.
+    Ele é definido como 'open' ou 'closed' no perfil.
     """
+    
+    # 1. VERIFICAÇÃO DE STATUS MANUAL (PRIORIDADE MÁXIMA)
     if manual_status == 'open':
         return 'Aberto'
     if manual_status == 'closed':
         return 'Fechado'
     
+    # 2. VERIFICAÇÃO DE HORÁRIO AUTOMÁTICO
+    
+    # Se não houver horário configurado e não houver status manual, é 'Indisponível'
     if not opening_hours:
-        return 'Indisponível'
+        return 'Fechado' # Alterado para 'Fechado' por padrão, para evitar pedidos.
 
+    # Obtém o horário atual
     now = datetime.now()
-    # Pega o dia da semana em minúsculas (ex: 'monday')
+    # Pega o dia da semana em inglês (ex: 'Monday', 'Tuesday') e converte para minúsculas
+    # O formatador '%A' geralmente retorna o nome completo do dia em inglês.
     day_of_week = now.strftime('%A').lower()
     current_time = now.strftime('%H:%M')
 
+    # Verifica se o dia atual está configurado nos horários
     if day_of_week not in opening_hours or not opening_hours[day_of_week]:
         return 'Fechado'
 
-    # Se estiver marcado como fechado para o dia
-    if not opening_hours[day_of_week].get('open'):
+    day_config = opening_hours[day_of_week]
+
+    # Verifica se o dia está explicitamente marcado como fechado ('open': false)
+    if not day_config.get('open'):
         return 'Fechado'
 
-    open_time = opening_hours[day_of_week].get('open')
-    close_time = opening_hours[day_of_week].get('close')
+    # Verifica se há pelo menos um par de horários (pode haver múltiplos turnos, mas
+    # o seu modelo JSON atual parece suportar apenas um par 'open'/'close' por dia)
+    open_time = day_config.get('open')
+    close_time = day_config.get('close')
 
-    if open_time and close_time and open_time <= current_time < close_time:
-        return 'Aberto'
+    # Se os horários de abertura e fechamento existirem
+    if open_time and close_time:
+        # Verifica se o horário atual está entre o horário de abertura e fechamento
+        if open_time <= current_time < close_time:
+            return 'Aberto'
     
+    # Se passou por todas as verificações automáticas e não abriu
     return 'Fechado'
 
 
@@ -51,13 +70,14 @@ def menu(user_id, restaurant_slug):
     # Opcional: Você pode querer verificar se o slug fornecido corresponde ao nome do restaurante.
     # Ex: from slugify import slugify 
     # if slugify(user.restaurants.name) != restaurant_slug:
-    #     return redirect(url_for('cardapio.menu', user_id=user_id, restaurant_slug=slugify(user.restaurants.name)))
+    #    return redirect(url_for('cardapio.menu', user_id=user_id, restaurant_slug=slugify(user.restaurants.name)))
 
     config = user.config or RestaurantConfig(user_id=user.id)
     if not user.config:
         db.session.add(config)
         db.session.commit()
 
+    # Busca apenas produtos ativos E marcados para delivery
     products = Product.query.filter_by(
         user_id=user.id,
         is_active=True,
@@ -83,6 +103,7 @@ def menu(user_id, restaurant_slug):
 
     today_day_name = datetime.now().strftime('%A').lower()
     
+    # Mapeamento para exibição no frontend (se necessário)
     day_names = {
         'monday': 'Segunda-feira',
         'tuesday': 'Terça-feira',
@@ -93,6 +114,7 @@ def menu(user_id, restaurant_slug):
         'sunday': 'Domingo',
     }
     
+    # Marca o dia atual como 'Hoje' para o template
     if today_day_name in day_names:
         day_names[today_day_name] = 'Hoje'
 
