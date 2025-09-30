@@ -23,6 +23,7 @@ def index():
     Exibe a lista de todos os produtos do usuário logado.
     """
     products = Product.query.filter_by(user_id=current_user.id).order_by(Product.name).all()
+    # Verifique o nome do template aqui: 'perfil/products.html' é o correto?
     return render_template('perfil/products.html', products=products)
 
 @produtos_bp.route('/adicionar', methods=['GET', 'POST'])
@@ -30,36 +31,62 @@ def index():
 def adicionar():
     """
     Rota para adicionar um novo produto.
+    ADICIONADO TRATAMENTO DE ERRO CRÍTICO PARA DEBUGAR O 500 INTERNO.
     """
     form = ProductForm()
+    
+    # 1. Tenta validar o formulário no submit
     if form.validate_on_submit():
-        file = form.photo.data
-        filename = None
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', str(current_user.id))
-            if not os.path.exists(upload_folder):
-                os.makedirs(upload_folder)
-            file_path = os.path.join(upload_folder, filename)
-            file.save(file_path)
-        
-        # Cria um novo produto com os dados do formulário
-        new_product = Product(
-            name=form.name.data,
-            description=form.description.data,
-            price=form.price.data,
-            category=form.category.data,
-            is_delivery=form.is_delivery.data,
-            is_balcao=form.is_balcao.data,
-            user_id=current_user.id,
-            photo_url=url_for('static', filename=f'uploads/{current_user.id}/{filename}') if filename else None
-        )
-        
-        db.session.add(new_product)
-        db.session.commit()
-        flash('Produto adicionado com sucesso!', 'success')
-        return redirect(url_for('produtos.index'))
-        
+        try:
+            file = form.photo.data
+            filename = None
+            
+            # --- Lógica de Upload de Arquivo ---
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                
+                # Constrói o caminho de upload
+                upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', str(current_user.id))
+                
+                # Cria o diretório se ele não existir, exist_ok=True para evitar erros se já existir
+                if not os.path.exists(upload_folder):
+                    os.makedirs(upload_folder, exist_ok=True) 
+                    
+                file_path = os.path.join(upload_folder, filename)
+                file.save(file_path)
+            # --- Fim Lógica de Upload ---
+            
+            # Cria um novo produto com os dados do formulário
+            new_product = Product(
+                name=form.name.data,
+                description=form.description.data,
+                price=form.price.data,
+                category=form.category.data,
+                is_delivery=form.is_delivery.data,
+                is_balcao=form.is_balcao.data,
+                user_id=current_user.id,
+                # Garante que 'filename' está definido (do bloco acima) ou é None
+                photo_url=url_for('static', filename=f'uploads/{current_user.id}/{filename}') if filename else None
+            )
+            
+            # --- Lógica de Banco de Dados ---
+            db.session.add(new_product)
+            db.session.commit()
+            
+            flash('Produto adicionado com sucesso!', 'success')
+            return redirect(url_for('produtos.index'))
+            
+        except Exception as e:
+            # Captura qualquer erro, faz rollback no DB e loga para você ver no console
+            db.session.rollback()
+            print(f"ERRO CRÍTICO AO ADICIONAR PRODUTO (/produtos/adicionar): {e}")
+            
+            # Informa o usuário (em vez de mostrar um 500 genérico)
+            flash(f'Erro interno ao adicionar produto. Verifique o console para detalhes.', 'danger')
+            # Retorna o formulário preenchido para nova tentativa
+            return render_template('produtos/adicionar.html', form=form)
+            
+    # Se for GET ou a validação inicial do formulário falhar (sem exceção)
     return render_template('produtos/adicionar.html', form=form)
 
 @produtos_bp.route('/editar/<int:product_id>', methods=['GET', 'POST'])
@@ -71,39 +98,43 @@ def editar(product_id):
     product = Product.query.filter_by(id=product_id, user_id=current_user.id).first_or_404()
     form = ProductForm(obj=product)
 
-    if request.method == 'POST':
-        form.process(formdata=request.form, obj=product)
-        
-        # Atualiza os dados do produto com base no formulário
-        product.name = form.name.data
-        product.description = form.description.data
-        product.price = form.price.data
-        product.category = form.category.data
-        product.is_delivery = form.is_delivery.data
-        product.is_balcao = form.is_balcao.data
-        
-        file = request.files.get('photo')
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', str(current_user.id))
-            file_path = os.path.join(upload_folder, filename)
-            
-            # Remove a foto antiga se houver
-            if product.photo_url:
-                old_filename = os.path.basename(product.photo_url)
-                old_file_path = os.path.join(upload_folder, old_filename)
-                if os.path.exists(old_file_path):
-                    os.remove(old_file_path)
+    if form.validate_on_submit(): # Usando validate_on_submit para melhor tratamento de POST
+        try:
+            # Atualiza os dados do produto com base no formulário
+            form.populate_obj(product) # Isso atualiza todos os campos exceto o arquivo, que é manual
 
-            file.save(file_path)
-            product.photo_url = url_for('static', filename=f'uploads/{current_user.id}/{filename}')
-        elif file.filename != '':
-            flash('Tipo de arquivo não permitido.', 'danger')
-            return render_template('produtos/editar.html', form=form, product=product)
+            file = request.files.get('photo')
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', str(current_user.id))
+                
+                # Garante que o diretório existe
+                os.makedirs(upload_folder, exist_ok=True)
+                
+                # Remove a foto antiga se houver
+                if product.photo_url:
+                    old_filename = os.path.basename(product.photo_url)
+                    old_file_path = os.path.join(upload_folder, old_filename)
+                    if os.path.exists(old_file_path):
+                        os.remove(old_file_path)
 
-    db.session.commit()
-    flash('Produto atualizado com sucesso!', 'success')
-    return redirect(url_for('produtos.index'))
+                file_path = os.path.join(upload_folder, filename)
+                file.save(file_path)
+                product.photo_url = url_for('static', filename=f'uploads/{current_user.id}/{filename}')
+            elif file and file.filename != '':
+                flash('Tipo de arquivo não permitido.', 'danger')
+                return redirect(url_for('produtos.editar', product_id=product_id))
+
+            db.session.commit()
+            flash('Produto atualizado com sucesso!', 'success')
+            return redirect(url_for('produtos.index'))
+        except Exception as e:
+            db.session.rollback()
+            print(f"ERRO CRÍTICO AO EDITAR PRODUTO: {e}")
+            flash(f'Erro interno ao atualizar produto. Verifique o console para detalhes.', 'danger')
+    
+    return render_template('produtos/editar.html', form=form, product=product)
+
 
 @produtos_bp.route('/toggle-delivery/<int:product_id>', methods=['POST'])
 @login_required
@@ -143,7 +174,11 @@ def excluir(product_id):
         filename = os.path.basename(product.photo_url)
         file_path = os.path.join(upload_folder, filename)
         if os.path.exists(file_path):
-            os.remove(file_path)
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                # Loga o erro, mas não impede a exclusão do registro no DB
+                print(f"ATENÇÃO: Não foi possível remover o arquivo {file_path}. Erro: {e}")
 
     db.session.delete(product)
     db.session.commit()
