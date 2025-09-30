@@ -22,14 +22,12 @@ def get_restaurant_status(opening_hours, manual_status):
     
     # 2. VERIFICAÇÃO DE HORÁRIO AUTOMÁTICO
     
-    # Se não houver horário configurado e não houver status manual, é 'Indisponível'
+    # Se não houver horário configurado e não houver status manual, é 'Fechado'
     if not opening_hours:
-        return 'Fechado' # Alterado para 'Fechado' por padrão, para evitar pedidos.
+        return 'Fechado' 
 
     # Obtém o horário atual
     now = datetime.now()
-    # Pega o dia da semana em inglês (ex: 'Monday', 'Tuesday') e converte para minúsculas
-    # O formatador '%A' geralmente retorna o nome completo do dia em inglês.
     day_of_week = now.strftime('%A').lower()
     current_time = now.strftime('%H:%M')
 
@@ -43,8 +41,7 @@ def get_restaurant_status(opening_hours, manual_status):
     if not day_config.get('open'):
         return 'Fechado'
 
-    # Verifica se há pelo menos um par de horários (pode haver múltiplos turnos, mas
-    # o seu modelo JSON atual parece suportar apenas um par 'open'/'close' por dia)
+    # Verifica os horários
     open_time = day_config.get('open')
     close_time = day_config.get('close')
 
@@ -99,7 +96,19 @@ def menu(user_id, restaurant_slug):
         opening_hours = {}
 
     manual_status = config.manual_status_override
+    
+    # LOG DE DIAGNÓSTICO
+    print(f"*** DIAGNÓSTICO CARDÁPIO ***")
+    print(f"ID do Usuário: {user_id}")
+    print(f"Status Manual lido do DB (manual_status_override): '{manual_status}'")
+    print(f"Horários lidos (business_hours): {opening_hours}")
+    
     restaurant_status = get_restaurant_status(opening_hours, manual_status)
+
+    # LOG DE DIAGNÓSTICO FINAL
+    print(f"Status Final Calculado (restaurant_status): '{restaurant_status}'")
+    print(f"*****************************")
+
 
     today_day_name = datetime.now().strftime('%A').lower()
     
