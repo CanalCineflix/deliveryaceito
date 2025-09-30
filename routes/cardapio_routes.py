@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
-from models import db, User, Product, Order, OrderItem, OrderStatus, RestaurantConfig, Neighborhood
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, abort
+from models import db, User, Product, Order, OrderItem, OrderStatus, RestaurantConfig, Neighborhood, Restaurant
 from datetime import datetime
 import json
 from sqlalchemy.orm import joinedload
@@ -19,10 +19,15 @@ def get_restaurant_status(opening_hours, manual_status):
         return 'Indisponível'
 
     now = datetime.now()
+    # Pega o dia da semana em minúsculas (ex: 'monday')
     day_of_week = now.strftime('%A').lower()
     current_time = now.strftime('%H:%M')
 
     if day_of_week not in opening_hours or not opening_hours[day_of_week]:
+        return 'Fechado'
+
+    # Se estiver marcado como fechado para o dia
+    if not opening_hours[day_of_week].get('open'):
         return 'Fechado'
 
     open_time = opening_hours[day_of_week].get('open')
@@ -34,12 +39,20 @@ def get_restaurant_status(opening_hours, manual_status):
     return 'Fechado'
 
 
-@cardapio_bp.route('/<int:user_id>')
-def menu(user_id):
+@cardapio_bp.route('/<int:user_id>-<string:restaurant_slug>')
+def menu(user_id, restaurant_slug):
     """
-    Exibe o cardápio público de um restaurante, incluindo o status de funcionamento.
+    Exibe o cardápio público de um restaurante.
+    A rota foi atualizada para aceitar o ID e o slug.
     """
+    # Busca o usuário (dono do restaurante) pelo ID. O slug é usado apenas para a URL amigável.
     user = User.query.get_or_404(user_id)
+    
+    # Opcional: Você pode querer verificar se o slug fornecido corresponde ao nome do restaurante.
+    # Ex: from slugify import slugify 
+    # if slugify(user.restaurants.name) != restaurant_slug:
+    #     return redirect(url_for('cardapio.menu', user_id=user_id, restaurant_slug=slugify(user.restaurants.name)))
+
     config = user.config or RestaurantConfig(user_id=user.id)
     if not user.config:
         db.session.add(config)
@@ -131,6 +144,9 @@ def create_order(user_id):
             except (ValueError, TypeError):
                 config = RestaurantConfig.query.filter_by(user_id=user_id).first()
                 if config:
+                    # Este bloco de exceção parece estar tentando pegar uma taxa de entrega padrão
+                    # (default_delivery_fee) se o neighborhood_id for inválido ou não for um número.
+                    # Mantenho, mas garanto que 'config' existe.
                     delivery_fee = config.default_delivery_fee
 
         new_order = Order(
