@@ -5,265 +5,312 @@
 {% block content %}
 
 <div class="fade-in">
-<div class="d-flex justify-content-between align-items-center mb-4">
-<h1 class="h2 fw-bold"><i class="bi bi-box-seam"></i> Meus Produtos</h1>
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
-<i class="bi bi-plus-circle"></i> Adicionar Produto
-</button>
-</div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 fw-bold"><i class="bi bi-box-seam"></i> Meus Produtos</h1>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+            <i class="bi bi-plus-circle"></i> Adicionar Produto
+        </button>
+    </div>
 
-<div class="card shadow-sm">
-    <div class="card-body">
-        <!-- Exibição de Mensagens Flash (Sucesso, Erro, etc.) -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <!-- Exibição de Mensagens Flash (Sucesso, Erro, etc.) -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% if products %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Foto</th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th class="text-end">Preço</th>
+                                <th class="text-center">Delivery</th>
+                                <th class="text-center">Balcão</th>
+                                <th class="text-end">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                            <tr>
+                                <td>
+                                    {% if product.photo_url %}
+                                    <img src="{{ product.photo_url }}" alt="Foto do Produto" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+                                    {% else %}
+                                    <i class="bi bi-card-image text-muted" style="font-size: 2rem;"></i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <strong>{{ product.name }}</strong><br>
+                                    <small class="text-muted">{{ product.description }}</small>
+                                </td>
+                                <td>{{ product.category }}</td>
+                                <td class="text-end">R$ {{ "%.2f"|format(product.price) }}</td>
+                                <td class="text-center">
+                                    <!-- Formulário de Toggle Delivery -->
+                                    <form action="{{ url_for('produtos.toggle_delivery', product_id=product.id) }}" method="post" class="d-inline">
+                                        <!-- Adicionado o token CSRF -->
+                                        {{ form.csrf_token }}
+                                        <div class="form-check form-switch d-inline-block">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="deliveryToggle{{ product.id }}" {% if product.is_delivery %}checked{% endif %} onchange="this.form.submit()">
+                                            <label class="form-check-label visually-hidden" for="deliveryToggle{{ product.id }}">Delivery Toggle</label>
+                                        </div>
+                                    </form>
+                                </td>
+                                <td class="text-center">
+                                    <!-- Formulário de Toggle Balcão -->
+                                    <form action="{{ url_for('produtos.toggle_balcao', product_id=product.id) }}" method="post" class="d-inline">
+                                        <!-- Adicionado o token CSRF -->
+                                        {{ form.csrf_token }}
+                                        <div class="form-check form-switch d-inline-block">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="balcaoToggle{{ product.id }}" {% if product.is_balcao %}checked{% endif %} onchange="this.form.submit()">
+                                            <label class="form-check-label visually-hidden" for="balcaoToggle{{ product.id }}">Balcão Toggle</label>
+                                        </div>
+                                    </form>
+                                </td>
+                                <td class="text-end">
+                                    <a href="#" class="btn btn-sm btn-info text-white" data-bs-toggle="modal" data-bs-target="#editProductModal{{ product.id }}" title="Editar"><i class="bi bi-pencil"></i></a>
+                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteProductModal" data-bs-product-id="{{ product.id }}" data-bs-product-name="{{ product.name }}" title="Excluir"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                {% endfor %}
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    Você ainda não tem produtos cadastrados.
+                </div>
             {% endif %}
-        {% endwith %}
-
-        {% if products %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th>Foto</th>
-                            <th>Nome</th>
-                            <th>Categoria</th>
-                            <th class="text-end">Preço</th>
-                            <th class="text-center">Delivery</th>
-                            <th class="text-center">Balcão</th>
-                            <th class="text-end">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for product in products %}
-                        <tr>
-                            <td>
-                                {% if product.photo_url %}
-                                <img src="{{ product.photo_url }}" alt="Foto do Produto" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
-                                {% else %}
-                                <i class="bi bi-card-image text-muted" style="font-size: 2rem;"></i>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <strong>{{ product.name }}</strong><br>
-                                <small class="text-muted">{{ product.description }}</small>
-                            </td>
-                            <td>{{ product.category }}</td>
-                            <td class="text-end">R$ {{ "%.2f"|format(product.price) }}</td>
-                            <td class="text-center">
-                                <form action="{{ url_for('produtos.toggle_delivery', product_id=product.id) }}" method="post" class="d-inline">
-                                    <!-- Adiciona o token CSRF para a submissão do toggle -->
-                                    {{ form.csrf_token }}
-                                    <div class="form-check form-switch d-inline-block">
-                                        <input class="form-check-input" type="checkbox" role="switch" id="deliveryToggle{{ product.id }}" {% if product.is_delivery %}checked{% endif %} onchange="this.form.submit()">
-                                        <label class="form-check-label visually-hidden" for="deliveryToggle{{ product.id }}">Delivery Toggle</label>
-                                    </div>
-                                </form>
-                            </td>
-                            <td class="text-center">
-                                <form action="{{ url_for('produtos.toggle_balcao', product_id=product.id) }}" method="post" class="d-inline">
-                                    <!-- Adiciona o token CSRF para a submissão do toggle -->
-                                    {{ form.csrf_token }}
-                                    <div class="form-check form-switch d-inline-block">
-                                        <input class="form-check-input" type="checkbox" role="switch" id="balcaoToggle{{ product.id }}" {% if product.is_balcao %}checked{% endif %} onchange="this.form.submit()">
-                                        <label class="form-check-label visually-hidden" for="balcaoToggle{{ product.id }}">Balcão Toggle</label>
-                                    </div>
-                                </form>
-                            </td>
-                            <td class="text-end">
-                                <a href="#" class="btn btn-sm btn-info text-white" data-bs-toggle="modal" data-bs-target="#editProductModal{{ product.id }}" title="Editar"><i class="bi bi-pencil"></i></a>
-                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteProductModal" data-bs-product-id="{{ product.id }}" data-bs-product-name="{{ product.name }}" title="Excluir"><i class="bi bi-trash"></i></button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <div class="alert alert-info" role="alert">
-                Você ainda não tem produtos cadastrados.
-            </div>
-        {% endif %}
+        </div>
     </div>
 </div>
 
-</div>
-
-<!-- Modal de Adicionar Produto -->
-
+<!-- Modal de Adicionar Produto (Mantido o uso de WTForms) -->
 <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
-<div class="modal-dialog">
-<div class="modal-content">
-<form action="{{ url_for('produtos.adicionar') }}" method="post" enctype="multipart/form-data">
-<!-- CORREÇÃO: Adicionado o token CSRF (era o que estava faltando) -->
-{{ form.csrf_token }}
-<div class="modal-header">
-<h5 class="modal-title" id="addProductModalLabel">Adicionar Produto</h5>
-<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-</div>
-<div class="modal-body">
-<!-- Utilizando os campos do WTForms para melhor integração -->
-<div class="mb-3">
-{{ form.name.label(class="form-label") }}
-{{ form.name(class="form-control", required=True) }}
-{% for error in form.name.errors %}
-<span class="text-danger">{{ error }}</span>
-{% endfor %}
-</div>
-<div class="mb-3">
-{{ form.description.label(class="form-label") }}
-{{ form.description(class="form-control", rows="3") }}
-{% for error in form.description.errors %}
-<span class="text-danger">{{ error }}</span>
-{% endfor %}
-</div>
-<div class="mb-3">
-{{ form.price.label(class="form-label") }}
-{{ form.price(class="form-control", required=True) }}
-{% for error in form.price.errors %}
-<span class="text-danger">{{ error }}</span>
-{% endfor %}
-</div>
-<div class="mb-3">
-{{ form.category.label(class="form-label") }}
-{{ form.category(class="form-control") }}
-{% for error in form.category.errors %}
-<span class="text-danger">{{ error }}</span>
-{% endfor %}
-</div>
-<div class="mb-3">
-{{ form.photo.label(class="form-label") }}
-{{ form.photo(class="form-control", accept="image/*") }}
-{% for error in form.photo.errors %}
-<span class="text-danger">{{ error }}</span>
-{% endfor %}
-</div>
-<div class="mb-3 form-check form-switch">
-{{ form.is_delivery(class="form-check-input") }}
-{{ form.is_delivery.label(class="form-check-label") }}
-</div>
-<div class="mb-3 form-check form-switch">
-{{ form.is_balcao(class="form-check-input") }}
-{{ form.is_balcao.label(class="form-check-label") }}
-</div>
-</div>
-<div class="modal-footer">
-<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-{{ form.submit(class="btn btn-primary") }}
-</div>
-</form>
-</div>
-</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ url_for('produtos.adicionar') }}" method="post" enctype="multipart/form-data">
+                <!-- CORREÇÃO: Adicionado o token CSRF -->
+                {{ form.csrf_token }}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProductModalLabel">Adicionar Produto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        {{ form.name.label(class="form-label") }}
+                        {{ form.name(class="form-control", required=True) }}
+                        {% for error in form.name.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control", rows="3") }}
+                        {% for error in form.description.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.price.label(class="form-label") }}
+                        {{ form.price(class="form-control", required=True) }}
+                        {% for error in form.price.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.category.label(class="form-label") }}
+                        {{ form.category(class="form-control") }}
+                        {% for error in form.category.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.photo.label(class="form-label") }}
+                        {{ form.photo(class="form-control", accept="image/*") }}
+                        {% for error in form.photo.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3 form-check form-switch">
+                        {{ form.is_delivery(class="form-check-input") }}
+                        {{ form.is_delivery.label(class="form-check-label") }}
+                    </div>
+                    <div class="mb-3 form-check form-switch">
+                        {{ form.is_balcao(class="form-check-input") }}
+                        {{ form.is_balcao.label(class="form-check-label") }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 {% for product in products %}
-
-<!-- Modal de Edição (Adicionado o form.csrf_token para segurança) -->
-
+<!-- Modal de Edição (CORRIGIDO: Agora usa campos do WTForms para pré-preenchimento correto e validação) -->
 <div class="modal fade" id="editProductModal{{ product.id }}" tabindex="-1" aria-labelledby="editProductModalLabel{{ product.id }}" aria-hidden="true">
-<div class="modal-dialog">
-<div class="modal-content">
-<form action="{{ url_for('produtos.editar', product_id=product.id) }}" method="post" enctype="multipart/form-data">
-<!-- Adicionado o token CSRF -->
-{{ form.csrf_token }}
-<div class="modal-header">
-<h5 class="modal-title" id="editProductModalLabel{{ product.id }}">Editar {{ product.name }}</h5>
-<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-</div>
-<div class="modal-body">
-<div class="mb-3">
-<label for="edit_name{{ product.id }}" class="form-label">Nome do Produto</label>
-<input type="text" class="form-control" id="edit_name{{ product.id }}" name="name" value="{{ product.name }}" required>
-</div>
-<div class="mb-3">
-<label for="edit_description{{ product.id }}" class="form-label">Descrição</label>
-<textarea class="form-control" id="edit_description{{ product.id }}" name="description" rows="3">{{ product.description }}</textarea>
-</div>
-<div class="mb-3">
-<label for="edit_price{{ product.id }}" class="form-label">Preço (Ex: 15,90)</label>
-<input type="text" class="form-control" id="edit_price{{ product.id }}" name="price" value="{{ "%.2f"|format(product.price) }}" required>
-</div>
-<div class="mb-3">
-<label for="edit_category{{ product.id }}" class="form-label">Categoria</label>
-<input type="text" class="form-control" id="edit_category{{ product.id }}" name="category" value="{{ product.category }}">
-</div>
-<div class="mb-3">
-<label for="edit_photo{{ product.id }}" class="form-label">Atualizar Foto</label>
-<input class="form-control" type="file" id="edit_photo{{ product.id }}" name="photo" accept="image/*">
-{% if product.photo_url %}
-<small class="form-text text-muted mt-2">
-Foto atual: <a href="{{ product.photo_url }}" target="_blank">Visualizar</a>
-</small>
-{% endif %}
-</div>
-<div class="mb-3 form-check form-switch">
-<input class="form-check-input" type="checkbox" id="edit_is_delivery{{ product.id }}" name="is_delivery" {% if product.is_delivery %}checked{% endif %}>
-<label class="form-check-label" for="edit_is_delivery{{ product.id }}">Disponível para Delivery</label>
-</div>
-<div class="mb-3 form-check form-switch">
-<input class="form-check-input" type="checkbox" id="edit_is_balcao{{ product.id }}" name="is_balcao" {% if product.is_balcao %}checked{% endif %}>
-<label class="form-check-label" for="edit_is_balcao{{ product.id }}">Disponível para Balcão</label>
-</div>
-</div>
-<div class="modal-footer">
-<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-<button type="submit" class="btn btn-primary">Salvar Alterações</button>
-</div>
-</form>
-</div>
-</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- IMPORTANTE: A rota 'editar' precisa de um novo ProductForm(obj=product) para carregar os dados. -->
+            <form action="{{ url_for('produtos.editar', product_id=product.id) }}" method="post" enctype="multipart/form-data">
+                <!-- Adicionado o token CSRF -->
+                {{ form.csrf_token }}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProductModalLabel{{ product.id }}">Editar {{ product.name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    
+                    <!-- CAMPO NOME (usando form.name) -->
+                    <div class="mb-3">
+                        {{ form.name.label(class="form-label") }}
+                        <!-- Passamos o valor padrão do produto para garantir o pré-preenchimento correto -->
+                        {{ form.name(class="form-control", required=True, value=product.name) }}
+                        {% for error in form.name.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- CAMPO DESCRIÇÃO (usando form.description) -->
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control", rows="3", default=product.description) }}
+                        {% for error in form.description.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- CAMPO PREÇO (usando form.price) -->
+                    <div class="mb-3">
+                        {{ form.price.label(class="form-label") }}
+                        <!-- Usamos o formato puro (sem R$) para evitar erros de submissão do float/decimal -->
+                        {{ form.price(class="form-control", required=True, value=product.price) }}
+                        {% for error in form.price.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- CAMPO CATEGORIA (usando form.category) -->
+                    <div class="mb-3">
+                        {{ form.category.label(class="form-label") }}
+                        {{ form.category(class="form-control", value=product.category) }}
+                        {% for error in form.category.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- CAMPO FOTO (usando form.photo) -->
+                    <div class="mb-3">
+                        {{ form.photo.label(class="form-label") }}
+                        {{ form.photo(class="form-control", accept="image/*") }}
+                        {% if product.photo_url %}
+                        <small class="form-text text-muted mt-2">
+                            Foto atual: <a href="{{ product.photo_url }}" target="_blank">Visualizar</a>
+                        </small>
+                        {% endif %}
+                        {% for error in form.photo.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- TOGGLE DELIVERY (usando form.is_delivery) -->
+                    <div class="mb-3 form-check form-switch">
+                        {{ form.is_delivery(class="form-check-input", checked=product.is_delivery) }}
+                        {{ form.is_delivery.label(class="form-check-label") }}
+                    </div>
+                    
+                    <!-- TOGGLE BALCÃO (usando form.is_balcao) -->
+                    <div class="mb-3 form-check form-switch">
+                        {{ form.is_balcao(class="form-check-input", checked=product.is_balcao) }}
+                        {{ form.is_balcao.label(class="form-check-label") }}
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endfor %}
 
-<!-- Modal de Exclusão (Adicionado o form.csrf_token e corrigida a rota no JS) -->
-
+<!-- Modal de Exclusão -->
 <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
-<div class="modal-dialog">
-<div class="modal-content">
-<form id="deleteProductForm" method="post">
-<!-- Adicionado o token CSRF -->
-{{ form.csrf_token }}
-<div class="modal-header">
-<h5 class="modal-title" id="deleteProductModalLabel">Confirmar Exclusão</h5>
-<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-</div>
-<div class="modal-body">
-<p>Tem certeza que deseja excluir o produto <strong id="productNameToDelete"></strong>?</p>
-</div>
-<div class="modal-footer">
-<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-<button type="submit" class="btn btn-danger">Excluir</button>
-</div>
-</form>
-</div>
-</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deleteProductForm" method="post">
+                <!-- Adicionado o token CSRF -->
+                {{ form.csrf_token }}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteProductModalLabel">Confirmar Exclusão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja excluir o produto <strong id="productNameToDelete"></strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script>
-var deleteProductModal = document.getElementById('deleteProductModal');
-deleteProductModal.addEventListener('show.bs.modal', function (event) {
-var button = event.relatedTarget;
-var productId = button.getAttribute('data-bs-product-id');
-var productName = button.getAttribute('data-bs-product-name');
+document.addEventListener('DOMContentLoaded', function() {
+    var deleteProductModal = document.getElementById('deleteProductModal');
+    if (deleteProductModal) {
+        deleteProductModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var productId = button.getAttribute('data-bs-product-id');
+            var productName = button.getAttribute('data-bs-product-name');
 
-    var modalText = deleteProductModal.querySelector(&#39;#productNameToDelete&#39;);
-    var deleteForm = deleteProductModal.querySelector(&#39;#deleteProductForm&#39;);
+            var modalText = deleteProductModal.querySelector('#productNameToDelete');
+            var deleteForm = deleteProductModal.querySelector('#deleteProductForm');
 
-    modalText.textContent = productName;
-    
-    // CORREÇÃO DA ROTA: Usa a função url_for do Jinja para criar a URL de exclusão com o ID correto.
-    // O Flask/Jinja irá gerar o template de URL correto (e.g., /produtos/excluir/123)
-    // Note: A rota deve ser &#39;produtos.excluir&#39; de acordo com o seu Blueprint.
- var deleteUrlTemplate = "{{ url_for('produtos.excluir', product_id='PRODUCT_ID_PLACEHOLDER') }}";
-    deleteForm.action = deleteUrlTemplate.replace(&#39;PRODUCT_ID_PLACEHOLDER&#39;, productId);
+            modalText.textContent = productName;
+            
+            // CORREÇÃO DA ROTA: Usa a função url_for do Jinja para criar a URL de exclusão com o ID correto.
+            var deleteUrlTemplate = "{{ url_for('produtos.excluir', product_id='PRODUCT_ID_PLACEHOLDER') }}";
+            deleteForm.action = deleteUrlTemplate.replace('PRODUCT_ID_PLACEHOLDER', productId);
+        });
+    }
+
+    // Lógica para abrir o modal de edição automaticamente após um erro de validação
+    // O backend envia 'editing=True' e 'product' se houver um erro de validação (ex: tipo de arquivo)
+    {% if editing and product %}
+    var editModalElement = document.getElementById('editProductModal{{ product.id }}');
+    if (editModalElement) {
+        var editModal = new bootstrap.Modal(editModalElement);
+        editModal.show();
+    }
+    {% elif form and form.errors and not products %}
+    // Se o formulário de adição falhou e não há produtos listados, abre o modal de adição.
+    var addModalElement = document.getElementById('addProductModal');
+    if (addModalElement) {
+        var addModal = new bootstrap.Modal(addModalElement);
+        addModal.show();
+    }
+    {% endif %}
 });
-
 </script>
 
 {% endblock %}
