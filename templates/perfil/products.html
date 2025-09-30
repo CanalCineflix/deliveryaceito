@@ -1,218 +1,199 @@
+products.html 
+
 {% extends "base.html" %}
 
 {% block title %}Meus Produtos - GetSolution{% endblock %}
 
 {% block content %}
-
 <div class="fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h2 fw-bold"><i class="bi bi-box-seam"></i> Meus Produtos</h1>
-        <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addProductModal">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
             <i class="bi bi-plus-circle"></i> Adicionar Produto
         </button>
     </div>
 
-    <div class="card shadow-lg border-0">
-        <div class="card-body p-4">
-            <!-- Exibição de Mensagens Flash (Sucesso, Erro, etc.) -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <!-- Usando category para cor (success, danger, info, etc.) -->
-                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-
+    <div class="card shadow-sm">
+        <div class="card-body">
             {% if products %}
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                    <table class="table table-hover mb-0">
+                        <thead>
                             <tr>
                                 <th>Foto</th>
-                                <th>Nome e Descrição</th>
+                                <th>Nome</th>
                                 <th>Categoria</th>
                                 <th class="text-end">Preço</th>
                                 <th class="text-center">Delivery</th>
                                 <th class="text-center">Balcão</th>
-                                <th class="text-center">Ações</th>
+                                <th class="text-end">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for product in products %}
-                            <tr class="align-middle">
-                                <td style="width: 70px;">
+                            <tr>
+                                <td>
                                     {% if product.photo_url %}
-                                    <!-- Usando rounded-circle para um visual mais moderno -->
-                                    <img src="{{ product.photo_url }}" alt="Foto do Produto" class="rounded-circle border" style="width: 50px; height: 50px; object-fit: cover;">
+                                    <img src="{{ product.photo_url }}" alt="Foto do Produto" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
                                     {% else %}
                                     <i class="bi bi-card-image text-muted" style="font-size: 2rem;"></i>
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <strong class="text-dark">{{ product.name }}</strong><br>
-                                    <small class="text-muted">{{ product.description | truncate(60, True) }}</small>
+                                    <strong>{{ product.name }}</strong><br>
+                                    <small class="text-muted">{{ product.description }}</small>
                                 </td>
-                                <td><span class="badge bg-secondary">{{ product.category }}</span></td>
-                                <td class="text-end fw-bold text-success">R$ {{ "%.2f"|format(product.price) }}</td>
+                                <td>{{ product.category }}</td>
+                                <td class="text-end">R$ {{ "%.2f"|format(product.price) }}</td>
                                 <td class="text-center">
                                     <form action="{{ url_for('produtos.toggle_delivery', product_id=product.id) }}" method="post" class="d-inline">
-                                        {{ form.csrf_token }}
-                                        <div class="form-check form-switch d-inline-block position-relative">
-                                            <!-- Indicador visual adicional para clareza -->
-                                            {% if product.is_delivery %}
-                                                <i class="bi bi-check-circle-fill text-success position-absolute" style="top: -15px; left: 50%; transform: translateX(-50%); font-size: 0.9rem;" title="Delivery Ativo"></i>
-                                            {% else %}
-                                                <i class="bi bi-x-circle-fill text-danger position-absolute" style="top: -15px; left: 50%; transform: translateX(-50%); font-size: 0.9rem;" title="Delivery Inativo"></i>
-                                            {% endif %}
-                                            
-                                            <input class="form-check-input mt-3" type="checkbox" role="switch" id="deliveryToggle{{ product.id }}" {% if product.is_delivery %}checked{% endif %} onchange="this.form.submit()">
+                                        <div class="form-check form-switch d-inline-block">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="deliveryToggle{{ product.id }}" {% if product.is_delivery %}checked{% endif %} onchange="this.form.submit()">
                                             <label class="form-check-label visually-hidden" for="deliveryToggle{{ product.id }}">Delivery Toggle</label>
                                         </div>
                                     </form>
                                 </td>
                                 <td class="text-center">
                                     <form action="{{ url_for('produtos.toggle_balcao', product_id=product.id) }}" method="post" class="d-inline">
-                                        {{ form.csrf_token }}
-                                        <div class="form-check form-switch d-inline-block position-relative">
-                                            <!-- Indicador visual adicional para clareza -->
-                                            {% if product.is_balcao %}
-                                                <i class="bi bi-check-circle-fill text-success position-absolute" style="top: -15px; left: 50%; transform: translateX(-50%); font-size: 0.9rem;" title="Balcão Ativo"></i>
-                                            {% else %}
-                                                <i class="bi bi-x-circle-fill text-danger position-absolute" style="top: -15px; left: 50%; transform: translateX(-50%); font-size: 0.9rem;" title="Balcão Inativo"></i>
-                                            {% endif %}
-
-                                            <input class="form-check-input mt-3" type="checkbox" role="switch" id="balcaoToggle{{ product.id }}" {% if product.is_balcao %}checked{% endif %} onchange="this.form.submit()">
+                                        <div class="form-check form-switch d-inline-block">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="balcaoToggle{{ product.id }}" {% if product.is_balcao %}checked{% endif %} onchange="this.form.submit()">
                                             <label class="form-check-label visually-hidden" for="balcaoToggle{{ product.id }}">Balcão Toggle</label>
                                         </div>
                                     </form>
                                 </td>
-                                <td class="text-center">
-                                    <div class="btn-group" role="group" aria-label="Ações do Produto">
-                                        <!-- Botão de Edição -->
-                                        <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#editProductModal{{ product.id }}" title="Editar Produto">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <!-- Botão de Exclusão -->
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteProductModal" data-bs-product-id="{{ product.id }}" data-bs-product-name="{{ product.name }}" title="Excluir Produto">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
+                                <td class="text-end">
+                                    <a href="#" class="btn btn-sm btn-info text-white" data-bs-toggle="modal" data-bs-target="#editProductModal{{ product.id }}" title="Editar"><i class="bi bi-pencil"></i></a>
+                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteProductModal" data-bs-product-id="{{ product.id }}" data-bs-product-name="{{ product.name }}" title="Excluir"><i class="bi bi-trash"></i></button>
                                 </td>
                             </tr>
-                            {% endfor %}
-                            
-                            <!-- Os modais de edição são incluídos separadamente (mantido o padrão) -->
-                            {% for product in products %}
-                                {% include 'produtos/_edit_modal.html' with context %}
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
             {% else %}
-                <div class="alert alert-info border-0 text-center py-4" role="alert">
-                    <i class="bi bi-info-circle h4 me-2"></i> Você ainda não tem produtos cadastrados. Clique em "Adicionar Produto" para começar!
+                <div class="alert alert-info" role="alert">
+                    Você ainda não tem produtos cadastrados.
                 </div>
             {% endif %}
         </div>
     </div>
 </div>
 
-<!-- Modal de Adicionar Produto (Mantido o uso de WTForms) -->
-
 <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content border-0 shadow-lg">
+        <div class="modal-content">
             <form action="{{ url_for('produtos.adicionar') }}" method="post" enctype="multipart/form-data">
-                {{ form.csrf_token }}
-                <div class="modal-header bg-primary text-white">
+                <div class="modal-header">
                     <h5 class="modal-title" id="addProductModalLabel">Adicionar Produto</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        {{ form.name.label(class="form-label") }}
-                        {{ form.name(class="form-control", required=True, placeholder="Nome do produto") }}
-                        {% for error in form.name.errors %}
-                        <span class="text-danger small">{{ error }}</span>
-                        {% endfor %}
+                        <label for="name" class="form-label">Nome do Produto</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
                     </div>
                     <div class="mb-3">
-                        {{ form.description.label(class="form-label") }}
-                        {{ form.description(class="form-control", rows="3", placeholder="Breve descrição") }}
-                        {% for error in form.description.errors %}
-                        <span class="text-danger small">{{ error }}</span>
-                        {% endfor %}
+                        <label for="description" class="form-label">Descrição</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
-                        {{ form.price.label(class="form-label") }}
-                        <!-- Melhoria no input de preço -->
-                        {{ form.price(class="form-control", required=True, type="number", step="0.01", min="0.01", placeholder="0.00") }}
-                        {% for error in form.price.errors %}
-                        <span class="text-danger small">{{ error }}</span>
-                        {% endfor %}
+                        <label for="price" class="form-label">Preço (Ex: 15,90)</label>
+                        <input type="text" class="form-control" id="price" name="price" required>
                     </div>
                     <div class="mb-3">
-                        {{ form.category.label(class="form-label") }}
-                        <!-- Usando form-select para SelectField -->
-                        {{ form.category(class="form-select") }}
-                        {% for error in form.category.errors %}
-                        <span class="text-danger small">{{ error }}</span>
-                        {% endfor %}
+                        <label for="category" class="form-label">Categoria</label>
+                        <input type="text" class="form-control" id="category" name="category">
                     </div>
                     <div class="mb-3">
-                        {{ form.photo.label(class="form-label") }}
-                        {{ form.photo(class="form-control", accept="image/*") }}
-                        {% for error in form.photo.errors %}
-                        <span class="text-danger small">{{ error }}</span>
-                        {% endfor %}
+                        <label for="photo" class="form-label">Foto do Produto</label>
+                        <input class="form-control" type="file" id="photo" name="photo" accept="image/*">
                     </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="mb-3 form-check form-switch">
-                                {{ form.is_delivery(class="form-check-input", id="add_is_delivery") }}
-                                {{ form.is_delivery.label(class="form-check-label", for="add_is_delivery") }}
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="mb-3 form-check form-switch">
-                                {{ form.is_balcao(class="form-check-input", id="add_is_balcao") }}
-                                {{ form.is_balcao.label(class="form-check-label", for="add_is_balcao") }}
-                            </div>
-                        </div>
+                    <div class="mb-3 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="is_delivery" name="is_delivery" checked>
+                        <label class="form-check-label" for="is_delivery">Disponível para Delivery</label>
+                    </div>
+                    <div class="mb-3 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="is_balcao" name="is_balcao" checked>
+                        <label class="form-check-label" for="is_balcao">Disponível para Balcão</label>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    {{ form.submit(class="btn btn-primary") }}
+                    <button type="submit" class="btn btn-primary">Adicionar</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- Modal de Exclusão -->
-
-<div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content border-0 shadow-lg">
-            <!-- O action é preenchido dinamicamente pelo JavaScript -->
-            <form id="deleteProductForm" method="post">
-                {{ form.csrf_token }}
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="deleteProductModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i> Confirmar Exclusão</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+{% for product in products %}
+<div class="modal fade" id="editProductModal{{ product.id }}" tabindex="-1" aria-labelledby="editProductModalLabel{{ product.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ url_for('produtos.editar', product_id=product.id) }}" method="post" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProductModalLabel{{ product.id }}">Editar {{ product.name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="text-dark">Tem certeza que deseja excluir permanentemente o produto <strong id="productNameToDelete"></strong>?</p>
-                    <small class="text-muted">Essa ação não pode ser desfeita.</small>
+                    <div class="mb-3">
+                        <label for="edit_name{{ product.id }}" class="form-label">Nome do Produto</label>
+                        <input type="text" class="form-control" id="edit_name{{ product.id }}" name="name" value="{{ product.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_description{{ product.id }}" class="form-label">Descrição</label>
+                        <textarea class="form-control" id="edit_description{{ product.id }}" name="description" rows="3">{{ product.description }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_price{{ product.id }}" class="form-label">Preço (Ex: 15,90)</label>
+                        <input type="text" class="form-control" id="edit_price{{ product.id }}" name="price" value="{{ "%.2f"|format(product.price) }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_category{{ product.id }}" class="form-label">Categoria</label>
+                        <input type="text" class="form-control" id="edit_category{{ product.id }}" name="category" value="{{ product.category }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_photo{{ product.id }}" class="form-label">Atualizar Foto</label>
+                        <input class="form-control" type="file" id="edit_photo{{ product.id }}" name="photo" accept="image/*">
+                        {% if product.photo_url %}
+                        <small class="form-text text-muted mt-2">
+                            Foto atual: <a href="{{ product.photo_url }}" target="_blank">Visualizar</a>
+                        </small>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="edit_is_delivery{{ product.id }}" name="is_delivery" {% if product.is_delivery %}checked{% endif %}>
+                        <label class="form-check-label" for="edit_is_delivery{{ product.id }}">Disponível para Delivery</label>
+                    </div>
+                    <div class="mb-3 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="edit_is_balcao{{ product.id }}" name="is_balcao" {% if product.is_balcao %}checked{% endif %}>
+                        <label class="form-check-label" for="edit_is_balcao{{ product.id }}">Disponível para Balcão</label>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger"><i class="bi bi-trash me-1"></i> Excluir</button>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deleteProductForm" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteProductModalLabel">Confirmar Exclusão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja excluir o produto <strong id="productNameToDelete"></strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Excluir</button>
                 </div>
             </form>
         </div>
@@ -220,44 +201,19 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // 1. Lógica do Modal de Exclusão (configura o action do formulário)
     var deleteProductModal = document.getElementById('deleteProductModal');
-    if (deleteProductModal) {
-        deleteProductModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            var productId = button.getAttribute('data-bs-product-id');
-            var productName = button.getAttribute('data-bs-product-name');
+    deleteProductModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var productId = button.getAttribute('data-bs-product-id');
+        var productName = button.getAttribute('data-bs-product-name');
 
-            var modalText = deleteProductModal.querySelector('#productNameToDelete');
-            var deleteForm = deleteProductModal.querySelector('#deleteProductForm');
+        var modalText = deleteProductModal.querySelector('#productNameToDelete');
+        var deleteForm = deleteProductModal.querySelector('#deleteProductForm');
 
-            modalText.textContent = productName;
-            
-            // Cria a URL de exclusão correta usando o ID do produto
-            var deleteUrlTemplate = "{{ url_for('produtos.excluir', product_id='PRODUCT_ID_PLACEHOLDER') }}";
-            deleteForm.action = deleteUrlTemplate.replace('PRODUCT_ID_PLACEHOLDER', productId);
-        });
-    }
-
-    // 2. Lógica para reabrir modais após falha de validação (mantida)
-    // Se a rota de Edição falhou (o backend redireciona com 'editing' e 'product' contendo erros)
-    {% if editing and product %}
-    var editModalElement = document.getElementById('editProductModal{{ product.id }}');
-    if (editModalElement) {
-        var editModal = new bootstrap.Modal(editModalElement);
-        editModal.show();
-    }
-    {% elif form and form.errors %}
-    // Se o formulário de Adição falhou (a variável 'editing' não está presente)
-    var addModalElement = document.getElementById('addProductModal');
-    if (addModalElement) {
-        var addModal = new bootstrap.Modal(addModalElement);
-        addModal.show();
-    }
-    {% endif %}
-
-});
+        modalText.textContent = productName;
+        
+        // CORREÇÃO: Constrói a URL de forma segura no JavaScript usando o productId
+        deleteForm.action = `/perfil/excluir/${productId}`;
+    });
 </script>
-
 {% endblock %}
