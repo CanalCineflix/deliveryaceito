@@ -190,6 +190,9 @@ def update_status():
             if manual_override:
                 new_status = 'open' if is_open else 'closed'
 
+            # LOG DE CONFIRMAÇÃO: Mostra o que será salvo no banco de dados.
+            print(f"--- LOG STATUS: Tentando salvar manual_status_override como: '{new_status}' ---")
+
             # 1. Busca ou cria RestaurantConfig
             config = current_user.config or RestaurantConfig(user_id=current_user.id)
             if not current_user.config:
@@ -206,6 +209,9 @@ def update_status():
                 status_message = "Status Manual: Aberto."
             elif new_status == 'closed':
                 status_message = "Status Manual: Fechado."
+
+            # LOG DE SUCESSO
+            print(f"--- LOG STATUS: Sucesso! Novo status no DB: '{new_status}' ---")
 
             return jsonify({'success': True, 'message': status_message, 'current_override': new_status}), 200
 
