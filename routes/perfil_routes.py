@@ -38,6 +38,7 @@ def index():
     Rota principal da página de perfil do usuário.
     Carrega e passa todos os dados necessários para o template, incluindo o link dinâmico.
     """
+    # Garante que o usuário tenha uma configuração associada
     config = current_user.config or RestaurantConfig(user_id=current_user.id)
     if not current_user.config:
         db.session.add(config)
@@ -46,20 +47,17 @@ def index():
     # --- LÓGICA DE GERAÇÃO DO LINK DINÂMICO ---
     
     # 1. Carrega o nome do restaurante
-    restaurant = current_user.restaurants
+    # Garante que 'restaurants' seja tratado corretamente (relacionamento one-to-one/many-to-one)
+    restaurant = current_user.restaurants if hasattr(current_user, 'restaurants') and current_user.restaurants else None
     restaurant_name = restaurant.name if restaurant and restaurant.name else 'N/A'
     
     # 2. Cria o SLUG (nome amigável na URL) a partir do nome. 
-    # Usamos o ID do usuário como fallback se o nome for 'N/A'.
-    # O slug deve ser único e amigável.
     slug_name = slugify(restaurant_name)
     
     # 3. Obtém a URL base (Render ou Local)
     base_url = get_base_url()
 
     # 4. Monta o Link do Cardápio no formato: [URL_BASE]/cardapio/[ID]-[SLUG]
-    # Se o nome for 'N/A', o slug será 'n-a', mas o ID garante a unicidade.
-    # Ex: https://deliveryaceito.onrender.com/cardapio/123-o-rappa-anjos-gourmet
     menu_link = f"{base_url}/cardapio/{current_user.id}-{slug_name}"
     
     # --- FIM DA LÓGICA DE GERAÇÃO DO LINK ---
@@ -86,48 +84,138 @@ def index():
 
     return render_template(
         'perfil/index.html',
-        menu_link=menu_link, # ESTA VARIÁVEL AGORA TEM A URL COMPLETA E DINÂMICA
+        menu_link=menu_link,
         user_data=user_data,
         neighborhoods=user_neighborhoods,
         products=user_products,
         opening_hours=opening_hours,
         manual_status_override=manual_status_override,
-        # Mantendo 'current_user' diretamente para acesso a outros campos, se necessário
         current_user=current_user
     )
 
-# ... (O restante das suas rotas continua abaixo) ...
-
-# Rota para atualização de perfil
+# Rota para atualização de perfil (Lógica básica adicionada)
 @perfil_bp.route('/editar', methods=['POST'])
 @login_required
 def update_profile():
-    # ... A lógica real para 'update_profile' deve ser implementada aqui.
-    pass # Placeholder para evitar IndentationError
-    # ...
+    """Atualiza dados básicos do restaurante (nome e whatsapp) e da configuração (endereço, logo)."""
+    try:
+        # 1. Busca ou cria RestaurantConfig
+        config = current_user.config or RestaurantConfig(user_id=current_user.id)
+        if not current_user.config:
+            db.session.add(config)
+        
+        # 2. Atualiza dados na tabela User (WhatsApp)
+        current_user.whatsapp = request.form.get('whatsapp')
 
-# Rota para atualização de horários de funcionamento (Corrigida Indentação)
-@perfil_bp.route('/update-hours', methods=['POST'])
-@login_required # Adicionei o requisito de login, que é padrão para rotas de perfil
-def update_hours():
-    """
-    Função stub (temporária) para a rota de atualização de horários.
-    A lógica completa deve ser inserida aqui para salvar os dados de 'business_hours'.
-    """
-    # A lógica aqui deve:
-    # 1. Obter os dados de horários do request.form ou request.json.
-    # 2. Atualizar o campo 'business_hours' na tabela 'RestaurantConfig' do usuário.
-    # 3. Dar um 'db.session.commit()'.
-    # 4. Retornar um 'jsonify' de sucesso.
-    flash('Funcionalidade de atualização de horários ainda não implementada.', 'info')
+        # 3. Atualiza dados na tabela Restaurant (Nome, se existir)
+        restaurant = current_user.restaurants
+        if restaurant:
+            restaurant.name = request.form.get('restaurant_name')
+
+        # 4. Atualiza dados na tabela RestaurantConfig (Endereço, Logo URL)
+        config.address = request.form.get('address')
+        
+        # Lógica simplificada de upload/URL de logo (APENAS URL para este exemplo)
+        logo_url = request.form.get('logo_url')
+        if logo_url:
+             config.logo_url = logo_url
+
+        db.session.commit()
+        flash('Perfil atualizado com sucesso!', 'success')
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erro ao atualizar perfil: {e}', 'error')
+        current_app.logger.error(f"Erro ao atualizar perfil do usuário {current_user.id}: {e}")
+    
     return redirect(url_for('perfil.index'))
 
 
+# Rota para atualização de horários de funcionamento (Lógica completa implementada)
+@perfil_bp.route('/update-hours', methods=['POST'])
+@login_required
+def update_hours():
+    """
+    Salva os horários de funcionamento (business_hours) do restaurante como JSON string.
+    Espera um payload JSON no corpo da requisição.
+    """
+    if request.is_json:
+        try:
+            # 1. Recebe o objeto de horários (espera um dicionário Python)
+            hours_data = request.json
+            
+            # 2. Validação simples para garantir que é um objeto válido
+            if not isinstance(hours_data, dict):
+                return jsonify({'success': False, 'message': 'Payload inválido. Esperado um objeto JSON.'}), 400
+
+            # 3. Busca ou cria RestaurantConfig
+            config = current_user.config or RestaurantConfig(user_id=current_user.id)
+            if not current_user.config:
+                db.session.add(config)
+            
+            # 4. Converte o dicionário de horários para JSON string
+            config.business_hours = json.dumps(hours_data)
+            
+            # 5. Salva no banco de dados
+            db.session.commit()
+            return jsonify({'success': True, 'message': 'Horários de funcionamento atualizados com sucesso.'}), 200
+
+        except Exception as e:
+            db.session.rollback()
+            current_app.logger.error(f"Erro ao atualizar horários: {e}")
+            return jsonify({'success': False, 'message': f'Erro interno ao salvar horários: {str(e)}'}), 500
+    else:
+        return jsonify({'success': False, 'message': 'Requisição deve ser JSON.'}), 400
+
+
+# Rota para atualizar o status manual (Lógica completa implementada)
 @perfil_bp.route('/update-status', methods=['POST'])
 @login_required
 def update_status():
-    # ...
-    pass # Placeholder para evitar IndentationError
+    """
+    Atualiza o override manual do status de abertura (manual_status_override).
+    Espera um valor booleano (true/false) para 'is_open' e 'manual_override' no corpo JSON.
+    """
+    if request.is_json:
+        try:
+            data = request.json
+            manual_override = data.get('manual_override', False)
+            is_open = data.get('is_open', False)
+
+            # O valor a ser salvo na coluna 'manual_status_override' será:
+            # 1. 'open' se o override estiver ligado E o status for 'aberto'.
+            # 2. 'closed' se o override estiver ligado E o status for 'fechado'.
+            # 3. None se o override estiver desligado (Modo Automático).
+            new_status = None
+            if manual_override:
+                new_status = 'open' if is_open else 'closed'
+
+            # 1. Busca ou cria RestaurantConfig
+            config = current_user.config or RestaurantConfig(user_id=current_user.id)
+            if not current_user.config:
+                db.session.add(config)
+
+            # 2. Atualiza o status
+            config.manual_status_override = new_status
+            
+            # 3. Salva no banco de dados
+            db.session.commit()
+            
+            status_message = "Modo Automático Ativado."
+            if new_status == 'open':
+                status_message = "Status Manual: Aberto."
+            elif new_status == 'closed':
+                status_message = "Status Manual: Fechado."
+
+            return jsonify({'success': True, 'message': status_message, 'current_override': new_status}), 200
+
+        except Exception as e:
+            db.session.rollback()
+            current_app.logger.error(f"Erro ao atualizar status: {e}")
+            return jsonify({'success': False, 'message': f'Erro interno ao salvar status: {str(e)}'}), 500
+    else:
+        return jsonify({'success': False, 'message': 'Requisição deve ser JSON.'}), 400
+
 
 @perfil_bp.route('/senha', methods=['POST'])
 @login_required
