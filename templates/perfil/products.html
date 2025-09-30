@@ -18,10 +18,10 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
@@ -108,6 +108,7 @@
 <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
 <div class="modal-dialog">
 <div class="modal-content">
+<!-- Rota de Adição: produtos.adicionar está correta -->
 <form action="{{ url_for('produtos.adicionar') }}" method="post" enctype="multipart/form-data">
 {{ form.csrf_token }}
 <div class="modal-header">
@@ -174,6 +175,7 @@
 <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
 <div class="modal-dialog">
 <div class="modal-content">
+<!-- O action é preenchido dinamicamente pelo JavaScript -->
 <form id="deleteProductForm" method="post">
 {{ form.csrf_token }}
 <div class="modal-header">
@@ -208,12 +210,15 @@ var productName = button.getAttribute('data-bs-product-name');
         modalText.textContent = productName;
         
         // Cria a URL de exclusão correta usando o ID do produto
+        // Rota de Exclusão: produtos.excluir está correta
         var deleteUrlTemplate = &quot;{{ url_for(&#39;produtos.excluir&#39;, product_id=&#39;PRODUCT_ID_PLACEHOLDER&#39;) }}&quot;;
         deleteForm.action = deleteUrlTemplate.replace(&#39;PRODUCT_ID_PLACEHOLDER&#39;, productId);
     });
 }
 
-// 2. Lógica para reabrir modais após falha de validação (Depende do backend enviar &#39;editing&#39; ou &#39;form.errors&#39;)
+// 2. Lógica para reabrir modais após falha de validação
+// Essa lógica garante que o modal correto seja reaberto se o backend
+// redirecionar para esta página após uma falha de validação do formulário.
 
 // Se a rota de Edição falhou (o backend redireciona com &#39;editing&#39; e &#39;product&#39; contendo erros)
 {% if editing and product %}
@@ -224,7 +229,6 @@ if (editModalElement) {
 }
 {% elif form and form.errors %}
 // Se o formulário de Adição falhou (a variável &#39;editing&#39; não está presente)
-// O {{ form }} terá os dados antigos e os erros.
 var addModalElement = document.getElementById(&#39;addProductModal&#39;);
 if (addModalElement) {
     var addModal = new bootstrap.Modal(addModalElement);
