@@ -260,7 +260,7 @@ var productName = button.getAttribute('data-bs-product-name');
     // CORREÇÃO DA ROTA: Usa a função url_for do Jinja para criar a URL de exclusão com o ID correto.
     // O Flask/Jinja irá gerar o template de URL correto (e.g., /produtos/excluir/123)
     // Note: A rota deve ser &#39;produtos.excluir&#39; de acordo com o seu Blueprint.
-    var deleteUrlTemplate = &quot;{{ url_for(&#39;produtos.excluir&#39;, product_id=&#39;PRODUCT_ID_PLACEHOLDER&#39;) }}&quot;;
+ var deleteUrlTemplate = "{{ url_for('produtos.excluir', product_id='PRODUCT_ID_PLACEHOLDER') }}";
     deleteForm.action = deleteUrlTemplate.replace(&#39;PRODUCT_ID_PLACEHOLDER&#39;, productId);
 });
 
