@@ -25,12 +25,14 @@ class ProductForm(FlaskForm):
     price = DecimalField('Preço', validators=[DataRequired(), NumberRange(min=0)])
     category = StringField('Categoria', validators=[Length(max=50)])
     is_active = BooleanField('Ativo')
+    # Mantido StringField para URL de foto
     photo_url = StringField('URL da Foto', validators=[Length(max=255)])
     is_delivery = BooleanField('Disponível para Delivery')
     is_balcao = BooleanField('Disponível para Retirada no Balcão')
     submit = SubmitField('Salvar Produto')
 
     def validate_photo_url(self, field):
+        # Valida se o campo contém uma URL começando com http:// ou https://
         if field.data and not re.match(r'^https?://.+', field.data):
             raise ValidationError('A URL da foto deve ser uma URL válida começando com http:// ou https://.')
 
