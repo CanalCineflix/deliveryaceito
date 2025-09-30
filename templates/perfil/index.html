@@ -478,36 +478,70 @@
                 if (result.success) {
                     manualStatus = newStatus;
                     updateRestaurantStatus();
-                    alert('Status atualizado com sucesso!');
+                    // Removido alert() e substituído por console.log()
+                    console.log('Status atualizado com sucesso!');
                 } else {
-                    alert('Erro ao atualizar o status.');
+                    console.error('Erro ao atualizar o status.');
                 }
             } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro na comunicação com o servidor.');
+                console.error('Erro na comunicação com o servidor:', error);
             }
         });
     }
     
-    // Lógica para copiar o link
+    // --- Lógica de Cópia do Link (MODIFICADA) ---
     const copyButton = document.getElementById('copy-button');
     const menuLinkElement = document.getElementById('menu-link');
     const copyMessage = document.getElementById('copy-message');
 
+    /**
+     * Função para copiar texto para o clipboard usando document.execCommand('copy'), 
+     * mais confiável em ambientes de iframe.
+     * @param {string} text O texto a ser copiado.
+     * @returns {boolean} Sucesso da operação.
+     */
+    function copyToClipboard(text) {
+        // Cria um elemento temporário para armazenar o texto
+        const tempInput = document.createElement('textarea');
+        tempInput.value = text;
+        // Posiciona fora da tela para evitar scroll ou visibilidade
+        tempInput.style.position = 'absolute';
+        tempInput.style.left = '-9999px';
+        document.body.appendChild(tempInput);
+        
+        // Seleciona o texto
+        tempInput.select();
+        
+        try {
+            // Usa o método de cópia mais compatível em iframes
+            const successful = document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            return successful;
+        } catch (err) {
+            document.body.removeChild(tempInput);
+            console.error('Falha ao tentar copiar o link para a área de transferência:', err);
+            return false;
+        }
+    }
+
     if (copyButton && menuLinkElement && copyMessage) {
         copyButton.addEventListener('click', () => {
             const link = menuLinkElement.href;
-            navigator.clipboard.writeText(link).then(() => {
+            const success = copyToClipboard(link);
+
+            if (success) {
+                // Mostra a mensagem de sucesso
                 copyMessage.classList.add('opacity-100');
                 setTimeout(() => {
                     copyMessage.classList.remove('opacity-100');
                 }, 1500);
-            }).catch(err => {
-                console.error('Erro ao copiar o link:', err);
-                alert('Erro ao copiar o link.');
-            });
+            } else {
+                // Em caso de falha, apenas loga (Alert não é permitido).
+                console.error('Não foi possível copiar o link para a área de transferência.');
+            }
         });
     }
+    // --- Fim da Lógica de Cópia do Link ---
 
     // Lógica para Modais (simples, sem biblioteca externa)
     document.querySelectorAll('[data-modal-target]').forEach(button => {
