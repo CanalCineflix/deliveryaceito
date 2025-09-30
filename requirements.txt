@@ -11,3 +11,4 @@ mercadopago==2.3.0
 python-telegram-bot==22.2
 psycopg2-binary
 email_validator
+python-slugify
