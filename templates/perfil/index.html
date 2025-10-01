@@ -25,6 +25,7 @@
         }
     }
 </script>
+
 <div class="p-4 md:p-8 w-full">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -58,7 +59,6 @@
                     <img id="restaurant-logo" src="{{ user_data.logo_url or 'https://via.placeholder.com/128' }}" alt="Logo do Restaurante" class="w-32 h-32 rounded-full object-cover border-4 border-gray-100 shadow-sm mx-auto">
                 </div>
 
-                <!-- Adicionamos 'flex-grow' aqui para garantir que a lista ocupe o espaço total -->
                 <ul class="divide-y divide-gray-200 flex-grow">
                     <li class="py-3 flex justify-between items-center">
                         <strong class="font-medium text-gray-700">Nome do Restaurante:</strong>
@@ -74,13 +74,12 @@
                     </li>
                     <li class="py-3 flex justify-between items-center">
                         <strong class="font-medium text-gray-700">Link do Cardápio:</strong>
-                        <div class="flex items-center space-x-2 flex-1 justify-end min-w-0">
-                            <!-- Removido 'truncate' excessivo e larguras fixas; usamos 'flex-1 min-w-0' no link wrapper e 'truncate' apenas no link, para garantir que ele respeite o espaço, mas não force o botão para fora. -->
-                            <a id="menu-link" href="{{ menu_link }}" target="_blank" class="text-primary hover:underline truncate flex-1 min-w-[50px] text-right" title="{{ menu_link }}">{{ menu_link }}</a>
-                            <button id="copy-button" class="flex-shrink-0 p-2 bg-gray-100 text-gray-500 rounded-md hover:bg-gray-200 transition-colors" title="Copiar link">
+                        <div class="flex items-center space-x-2">
+                            <a id="menu-link" href="{{ menu_link }}" target="_blank" class="text-primary hover:underline truncate w-48 md:w-auto">{{ menu_link }}</a>
+                            <button id="copy-button" class="p-2 bg-gray-100 text-gray-500 rounded-md hover:bg-gray-200 transition-colors" title="Copiar link">
                                 <i data-lucide="clipboard" class="w-4 h-4"></i>
                             </button>
-                            <span id="copy-message" class="text-sm text-success opacity-0 transition-opacity duration-300 flex-shrink-0">Copiado!</span>
+                            <span id="copy-message" class="text-sm text-success opacity-0 transition-opacity duration-300">Copiado!</span>
                         </div>
                     </li>
                 </ul>
@@ -356,13 +355,6 @@
                     <label for="edit-product-category-{{ product.id }}" class="block text-sm font-medium text-gray-700">Categoria</label>
                     <input type="text" id="edit-product-category-{{ product.id }}" name="category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ product.category }}">
                 </div>
-                <div class="mb-3">
-                    <label for="edit-product-active-{{ product.id }}" class="block text-sm font-medium text-gray-700">Status</label>
-                    <div class="mt-1 flex items-center">
-                        <input type="checkbox" id="edit-product-active-{{ product.id }}" name="is_active" class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" {% if product.is_active %}checked{% endif %}>
-                        <label for="edit-product-active-{{ product.id }}" class="ml-2 text-sm text-gray-600">Produto Ativo</label>
-                    </div>
-                </div>
                 <div class="flex justify-end space-x-3 mt-4">
                     <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#editProductModal-{{ product.id }}">Cancelar</button>
                     <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Salvar Alterações</button>
@@ -375,9 +367,8 @@
 </div>
 
 <script>
- // Armazenando dados do backend em variáveis JS
-    // Correção: Usar o objeto JSON diretamente sem JSON.parse() para evitar SyntaxError.
-    const openingHours = {{ opening_hours | tojson }} || {};
+    // Armazenando dados do backend em variáveis JS
+    const openingHours = JSON.parse('{{ opening_hours | tojson | safe }}') || {};
     let manualStatus = '{{ manual_status_override | default("auto", true) }}';
 
     const daysOfWeek = {
@@ -469,18 +460,12 @@
     const updateStatusRoute = '{{ url_for("perfil.update_status") }}';
 
     if (manualOverrideToggle) {
-        // Define o estado inicial do toggle com base em manualStatus (se não for "auto")
-        manualOverrideToggle.checked = (manualStatus !== 'auto');
+        if (manualStatus !== 'auto') {
+            manualOverrideToggle.checked = true;
+        }
 
         manualOverrideToggle.addEventListener('change', async (event) => {
-            // Ao ativar o toggle (manual), define como 'open' por padrão se estava em 'auto'.
-            let newStatus;
-            if (event.target.checked) {
-                newStatus = (manualStatus === 'auto' || manualStatus === 'closed') ? 'open' : manualStatus;
-            } else {
-                // Ao desativar o toggle, volta para 'auto'.
-                newStatus = 'auto';
-            }
+            const newStatus = event.target.checked ? (manualStatus === 'closed' ? 'closed' : 'open') : 'auto';
             
             try {
                 const response = await fetch(updateStatusRoute, {
@@ -497,13 +482,9 @@
                     console.log('Status atualizado com sucesso!');
                 } else {
                     console.error('Erro ao atualizar o status.');
-                    // Em caso de erro, reverte o estado do toggle no UI
-                    event.target.checked = !event.target.checked;
                 }
             } catch (error) {
                 console.error('Erro na comunicação com o servidor:', error);
-                // Em caso de erro, reverte o estado do toggle no UI
-                event.target.checked = !event.target.checked;
             }
         });
     }
