@@ -6,55 +6,55 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                fontFamily: {
-                    sans: ['Inter', 'sans-serif'],
-                },
-                colors: {
-                    primary: '#4F46E5',
-                    secondary: '#4B5563',
-                    light: '#E5E7EB',
-                    danger: '#EF4444',
-                    success: '#22C55E',
-                    warning: '#F59E0B',
-                    sidebar: '#1E293B',
-                }
-            }
-        }
-    }
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['Inter', 'sans-serif'],
+                },
+                colors: {
+                    primary: '#4F46E5',
+                    secondary: '#4B5563',
+                    light: '#E5E7EB',
+                    danger: '#EF4444',
+                    success: '#22C55E',
+                    warning: '#F59E0B',
+                    sidebar: '#1E293B',
+                }
+            }
+        }
+    }
 </script>
 
 <div class="p-4 md:p-8 w-full">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    <div class="mb-6 space-y-3">
-        {% for category, message in messages %}
-        <div class="relative px-4 py-3 rounded-lg text-white font-medium shadow-md
-            {% if category == 'success' %} bg-success
-            {% elif category == 'danger' %} bg-danger
-            {% else %} bg-warning
-            {% endif %}">
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    {% endwith %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="mb-6 space-y-3">
+        {% for category, message in messages %}
+        <div class="relative px-4 py-3 rounded-lg text-white font-medium shadow-md
+            {% if category == 'success' %} bg-success
+            {% elif category == 'danger' %} bg-danger
+            {% else %} bg-warning
+            {% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
 
-    <h1 class="text-3xl font-bold mb-6 flex items-center space-x-3"><i data-lucide="user" class="w-8 h-8 text-primary"></i> <span>Meu Perfil</span></h1>
+    <h1 class="text-3xl font-bold mb-6 flex items-center space-x-3"><i data-lucide="user" class="w-8 h-8 text-primary"></i> <span>Meu Perfil</span></h1>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
-            <div class="border-b pb-4 mb-4 flex justify-between items-center">
-                <h2 class="text-xl font-bold text-gray-800">Dados do Restaurante</h2>
-                <button type="button" class="px-4 py-2 text-sm bg-gray-100 text-primary rounded-lg font-medium hover:bg-gray-200 transition-colors" data-modal-target="#editProfileModal">
-                    <i data-lucide="pencil" class="inline-block w-4 h-4 mr-2"></i> Editar
-                </button>
-            </div>
-            
-            <div class="flex flex-col md:flex-row gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
+            <div class="border-b pb-4 mb-4 flex justify-between items-center">
+                <h2 class="text-xl font-bold text-gray-800">Dados do Restaurante</h2>
+                <button type="button" class="px-4 py-2 text-sm bg-gray-100 text-primary rounded-lg font-medium hover:bg-gray-200 transition-colors" data-modal-target="#editProfileModal">
+                    <i data-lucide="pencil" class="inline-block w-4 h-4 mr-2"></i> Editar
+                </button>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-6">
                 <div class="flex-shrink-0">
                     <img id="restaurant-logo" src="{{ user_data.logo_url or 'https://via.placeholder.com/128' }}" alt="Logo do Restaurante" class="w-32 h-32 rounded-full object-cover border-4 border-gray-100 shadow-sm mx-auto">
                 </div>
@@ -95,282 +95,285 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col">
-            <div class="border-b pb-4 mb-4">
-                <h2 class="text-xl font-bold text-gray-800">Status e Horários</h2>
-            </div>
 
-            <div class="text-center mb-4">
-                <span id="status-badge" class="px-6 py-2 rounded-full font-bold text-lg text-white">Carregando...</span>
-                <p id="status-mode" class="text-xs text-gray-500 mt-2">Modo: Automático</p>
-            </div>
+        <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col">
+            <div class="border-b pb-4 mb-4">
+                <h2 class="text-xl font-bold text-gray-800">Status e Horários</h2>
+            </div>
 
-            <div class="flex items-center justify-center space-x-3 bg-gray-50 p-3 rounded-lg mb-4">
-                <span class="font-medium text-gray-700">Controle Manual:</span>
-                <label for="manual-override-toggle" class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="manual-override-toggle" class="sr-only peer">
-                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:bg-primary"></div>
-                    <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-full"></span>
-                </label>
-            </div>
-            
-            <div class="flex-grow">
-                <ul id="opening-hours-list" class="divide-y divide-gray-200 text-sm">
-                </ul>
-            </div>
+            <div class="text-center mb-4">
+                <span id="status-badge" class="px-6 py-2 rounded-full font-bold text-lg text-white">Carregando...</span>
+                <p id="status-mode" class="text-xs text-gray-500 mt-2">Modo: Automático</p>
+            </div>
 
-            <button type="button" class="mt-4 px-4 py-2 text-sm bg-gray-100 text-primary rounded-lg font-medium hover:bg-gray-200 transition-colors" data-modal-target="#editHoursModal">
-                <i data-lucide="clock" class="inline-block w-4 h-4 mr-2"></i> Editar Horários
-            </button>
-        </div>
-    </div>
-    
-    <div class="bg-white rounded-xl shadow-lg p-6 my-6">
-        <div class="border-b pb-4 mb-4 flex justify-between items-center">
-            <h2 class="text-xl font-bold text-gray-800">Bairros de Entrega</h2>
-            <button type="button" class="px-4 py-2 text-sm bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors" data-modal-target="#addNeighborhoodModal">
-                <i data-lucide="plus" class="inline-block w-4 h-4 mr-2"></i> Adicionar Bairro
-            </button>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bairro</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Taxa de Entrega</th>
-                        <th scope="col" class="relative px-6 py-3"><span class="sr-only">Ações</span></th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    {% for neighborhood in neighborhoods %}
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ neighborhood.name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$ {{ "%.2f"|format(neighborhood.delivery_fee) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="{{ url_for('perfil.delete_neighborhood', neighborhood_id=neighborhood.id) }}" class="text-danger hover:text-danger/70 transition-colors">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="3" class="px-6 py-4 text-center text-gray-500">Nenhum bairro de entrega cadastrado.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+            <div class="flex items-center justify-center space-x-3 bg-gray-50 p-3 rounded-lg mb-4">
+                <span class="font-medium text-gray-700">Controle Manual:</span>
+                <label for="manual-override-toggle" class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="manual-override-toggle" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:bg-primary"></div>
+                    <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-full"></span>
+                </label>
+            </div>
+            
+            <div class="flex-grow">
+                <ul id="opening-hours-list" class="divide-y divide-gray-200 text-sm">
+                </ul>
+            </div>
 
-    <div class="bg-white rounded-xl shadow-lg p-6 my-6">
-        <div class="border-b pb-4 mb-4 flex justify-between items-center">
-            <h2 class="text-xl font-bold text-gray-800">Produtos</h2>
-            <button type="button" class="px-4 py-2 text-sm bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors" data-modal-target="#addProductModal">
-                <i data-lucide="plus" class="inline-block w-4 h-4 mr-2"></i> Adicionar Produto
-            </button>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produto</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoria</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preço</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    {% for product in products %}
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {{ product.name }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ product.category or 'N/A' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$ {{ "%.2f"|format(product.price) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                {% if product.is_active %}bg-success/10 text-success
-                                {% else %}bg-danger/10 text-danger
-                                {% endif %}">
-                                {% if product.is_active %}Ativo{% else %}Inativo{% endif %}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                            <button type="button" class="text-primary hover:text-primary/70 transition-colors" data-modal-target="#editProductModal-{{ product.id }}">
-                                <i data-lucide="pencil" class="w-4 h-4"></i>
-                            </button>
-                            <a href="{{ url_for('perfil.excluir', product_id=product.id) }}" class="text-danger hover:text-danger/70 transition-colors">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">Nenhum produto cadastrado.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    
-    <div id="editProfileModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300">
-        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 transform transition-transform duration-300 scale-95">
-            <div class="flex justify-between items-center border-b pb-4 mb-4">
-                <h5 class="text-xl font-bold">Editar Perfil do Restaurante</h5>
-                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#editProfileModal">
-                    <i data-lucide="x-circle" class="w-6 h-6"></i>
-                </button>
-            </div>
-            <form action="{{ url_for('perfil.update_profile') }}" method="POST" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="restaurant_name" class="block text-sm font-medium text-gray-700">Nome do Restaurante</label>
-                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" id="restaurant_name" name="restaurant_name" value="{{ user_data.restaurant_name or '' }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="whatsapp" class="block text-sm font-medium text-gray-700">WhatsApp (com DDD, somente números)</label>
-                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" id="whatsapp" name="whatsapp" value="{{ user_data.whatsapp or '' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="address" class="block text-sm font-medium text-gray-700">Endereço Completo</label>
-                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" id="address" name="address" value="{{ user_data.address or '' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="logo" class="block text-sm font-medium text-gray-700">Alterar Logo</label>
-                    <input type="file" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" id="logo" name="logo" accept="image/*">
-                </div>
-                <div class="flex justify-end space-x-3 mt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#editProfileModal">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Salvar Alterações</button>
-                </div>
-            </form>
-    </div>
+            <button type="button" class="mt-4 px-4 py-2 text-sm bg-gray-100 text-primary rounded-lg font-medium hover:bg-gray-200 transition-colors" data-modal-target="#editHoursModal">
+                <i data-lucide="clock" class="inline-block w-4 h-4 mr-2"></i> Editar Horários
+            </button>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-lg p-6 my-6">
+        <div class="border-b pb-4 mb-4 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-gray-800">Bairros de Entrega</h2>
+            <button type="button" class="px-4 py-2 text-sm bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors" data-modal-target="#addNeighborhoodModal">
+                <i data-lucide="plus" class="inline-block w-4 h-4 mr-2"></i> Adicionar Bairro
+            </button>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bairro</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Taxa de Entrega</th>
+                        <th scope="col" class="relative px-6 py-3"><span class="sr-only">Ações</span></th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for neighborhood in neighborhoods %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ neighborhood.name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$ {{ "%.2f"|format(neighborhood.delivery_fee) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <a href="{{ url_for('perfil.delete_neighborhood', neighborhood_id=neighborhood.id) }}" class="text-danger hover:text-danger/70 transition-colors">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" class="px-6 py-4 text-center text-gray-500">Nenhum bairro de entrega cadastrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    <div id="editHoursModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300">
-        <div class="bg-white p-6 rounded-lg shadow-xl max-w-2xl w-full mx-4 transform transition-transform duration-300 scale-95">
-            <div class="flex justify-between items-center border-b pb-4 mb-4">
-                <h5 class="text-xl font-bold">Editar Horário de Funcionamento</h5>
-                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#editHoursModal">
-                    <i data-lucide="x-circle" class="w-6 h-6"></i>
-                </button>
-            </div>
-            <form action="{{ url_for('perfil.update_hours') }}" method="POST">
-                <div class="space-y-4">
-                    {% set days = [('monday', 'Segunda'), ('tuesday', 'Terça'), ('wednesday', 'Quarta'), ('thursday', 'Quinta'), ('friday', 'Sexta'), ('saturday', 'Sábado'), ('sunday', 'Domingo')] %}
-                    {% for day_key, day_name in days %}
-                    <div class="grid grid-cols-5 gap-3 items-center">
-                        <label class="col-span-1 font-medium text-gray-700">{{ day_name }}</label>
-                        <input type="time" name="{{ day_key }}_open" value="{{ opening_hours.get(day_key, {}).get('open', '') }}" class="col-span-1 p-2 border rounded-md">
-                        <span class="text-center">às</span>
-                        <input type="time" name="{{ day_key }}_close" value="{{ opening_hours.get(day_key, {}).get('close', '') }}" class="col-span-1 p-2 border rounded-md">
-                        <div class="col-span-1 flex items-center justify-end">
-                            <input type="checkbox" id="{{ day_key }}_closed" name="{{ day_key }}_closed" {% if not opening_hours.get(day_key, {}).get('open') %}checked{% endif %} class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
-                            <label for="{{ day_key }}_closed" class="ml-2 text-sm text-gray-600">Fechado</label>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <div class="flex justify-end space-x-3 mt-6">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#editHoursModal">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Salvar Horários</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <div id="addNeighborhoodModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300">
-        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 transform transition-transform duration-300 scale-95">
-            <div class="flex justify-between items-center border-b pb-4 mb-4">
-                <h5 class="text-xl font-bold">Adicionar Bairro de Entrega</h5>
-                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#addNeighborhoodModal">
-                    <i data-lucide="x-circle" class="w-6 h-6"></i>
-                </button>
-            </div>
-            <form action="{{ url_for('perfil.add_neighborhood') }}" method="POST">
-                <div class="mb-3">
-                    <label for="neighborhood-name" class="block text-sm font-medium text-gray-700">Nome do Bairro</label>
-                    <input type="text" id="neighborhood-name" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                </div>
-                <div class="mb-3">
-                    <label for="delivery-fee" class="block text-sm font-medium text-gray-700">Taxa de Entrega (R$)</label>
-                    <input type="number" id="delivery-fee" name="delivery_fee" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                </div>
-                <div class="flex justify-end space-x-3 mt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#addNeighborhoodModal">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Adicionar Bairro</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <div class="bg-white rounded-xl shadow-lg p-6 my-6">
+        <div class="border-b pb-4 mb-4 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-gray-800">Produtos</h2>
+            <button type="button" class="px-4 py-2 text-sm bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors" data-modal-target="#addProductModal">
+                <i data-lucide="plus" class="inline-block w-4 h-4 mr-2"></i> Adicionar Produto
+            </button>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produto</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoria</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preço</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th scope="col" class="relative px-6 py-3"><span class="sr-only">Ações</span></th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for product in products %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {{ product.name }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ product.category or 'N/A' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$ {{ "%.2f"|format(product.price) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                {% if product.is_active %}bg-success/10 text-success
+                                {% else %}bg-danger/10 text-danger
+                                {% endif %}">
+                                {% if product.is_active %}Ativo{% else %}Inativo{% endif %}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                            <button type="button" class="text-primary hover:text-primary/70 transition-colors" data-modal-target="#editProductModal-{{ product.id }}">
+                                <i data-lucide="pencil" class="w-4 h-4"></i>
+                            </button>
+                            <a href="{{ url_for('perfil.excluir', product_id=product.id) }}" class="text-danger hover:text-danger/70 transition-colors">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">Nenhum produto cadastrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div id="editProfileModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 transform transition-transform duration-300 scale-95">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h5 class="text-xl font-bold">Editar Perfil do Restaurante</h5>
+                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#editProfileModal">
+                    <i data-lucide="x-circle" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form action="{{ url_for('perfil.update_profile') }}" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="restaurant_name" class="block text-sm font-medium text-gray-700">Nome do Restaurante</label>
+                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" id="restaurant_name" name="restaurant_name" value="{{ user_data.restaurant_name or '' }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="whatsapp" class="block text-sm font-medium text-gray-700">WhatsApp (com DDD, somente números)</label>
+                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" id="whatsapp" name="whatsapp" value="{{ user_data.whatsapp or '' }}">
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="block text-sm font-medium text-gray-700">Endereço Completo</label>
+                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" id="address" name="address" value="{{ user_data.address or '' }}">
+                </div>
+                <div class="mb-3">
+                    <label for="logo" class="block text-sm font-medium text-gray-700">Alterar Logo</label>
+                    <input type="file" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" id="logo" name="logo" accept="image/*">
+                </div>
+                <div class="flex justify-end space-x-3 mt-4">
+                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#editProfileModal">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Salvar Alterações</button>
+                </div>
+            </form>
+    </div>
 
-    <div id="addProductModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300">
-        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 transform transition-transform duration-300 scale-95">
-            <div class="flex justify-between items-center border-b pb-4 mb-4">
-                <h5 class="text-xl font-bold">Adicionar Novo Produto</h5>
-                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#addProductModal">
-                    <i data-lucide="x-circle" class="w-6 h-6"></i>
-                </button>
-            </div>
-            <form action="{{ url_for('perfil.add_product') }}" method="POST">
-                <div class="mb-3">
-                    <label for="product-name" class="block text-sm font-medium text-gray-700">Nome do Produto</label>
-                    <input type="text" id="product-name" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                </div>
-                <div class="mb-3">
-                    <label for="product-description" class="block text-sm font-medium text-gray-700">Descrição</label>
-                    <textarea id="product-description" name="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="product-price" class="block text-sm font-medium text-gray-700">Preço (R$)</label>
-                    <input type="number" id="product-price" name="price" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                </div>
-                <div class="mb-3">
-                    <label for="product-category" class="block text-sm font-medium text-gray-700">Categoria</label>
-                    <input type="text" id="product-category" name="category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                </div>
-                <div class="flex justify-end space-x-3 mt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#addProductModal">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Adicionar Produto</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    {% for product in products %}
-    <div id="editProductModal-{{ product.id }}" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300">
-        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 transform transition-transform duration-300 scale-95">
-            <div class="flex justify-between items-center border-b pb-4 mb-4">
-                <h5 class="text-xl font-bold">Editar Produto</h5>
-                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#editProductModal-{{ product.id }}">
-                    <i data-lucide="x-circle" class="w-6 h-6"></i>
-                </button>
-            </div>
-            <form action="{{ url_for('perfil.update_product', product_id=product.id) }}" method="POST">
-                <div class="mb-3">
-                    <label for="edit-product-name-{{ product.id }}" class="block text-sm font-medium text-gray-700">Nome do Produto</label>
-                    <input type="text" id="edit-product-name-{{ product.id }}" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ product.name }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="edit-product-description-{{ product.id }}" class="block text-sm font-medium text-gray-700">Descrição</label>
-                    <textarea id="edit-product-description-{{ product.id }}" name="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ product.description }}</textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="edit-product-price-{{ product.id }}" class="block text-sm font-medium text-gray-700">Preço (R$)</label>
-                    <input type="number" id="edit-product-price-{{ product.id }}" name="price" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ product.price }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="edit-product-category-{{ product.id }}" class="block text-sm font-medium text-gray-700">Categoria</label>
-                    <input type="text" id="edit-product-category-{{ product.id }}" name="category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ product.category }}">
-                </div>
-                <div class="flex justify-end space-x-3 mt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#editProductModal-{{ product.id }}">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Salvar Alterações</button>
-                </div>
-            </form>
-        </div>
-        
-    </div>
-    {% endfor %}
+    <div id="editHoursModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-2xl w-full mx-4 transform transition-transform duration-300 scale-95">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h5 class="text-xl font-bold">Editar Horário de Funcionamento</h5>
+                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#editHoursModal">
+                    <i data-lucide="x-circle" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form action="{{ url_for('perfil.update_hours') }}" method="POST">
+                <div class="space-y-4">
+                    {% set days = [('monday', 'Segunda'), ('tuesday', 'Terça'), ('wednesday', 'Quarta'), ('thursday', 'Quinta'), ('friday', 'Sexta'), ('saturday', 'Sábado'), ('sunday', 'Domingo')] %}
+                    {% for day_key, day_name in days %}
+                    <div class="grid grid-cols-5 gap-3 items-center">
+                        <label class="col-span-1 font-medium text-gray-700">{{ day_name }}</label>
+                        <input type="time" name="{{ day_key }}_open" value="{{ opening_hours.get(day_key, {}).get('open', '') }}" class="col-span-1 p-2 border rounded-md">
+                        <span class="text-center">às</span>
+                        <input type="time" name="{{ day_key }}_close" value="{{ opening_hours.get(day_key, {}).get('close', '') }}" class="col-span-1 p-2 border rounded-md">
+                        <div class="col-span-1 flex items-center justify-end">
+                            <input type="checkbox" id="{{ day_key }}_closed" name="{{ day_key }}_closed" {% if not opening_hours.get(day_key, {}).get('open') %}checked{% endif %} class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
+                            <label for="{{ day_key }}_closed" class="ml-2 text-sm text-gray-600">Fechado</label>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#editHoursModal">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Salvar Horários</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="addNeighborhoodModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 transform transition-transform duration-300 scale-95">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h5 class="text-xl font-bold">Adicionar Bairro de Entrega</h5>
+                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#addNeighborhoodModal">
+                    <i data-lucide="x-circle" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form action="{{ url_for('perfil.add_neighborhood') }}" method="POST">
+                <div class="mb-3">
+                    <label for="neighborhood-name" class="block text-sm font-medium text-gray-700">Nome do Bairro</label>
+                    <input type="text" id="neighborhood-name" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="delivery-fee" class="block text-sm font-medium text-gray-700">Taxa de Entrega (R$)</label>
+                    <input type="number" id="delivery-fee" name="delivery_fee" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                </div>
+                <div class="flex justify-end space-x-3 mt-4">
+                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#addNeighborhoodModal">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Adicionar Bairro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addProductModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 transform transition-transform duration-300 scale-95">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h5 class="text-xl font-bold">Adicionar Novo Produto</h5>
+                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#addProductModal">
+                    <i data-lucide="x-circle" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form action="{{ url_for('perfil.add_product') }}" method="POST">
+                <div class="mb-3">
+                    <label for="product-name" class="block text-sm font-medium text-gray-700">Nome do Produto</label>
+                    <input type="text" id="product-name" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="product-description" class="block text-sm font-medium text-gray-700">Descrição</label>
+                    <textarea id="product-description" name="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="product-price" class="block text-sm font-medium text-gray-700">Preço (R$)</label>
+                    <input type="number" id="product-price" name="price" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="product-category" class="block text-sm font-medium text-gray-700">Categoria</label>
+                    <input type="text" id="product-category" name="category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div class="flex justify-end space-x-3 mt-4">
+                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#addProductModal">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Adicionar Produto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    {% for product in products %}
+    <div id="editProductModal-{{ product.id }}" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 transform transition-transform duration-300 scale-95">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h5 class="text-xl font-bold">Editar Produto</h5>
+                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#editProductModal-{{ product.id }}">
+                    <i data-lucide="x-circle" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form action="{{ url_for('perfil.update_product', product_id=product.id) }}" method="POST">
+                <div class="mb-3">
+                    <label for="edit-product-name-{{ product.id }}" class="block text-sm font-medium text-gray-700">Nome do Produto</label>
+                    <input type="text" id="edit-product-name-{{ product.id }}" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ product.name }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="edit-product-description-{{ product.id }}" class="block text-sm font-medium text-gray-700">Descrição</label>
+                    <textarea id="edit-product-description-{{ product.id }}" name="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ product.description }}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="edit-product-price-{{ product.id }}" class="block text-sm font-medium text-gray-700">Preço (R$)</label>
+                    <input type="number" id="edit-product-price-{{ product.id }}" name="price" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ product.price }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="edit-product-category-{{ product.id }}" class="block text-sm font-medium text-gray-700">Categoria</label>
+                    <input type="text" id="edit-product-category-{{ product.id }}" name="category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ product.category }}">
+                </div>
+                <div class="flex justify-end space-x-3 mt-4">
+                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#editProductModal-{{ product.id }}">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
 
 <script>
     // Armazenando dados do backend em variáveis JS
