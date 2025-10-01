@@ -1,614 +1,799 @@
-{% extends "base.html" %}
-
-{% block title %}Meu Perfil{% endblock %}
-
-{% block content %}
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
-<script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                fontFamily: {
-                    sans: ['Inter', 'sans-serif'],
-                },
-                colors: {
-                    primary: '#4F46E5',
-                    secondary: '#4B5563',
-                    light: '#E5E7EB',
-                    danger: '#EF4444',
-                    success: '#22C55E',
-                    warning: '#F59E0B',
-                    sidebar: '#1E293B',
-                }
-            }
-        }
-    }
-</script>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Estilos para garantir que o body ocupe a tela inteira e o fundo seja cinza claro */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F3F4F6; /* light gray background */
+        }
+        /* Estilo para garantir que o modal cubra tudo e centralize */
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+        .modal.hidden .modal-content {
+            transform: scale(0.95);
+        }
+        .modal:not(.hidden) .modal-content {
+            transform: scale(1);
+        }
+        /* Estilo do toggle manual */
+        #manual-override-toggle:checked ~ div {
+            background-color: #4F46E5; /* primary color */
+        }
+        #manual-override-toggle:checked ~ div > span {
+            transform: translateX(100%);
+        }
+    </style>
+    <script>
+        // Configuração do Tailwind CSS (mantida a partir do seu template)
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#4B5563',
+                        light: '#E5E7EB',
+                        danger: '#EF4444',
+                        success: '#22C55E',
+                        warning: '#F59E0B',
+                        sidebar: '#1E293B',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body>
 
 <div class="p-4 md:p-8 w-full">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    <div class="mb-6 space-y-3">
-        {% for category, message in messages %}
-        <div class="relative px-4 py-3 rounded-lg text-white font-medium shadow-md
-            {% if category == 'success' %} bg-success
-            {% elif category == 'danger' %} bg-danger
-            {% else %} bg-warning
-            {% endif %}">
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    {% endwith %}
+    <!-- Mensagens de Flashed Messages (Simulação) -->
+    <!-- Este bloco simula uma mensagem de sucesso que apareceria ao carregar a página -->
+    <div id="flash-message" class="mb-6 space-y-3 hidden">
+        <div class="relative px-4 py-3 rounded-lg text-white font-medium shadow-md bg-success">
+            Perfil carregado com sucesso! (Simulação de Flash Message)
+        </div>
+    </div>
 
-    <h1 class="text-3xl font-bold mb-6 flex items-center space-x-3"><i data-lucide="user" class="w-8 h-8 text-primary"></i> <span>Meu Perfil</span></h1>
+    <h1 class="text-3xl font-bold mb-6 flex items-center space-x-3">
+        <i data-lucide="user" class="w-8 h-8 text-primary"></i> 
+        <span>Meu Perfil</span>
+    </h1>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
-            <div class="border-b pb-4 mb-4 flex justify-between items-center">
-                <h2 class="text-xl font-bold text-gray-800">Dados do Restaurante</h2>
-                <!-- Este botão usa data-modal-target="#editProfileModal" para abrir o modal -->
-                <button type="button" class="px-4 py-2 text-sm bg-gray-100 text-primary rounded-lg font-medium hover:bg-gray-200 transition-colors" data-modal-target="#editProfileModal">
-                    <i data-lucide="pencil" class="inline-block w-4 h-4 mr-2"></i> Editar
-                </button>
-            </div>
-            
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="flex-shrink-0">
-                    <img id="restaurant-logo" src="{{ user_data.logo_url or 'https://via.placeholder.com/128' }}" alt="Logo do Restaurante" class="w-32 h-32 rounded-full object-cover border-4 border-gray-100 shadow-sm mx-auto">
-                </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Card de Dados do Restaurante -->
+        <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
+            <div class="border-b pb-4 mb-4 flex justify-between items-center">
+                <h2 class="text-xl font-bold text-gray-800">Dados do Restaurante</h2>
+                <button type="button" class="px-4 py-2 text-sm bg-gray-100 text-primary rounded-lg font-medium hover:bg-gray-200 transition-colors" data-modal-target="#editProfileModal">
+                    <i data-lucide="pencil" class="inline-block w-4 h-4 mr-2"></i> Editar
+                </button>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="flex-shrink-0">
+                    <img id="restaurant-logo" src="https://placehold.co/128x128/4F46E5/FFFFFF?text=Logo" alt="Logo do Restaurante" class="w-32 h-32 rounded-full object-cover border-4 border-gray-100 shadow-sm mx-auto">
+                </div>
 
-                <ul class="divide-y divide-gray-200 flex-grow">
-                    <li class="py-3 flex justify-between items-center">
-                        <strong class="font-medium text-gray-700">Nome do Restaurante:</strong>
-                        <span class="text-gray-600 text-right">{{ user_data.restaurant_name or 'Não informado' }}</span>
-                    </li>
-                    <li class="py-3 flex justify-between items-center">
-                        <strong class="font-medium text-gray-700">Endereço:</strong>
-                        <span class="text-gray-600 text-right">{{ user_data.address or 'Não informado' }}</span>
-                    </li>
-                    <li class="py-3 flex justify-between items-center">
-                        <strong class="font-medium text-gray-700">WhatsApp:</strong>
-                        <span class="text-gray-600 text-right">{{ user_data.whatsapp or 'Não informado' }}</span>
-                    </li>
-                    <li class="py-3 flex justify-between items-center">
-                        <strong class="font-medium text-gray-700">Link do Cardápio:</strong>
-                        <div class="flex items-center space-x-2">
-                            <a id="menu-link" href="{{ menu_link }}" target="_blank" class="text-primary hover:underline truncate w-48 md:w-auto">{{ menu_link }}</a>
-                            <button id="copy-button" class="p-2 bg-gray-100 text-gray-500 rounded-md hover:bg-gray-200 transition-colors" title="Copiar link">
-                                <i data-lucide="clipboard" class="w-4 h-4"></i>
-                            </button>
-                            <span id="copy-message" class="text-sm text-success opacity-0 transition-opacity duration-300">Copiado!</span>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
+                <ul class="divide-y divide-gray-200 flex-grow">
+                    <li class="py-3 flex justify-between items-center">
+                        <strong class="font-medium text-gray-700">Nome do Restaurante:</strong>
+                        <span id="display-name" class="text-gray-600 text-right">Sabor do Chef</span>
+                    </li>
+                    <li class="py-3 flex justify-between items-center">
+                        <strong class="font-medium text-gray-700">Endereço:</strong>
+                        <span id="display-address" class="text-gray-600 text-right">Rua Principal, 123 - Centro, Cidade</span>
+                    </li>
+                    <li class="py-3 flex justify-between items-center">
+                        <strong class="font-medium text-gray-700">WhatsApp:</strong>
+                        <span id="display-whatsapp" class="text-gray-600 text-right">5511987654321</span>
+                    </li>
+                    <li class="py-3 flex justify-between items-center">
+                        <strong class="font-medium text-gray-700">Link do Cardápio:</strong>
+                        <div class="flex items-center space-x-2">
+                            <a id="menu-link" href="#" target="_blank" class="text-primary hover:underline truncate w-48 md:w-auto">https://meucardapio.com/sabordochef</a>
+                            <button id="copy-button" class="p-2 bg-gray-100 text-gray-500 rounded-md hover:bg-gray-200 transition-colors" title="Copiar link">
+                                <i data-lucide="clipboard" class="w-4 h-4"></i>
+                            </button>
+                            <span id="copy-message" class="text-sm text-success opacity-0 transition-opacity duration-300">Copiado!</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
-        <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col">
-            <div class="border-b pb-4 mb-4">
-                <h2 class="text-xl font-bold text-gray-800">Status e Horários</h2>
-            </div>
+        <!-- Card de Status e Horários -->
+        <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col">
+            <div class="border-b pb-4 mb-4">
+                <h2 class="text-xl font-bold text-gray-800">Status e Horários</h2>
+            </div>
 
-            <div class="text-center mb-4">
-                <span id="status-badge" class="px-6 py-2 rounded-full font-bold text-lg text-white">Carregando...</span>
-                <p id="status-mode" class="text-xs text-gray-500 mt-2">Modo: Automático</p>
-            </div>
+            <div class="text-center mb-4">
+                <span id="status-badge" class="px-6 py-2 rounded-full font-bold text-lg text-white bg-warning">Carregando...</span>
+                <p id="status-mode" class="text-xs text-gray-500 mt-2">Modo: Automático</p>
+            </div>
 
-            <div class="flex items-center justify-center space-x-3 bg-gray-50 p-3 rounded-lg mb-4">
-                <span class="font-medium text-gray-700">Controle Manual:</span>
-                <label for="manual-override-toggle" class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="manual-override-toggle" class="sr-only peer">
-                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:bg-primary"></div>
-                    <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-full"></span>
-                </label>
-            </div>
-            
-            <div class="flex-grow">
-                <ul id="opening-hours-list" class="divide-y divide-gray-200 text-sm">
-                </ul>
-            </div>
+            <div class="flex items-center justify-center space-x-3 bg-gray-50 p-3 rounded-lg mb-4">
+                <span class="font-medium text-gray-700">Controle Manual:</span>
+                <label for="manual-override-toggle" class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="manual-override-toggle" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:bg-primary"></div>
+                    <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform"></span>
+                </label>
+            </div>
+            
+            <div class="flex-grow">
+                <ul id="opening-hours-list" class="divide-y divide-gray-200 text-sm">
+                    <!-- Horários serão renderizados aqui pelo JS -->
+                </ul>
+            </div>
 
-            <button type="button" class="mt-4 px-4 py-2 text-sm bg-gray-100 text-primary rounded-lg font-medium hover:bg-gray-200 transition-colors" data-modal-target="#editHoursModal">
-                <i data-lucide="clock" class="inline-block w-4 h-4 mr-2"></i> Editar Horários
-            </button>
-        </div>
-    </div>
-    
-    <div class="bg-white rounded-xl shadow-lg p-6 my-6">
-        <div class="border-b pb-4 mb-4 flex justify-between items-center">
-            <h2 class="text-xl font-bold text-gray-800">Bairros de Entrega</h2>
-            <button type="button" class="px-4 py-2 text-sm bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors" data-modal-target="#addNeighborhoodModal">
-                <i data-lucide="plus" class="inline-block w-4 h-4 mr-2"></i> Adicionar Bairro
-            </button>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bairro</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Taxa de Entrega</th>
-                        <th scope="col" class="relative px-6 py-3"><span class="sr-only">Ações</span></th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    {% for neighborhood in neighborhoods %}
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ neighborhood.name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$ {{ "%.2f"|format(neighborhood.delivery_fee) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="{{ url_for('perfil.delete_neighborhood', neighborhood_id=neighborhood.id) }}" class="text-danger hover:text-danger/70 transition-colors">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="3" class="px-6 py-4 text-center text-gray-500">Nenhum bairro de entrega cadastrado.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+            <button type="button" class="mt-4 px-4 py-2 text-sm bg-gray-100 text-primary rounded-lg font-medium hover:bg-gray-200 transition-colors" data-modal-target="#editHoursModal">
+                <i data-lucide="clock" class="inline-block w-4 h-4 mr-2"></i> Editar Horários
+            </button>
+        </div>
+    </div>
+    
+    <!-- Tabela de Bairros de Entrega -->
+    <div class="bg-white rounded-xl shadow-lg p-6 my-6">
+        <div class="border-b pb-4 mb-4 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-gray-800">Bairros de Entrega</h2>
+            <button type="button" class="px-4 py-2 text-sm bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors" data-modal-target="#addNeighborhoodModal">
+                <i data-lucide="plus" class="inline-block w-4 h-4 mr-2"></i> Adicionar Bairro
+            </button>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bairro</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Taxa de Entrega</th>
+                        <th scope="col" class="relative px-6 py-3"><span class="sr-only">Ações</span></th>
+                    </tr>
+                </thead>
+                <tbody id="neighborhood-table-body" class="bg-white divide-y divide-gray-200">
+                    <!-- Bairros serão renderizados aqui pelo JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    <div class="bg-white rounded-xl shadow-lg p-6 my-6">
-        <div class="border-b pb-4 mb-4 flex justify-between items-center">
-            <h2 class="text-xl font-bold text-gray-800">Produtos</h2>
-            <button type="button" class="px-4 py-2 text-sm bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors" data-modal-target="#addProductModal">
-                <i data-lucide="plus" class="inline-block w-4 h-4 mr-2"></i> Adicionar Produto
-            </button>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produto</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoria</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preço</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    {% for product in products %}
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {{ product.name }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ product.category or 'N/A' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$ {{ "%.2f"|format(product.price) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                {% if product.is_active %}bg-success/10 text-success
-                                {% else %}bg-danger/10 text-danger
-                                {% endif %}">
-                                {% if product.is_active %}Ativo{% else %}Inativo{% endif %}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                            <button type="button" class="text-primary hover:text-primary/70 transition-colors" data-modal-target="#editProductModal-{{ product.id }}">
-                                <i data-lucide="pencil" class="w-4 h-4"></i>
-                            </button>
-                            <a href="{{ url_for('perfil.excluir', product_id=product.id) }}" class="text-danger hover:text-danger/70 transition-colors">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">Nenhum produto cadastrado.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    
-    <!-- Modal de Edição de Perfil (Agora deve aparecer) -->
-    <div id="editProfileModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 opacity-0">
-        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 transform transition-transform duration-300 scale-95">
-            <div class="flex justify-between items-center border-b pb-4 mb-4">
-                <h5 class="text-xl font-bold">Editar Perfil do Restaurante</h5>
-                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#editProfileModal">
-                    <i data-lucide="x-circle" class="w-6 h-6"></i>
-                </button>
-            </div>
-            <form action="{{ url_for('perfil.update_profile') }}" method="POST" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="restaurant_name" class="block text-sm font-medium text-gray-700">Nome do Restaurante</label>
-                    <!-- Adicionado p-2 e border para melhor visualização -->
-                    <input type="text" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-primary focus:ring-primary" id="restaurant_name" name="restaurant_name" value="{{ user_data.restaurant_name or '' }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="whatsapp" class="block text-sm font-medium text-gray-700">WhatsApp (com DDD, somente números)</label>
-                    <!-- Adicionado p-2 e border para melhor visualização -->
-                    <input type="text" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-primary focus:ring-primary" id="whatsapp" name="whatsapp" value="{{ user_data.whatsapp or '' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="address" class="block text-sm font-medium text-gray-700">Endereço Completo</label>
-                    <!-- Adicionado p-2 e border para melhor visualização -->
-                    <input type="text" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-primary focus:ring-primary" id="address" name="address" value="{{ user_data.address or '' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="logo" class="block text-sm font-medium text-gray-700">Alterar Logo</label>
-                    <input type="file" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" id="logo" name="logo" accept="image/*">
-                </div>
-                <div class="flex justify-end space-x-3 mt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#editProfileModal">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Salvar Alterações</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <!-- Tabela de Produtos -->
+    <div class="bg-white rounded-xl shadow-lg p-6 my-6">
+        <div class="border-b pb-4 mb-4 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-gray-800">Produtos</h2>
+            <button type="button" class="px-4 py-2 text-sm bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors" data-modal-target="#addProductModal">
+                <i data-lucide="plus" class="inline-block w-4 h-4 mr-2"></i> Adicionar Produto
+            </button>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produto</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoria</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preço</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th scope="col" class="relative px-6 py-3"><span class="sr-only">Ações</span></th>
+                    </tr>
+                </thead>
+                <tbody id="product-table-body" class="bg-white divide-y divide-gray-200">
+                    <!-- Produtos serão renderizados aqui pelo JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- MODAIS (Mantidos, mas com ação de formulário simulada) -->
 
-    <div id="editHoursModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 opacity-0">
-        <div class="bg-white p-6 rounded-lg shadow-xl max-w-2xl w-full mx-4 transform transition-transform duration-300 scale-95">
-            <div class="flex justify-between items-center border-b pb-4 mb-4">
-                <h5 class="text-xl font-bold">Editar Horário de Funcionamento</h5>
-                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#editHoursModal">
-                    <i data-lucide="x-circle" class="w-6 h-6"></i>
-                </button>
-            </div>
-            <form action="{{ url_for('perfil.update_hours') }}" method="POST">
-                <div class="space-y-4">
-                    {% set days = [('monday', 'Segunda'), ('tuesday', 'Terça'), ('wednesday', 'Quarta'), ('thursday', 'Quinta'), ('friday', 'Sexta'), ('saturday', 'Sábado'), ('sunday', 'Domingo')] %}
-                    {% for day_key, day_name in days %}
-                    <div class="grid grid-cols-5 gap-3 items-center">
-                        <label class="col-span-1 font-medium text-gray-700">{{ day_name }}</label>
-                        <input type="time" name="{{ day_key }}_open" value="{{ opening_hours.get(day_key, {}).get('open', '') }}" class="col-span-1 p-2 border rounded-md border-gray-300 focus:border-primary focus:ring-primary">
-                        <span class="text-center">às</span>
-                        <input type="time" name="{{ day_key }}_close" value="{{ opening_hours.get(day_key, {}).get('close', '') }}" class="col-span-1 p-2 border rounded-md border-gray-300 focus:border-primary focus:ring-primary">
-                        <div class="col-span-1 flex items-center justify-end">
-                            <input type="checkbox" id="{{ day_key }}_closed" name="{{ day_key }}_closed" {% if not opening_hours.get(day_key, {}).get('open') %}checked{% endif %} class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
-                            <label for="{{ day_key }}_closed" class="ml-2 text-sm text-gray-600">Fechado</label>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <div class="flex justify-end space-x-3 mt-6">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#editHoursModal">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Salvar Horários</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <div id="addNeighborhoodModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 opacity-0">
-        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 transform transition-transform duration-300 scale-95">
-            <div class="flex justify-between items-center border-b pb-4 mb-4">
-                <h5 class="text-xl font-bold">Adicionar Bairro de Entrega</h5>
-                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#addNeighborhoodModal">
-                    <i data-lucide="x-circle" class="w-6 h-6"></i>
-                </button>
-            </div>
-            <form action="{{ url_for('perfil.add_neighborhood') }}" method="POST">
-                <div class="mb-3">
-                    <label for="neighborhood-name" class="block text-sm font-medium text-gray-700">Nome do Bairro</label>
-                    <input type="text" id="neighborhood-name" name="name" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-primary focus:ring-primary" required>
-                </div>
-                <div class="mb-3">
-                    <label for="delivery-fee" class="block text-sm font-medium text-gray-700">Taxa de Entrega (R$)</label>
-                    <input type="number" id="delivery-fee" name="delivery_fee" step="0.01" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-primary focus:ring-primary" required>
-                </div>
-                <div class="flex justify-end space-x-3 mt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#addNeighborhoodModal">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Adicionar Bairro</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <!-- Modal Editar Perfil -->
+    <div id="editProfileModal" class="modal fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
+        <div class="modal-content bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h5 class="text-xl font-bold">Editar Perfil do Restaurante</h5>
+                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#editProfileModal">
+                    <i data-lucide="x-circle" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="edit-profile-form" onsubmit="event.preventDefault(); handleFormSubmit(this, 'Perfil');">
+                <div class="mb-3">
+                    <label for="restaurant_name" class="block text-sm font-medium text-gray-700">Nome do Restaurante</label>
+                    <input type="text" class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm" id="restaurant_name" name="restaurant_name" value="Sabor do Chef" required>
+                </div>
+                <div class="mb-3">
+                    <label for="whatsapp" class="block text-sm font-medium text-gray-700">WhatsApp (com DDD, somente números)</label>
+                    <input type="text" class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm" id="whatsapp" name="whatsapp" value="5511987654321">
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="block text-sm font-medium text-gray-700">Endereço Completo</label>
+                    <input type="text" class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm" id="address" name="address" value="Rua Principal, 123 - Centro, Cidade">
+                </div>
+                <div class="mb-3">
+                    <label for="logo" class="block text-sm font-medium text-gray-700">Alterar Logo</label>
+                    <input type="file" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" id="logo" name="logo" accept="image/*">
+                </div>
+                <div class="flex justify-end space-x-3 mt-4">
+                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#editProfileModal">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <div id="addProductModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 opacity-0">
-        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 transform transition-transform duration-300 scale-95">
-            <div class="flex justify-between items-center border-b pb-4 mb-4">
-                <h5 class="text-xl font-bold">Adicionar Novo Produto</h5>
-                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#addProductModal">
-                    <i data-lucide="x-circle" class="w-6 h-6"></i>
-                </button>
-            </div>
-            <form action="{{ url_for('perfil.add_product') }}" method="POST">
-                <div class="mb-3">
-                    <label for="product-name" class="block text-sm font-medium text-gray-700">Nome do Produto</label>
-                    <input type="text" id="product-name" name="name" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-primary focus:ring-primary" required>
-                </div>
-                <div class="mb-3">
-                    <label for="product-description" class="block text-sm font-medium text-gray-700">Descrição</label>
-                    <textarea id="product-description" name="description" rows="3" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-primary focus:ring-primary"></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="product-price" class="block text-sm font-medium text-gray-700">Preço (R$)</label>
-                    <input type="number" id="product-price" name="price" step="0.01" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-primary focus:ring-primary" required>
-                </div>
-                <div class="mb-3">
-                    <label for="product-category" class="block text-sm font-medium text-gray-700">Categoria</label>
-                    <input type="text" id="product-category" name="category" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-primary focus:ring-primary">
-                </div>
-                <div class="flex justify-end space-x-3 mt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#addProductModal">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Adicionar Produto</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    {% for product in products %}
-    <div id="editProductModal-{{ product.id }}" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 opacity-0">
-        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 transform transition-transform duration-300 scale-95">
-            <div class="flex justify-between items-center border-b pb-4 mb-4">
-                <h5 class="text-xl font-bold">Editar Produto</h5>
-                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#editProductModal-{{ product.id }}">
-                    <i data-lucide="x-circle" class="w-6 h-6"></i>
-                </button>
-            </div>
-            <form action="{{ url_for('perfil.update_product', product_id=product.id) }}" method="POST">
-                <div class="mb-3">
-                    <label for="edit-product-name-{{ product.id }}" class="block text-sm font-medium text-gray-700">Nome do Produto</label>
-                    <input type="text" id="edit-product-name-{{ product.id }}" name="name" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-primary focus:ring-primary" value="{{ product.name }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="edit-product-description-{{ product.id }}" class="block text-sm font-medium text-gray-700">Descrição</label>
-                    <textarea id="edit-product-description-{{ product.id }}" name="description" rows="3" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-primary focus:ring-primary">{{ product.description }}</textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="edit-product-price-{{ product.id }}" class="block text-sm font-medium text-gray-700">Preço (R$)</label>
-                    <input type="number" id="edit-product-price-{{ product.id }}" name="price" step="0.01" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-primary focus:ring-primary" value="{{ product.price }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="edit-product-category-{{ product.id }}" class="block text-sm font-medium text-gray-700">Categoria</label>
-                    <input type="text" id="edit-product-category-{{ product.id }}" name="category" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-primary focus:ring-primary" value="{{ product.category }}">
-                </div>
-                <div class="flex justify-end space-x-3 mt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#editProductModal-{{ product.id }}">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Salvar Alterações</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    {% endfor %}
+    <!-- Modal Editar Horários -->
+    <div id="editHoursModal" class="modal fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
+        <div class="modal-content bg-white p-6 rounded-lg shadow-xl max-w-2xl w-full mx-4">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h5 class="text-xl font-bold">Editar Horário de Funcionamento</h5>
+                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#editHoursModal">
+                    <i data-lucide="x-circle" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="edit-hours-form" onsubmit="event.preventDefault(); handleFormSubmit(this, 'Horários');">
+                <div class="space-y-4" id="hours-form-content">
+                    <!-- Conteúdo do formulário de horas será renderizado aqui -->
+                </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#editHoursModal">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Salvar Horários</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal Adicionar Bairro -->
+    <div id="addNeighborhoodModal" class="modal fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
+        <div class="modal-content bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h5 class="text-xl font-bold">Adicionar Bairro de Entrega</h5>
+                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#addNeighborhoodModal">
+                    <i data-lucide="x-circle" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="add-neighborhood-form" onsubmit="event.preventDefault(); handleFormSubmit(this, 'Bairro');">
+                <div class="mb-3">
+                    <label for="neighborhood-name" class="block text-sm font-medium text-gray-700">Nome do Bairro</label>
+                    <input type="text" id="neighborhood-name" name="name" class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="delivery-fee" class="block text-sm font-medium text-gray-700">Taxa de Entrega (R$)</label>
+                    <input type="number" id="delivery-fee" name="delivery_fee" step="0.01" class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm" required>
+                </div>
+                <div class="flex justify-end space-x-3 mt-4">
+                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#addNeighborhoodModal">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Adicionar Bairro</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
+    <!-- Modal Adicionar Produto -->
+    <div id="addProductModal" class="modal fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
+        <div class="modal-content bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h5 class="text-xl font-bold">Adicionar Novo Produto</h5>
+                <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#addProductModal">
+                    <i data-lucide="x-circle" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="add-product-form" onsubmit="event.preventDefault(); handleFormSubmit(this, 'Produto');">
+                <div class="mb-3">
+                    <label for="product-name" class="block text-sm font-medium text-gray-700">Nome do Produto</label>
+                    <input type="text" id="product-name" name="name" class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="product-description" class="block text-sm font-medium text-gray-700">Descrição</label>
+                    <textarea id="product-description" name="description" rows="3" class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="product-price" class="block text-sm font-medium text-gray-700">Preço (R$)</label>
+                    <input type="number" id="product-price" name="price" step="0.01" class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="product-category" class="block text-sm font-medium text-gray-700">Categoria</label>
+                    <input type="text" id="product-category" name="category" class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm">
+                </div>
+                <div class="flex justify-end space-x-3 mt-4">
+                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#addProductModal">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Adicionar Produto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modais de Edição de Produto (Renderizados dinamicamente pelo JS no onload) -->
+    <div id="product-modals-container"></div>
 </div>
 
 <script>
-    // Armazenando dados do backend em variáveis JS
-    const openingHours = JSON.parse('{{ opening_hours | tojson | safe }}') || {};
-    let manualStatus = '{{ manual_status_override | default("auto", true) }}';
+    // --- MOCK DATA para simular o backend ---
+    const MOCK_USER_DATA = {
+        restaurant_name: 'Sabor do Chef',
+        address: 'Rua Principal, 123 - Centro, Cidade',
+        whatsapp: '5511987654321',
+        logo_url: 'https://placehold.co/128x128/4F46E5/FFFFFF?text=Logo',
+    };
 
-    const daysOfWeek = {
-        0: 'sunday', 1: 'monday', 2: 'tuesday', 3: 'wednesday', 4: 'thursday', 5: 'friday', 6: 'saturday'
-    };
-    const displayDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-    const dayNames = {
-        monday: 'Segunda', tuesday: 'Terça', wednesday: 'Quarta', thursday: 'Quinta', friday: 'Sexta', saturday: 'Sábado', sunday: 'Domingo'
-    };
+    const MOCK_MENU_LINK = 'https://meucardapio.com/sabordochef';
 
-    // =========================================================
-    // LÓGICA DE ABERTURA E FECHAMENTO DE MODAIS (CORREÇÃO)
-    // =========================================================
-    document.addEventListener('DOMContentLoaded', () => {
-        // Função para abrir o modal
-        document.querySelectorAll('[data-modal-target]').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const targetId = e.currentTarget.getAttribute('data-modal-target');
-                const modal = document.querySelector(targetId);
-                if (modal) {
-                    // Remove 'hidden' e adiciona classe de transição inicial
-                    modal.classList.remove('hidden');
-                    modal.classList.remove('opacity-0');
+    const MOCK_OPENING_HOURS = {
+        monday: { open: '18:00', close: '23:30' },
+        tuesday: { open: '18:00', close: '23:30' },
+        wednesday: { open: '18:00', close: '23:30' },
+        thursday: { open: '18:00', close: '23:30' },
+        friday: { open: '18:00', close: '00:30' }, // Exemplo de virada da meia-noite
+        saturday: { open: '11:00', close: '23:30' },
+        sunday: { open: null, close: null }, // Exemplo de fechado
+    };
 
-                    // Efeito de escala
-                    const content = modal.querySelector('.transform');
-                    if (content) {
-                        content.classList.remove('scale-95');
-                        content.classList.add('scale-100');
-                    }
-                }
-            });
-        });
+    const MOCK_NEIGHBORHOODS = [
+        { id: 1, name: 'Centro', delivery_fee: 5.00 },
+        { id: 2, name: 'Vila Nova', delivery_fee: 7.50 },
+        { id: 3, name: 'Jardim América', delivery_fee: 10.00 },
+    ];
 
-        // Função para fechar o modal
-        document.querySelectorAll('[data-modal-close]').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const modalId = e.currentTarget.getAttribute('data-modal-close');
-                const modal = document.querySelector(modalId);
-                if (modal) {
-                    // Efeito de escala e opacidade para fechar
-                    modal.classList.add('opacity-0');
-                    const content = modal.querySelector('.transform');
-                    if (content) {
-                        content.classList.remove('scale-100');
-                        content.classList.add('scale-95');
-                    }
+    const MOCK_PRODUCTS = [
+        { id: 101, name: 'Pizza Margherita', description: 'Mussarela, tomate e manjericão.', price: 45.90, category: 'Pizzas', is_active: true },
+        { id: 102, name: 'Hamburguer Duplo', description: 'Dois hambúrgueres de 150g, queijo cheddar, bacon.', price: 32.00, category: 'Lanches', is_active: true },
+        { id: 103, name: 'Refrigerante Lata', description: 'Coca-Cola 350ml', price: 6.50, category: 'Bebidas', is_active: false },
+    ];
 
-                    // Esconde após a transição (300ms)
-                    setTimeout(() => {
-                        modal.classList.add('hidden');
-                    }, 300);
-                }
-            });
-        });
+    // Variável de controle manual (simulação de dado do Flask)
+    let manualStatus = 'auto'; // 'open', 'closed', or 'auto'
 
-        // Fechar modal ao clicar fora (no overlay)
-        document.querySelectorAll('.fixed.inset-0[id$="Modal"]').forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    // Simula o clique no botão de fechar
-                    const closeButton = modal.querySelector('[data-modal-close]');
-                    if (closeButton) {
-                        closeButton.click();
-                    }
-                }
-            });
-        });
-        
-        // Inicializa todos os ícones Lucide no DOM
-        lucide.createIcons();
-    });
-    // =========================================================
+    // --- UTILS ---
+    const daysOfWeek = {
+        0: 'sunday', 1: 'monday', 2: 'tuesday', 3: 'wednesday', 4: 'thursday', 5: 'friday', 6: 'saturday'
+    };
+    const displayDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const dayNames = {
+        monday: 'Segunda', tuesday: 'Terça', wednesday: 'Quarta', thursday: 'Quinta', friday: 'Sexta', saturday: 'Sábado', sunday: 'Domingo'
+    };
 
-    function updateRestaurantStatus() {
-        const statusBadge = document.getElementById('status-badge');
-        const statusMode = document.getElementById('status-mode');
-        
-        if (!statusBadge || !statusMode) return;
+    /**
+     * Função auxiliar para formatar valores como moeda Real.
+     * @param {number} value O valor a ser formatado.
+     * @returns {string} O valor formatado como "R$ X.XX".
+     */
+    function formatCurrency(value) {
+        return `R$ ${parseFloat(value).toFixed(2).replace('.', ',')}`;
+    }
 
-        let isOpen = false;
-        let statusText = 'Fechado';
-        
-        // 1. Verifica o controle manual primeiro
-        if (manualStatus !== 'auto') {
-            isOpen = manualStatus === 'open';
-            statusText = isOpen ? 'Aberto' : 'Fechado';
-            statusMode.textContent = `Modo: Manual (${statusText})`;
-        } else {
-            // 2. Se for automático, calcula com base no horário
-            statusMode.textContent = 'Modo: Automático';
-            const now = new Date();
-            const currentDay = daysOfWeek[now.getDay()];
-            const currentTime = now.toTimeString().slice(0, 5); // Formato "HH:MM"
-            
-            const hours = openingHours[currentDay];
+    // --- LÓGICA DE MODAIS ---
+    function setupModals() {
+        const modalTriggers = document.querySelectorAll('[data-modal-target]');
+        const modalClosers = document.querySelectorAll('[data-modal-close]');
 
-            if (hours && hours.open && hours.close) {
-                // Lógica para horários que passam da meia-noite
-                if (hours.close < hours.open) { 
-                    if (currentTime >= hours.open || currentTime < hours.close) {
-                        isOpen = true;
-                    }
-                } else { // Lógica para horários no mesmo dia
-                    if (currentTime >= hours.open && currentTime < hours.close) {
-                        isOpen = true;
-                    }
-                }
-            }
-            statusText = isOpen ? 'Aberto' : 'Fechado';
-        }
+        modalTriggers.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-modal-target');
+                const modal = document.querySelector(targetId);
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden'; // Evita scroll ao abrir
+                }
+            });
+        });
 
-        // Atualiza a aparência do badge
-        statusBadge.textContent = statusText;
-        statusBadge.classList.remove('bg-success', 'bg-danger');
-        statusBadge.classList.add(isOpen ? 'bg-success' : 'bg-danger');
-    }
+        modalClosers.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-modal-close');
+                const modal = document.querySelector(targetId);
+                if (modal) {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    }
 
-    function renderOpeningHours() {
-        const listElement = document.getElementById('opening-hours-list');
-        if (!listElement) return;
+    function handleFormSubmit(form, entityName) {
+        console.log(`Simulação: Formulário de ${entityName} submetido!`);
+        console.log('Dados do formulário:', Object.fromEntries(new FormData(form)));
 
-        listElement.innerHTML = ''; // Limpa a lista
-        displayDays.forEach(dayKey => {
-            const dayName = dayNames[dayKey];
-            const hours = openingHours[dayKey];
-            
-            const listItem = document.createElement('li');
-            listItem.classList.add('py-3', 'flex', 'justify-between');
+        // Simula o fechamento do modal e o feedback
+        const modalId = form.closest('.modal').id;
+        document.getElementById(modalId).classList.add('hidden');
+        document.body.style.overflow = '';
+        
+        const flashMessage = document.getElementById('flash-message');
+        if(flashMessage) {
+            flashMessage.querySelector('div').textContent = `${entityName} atualizado(a) com sucesso (Simulação)!`;
+            flashMessage.classList.remove('hidden');
+            setTimeout(() => flashMessage.classList.add('hidden'), 5000);
+        }
 
-            const dayElement = document.createElement('strong');
-            dayElement.classList.add('font-medium', 'text-gray-700');
-            dayElement.textContent = dayName + ':';
+        // Se fosse a edição de perfil, atualizaríamos os dados do perfil aqui
+        if (entityName === 'Perfil') {
+            document.getElementById('display-name').textContent = form.restaurant_name.value;
+            document.getElementById('display-address').textContent = form.address.value;
+            document.getElementById('display-whatsapp').textContent = form.whatsapp.value;
+        }
 
-            const timeElement = document.createElement('span');
-            timeElement.classList.add('text-gray-600');
-            
-            if (hours && hours.open && hours.close) {
-                timeElement.textContent = `${hours.open} - ${hours.close}`;
-            } else {
-                timeElement.textContent = 'Fechado';
-                timeElement.classList.add('text-danger');
-            }
+        // Re-renderiza tudo para mostrar as alterações (Simulação)
+        renderAllData();
+    }
 
-            listItem.appendChild(dayElement);
-            listItem.appendChild(timeElement);
-            listElement.appendChild(listItem);
-        });
-    }
 
-    // Lógica para o switch de controle manual
-    const manualOverrideToggle = document.getElementById('manual-override-toggle');
-    const updateStatusRoute = '{{ url_for("perfil.update_status") }}';
+    // --- LÓGICA DE STATUS E HORÁRIOS ---
 
-    if (manualOverrideToggle) {
-        if (manualStatus !== 'auto') {
-            manualOverrideToggle.checked = true;
-        }
+    function updateRestaurantStatus() {
+        const statusBadge = document.getElementById('status-badge');
+        const statusMode = document.getElementById('status-mode');
+        
+        if (!statusBadge || !statusMode) return;
 
-        manualOverrideToggle.addEventListener('change', async (event) => {
-            const newStatus = event.target.checked ? (manualStatus === 'closed' ? 'closed' : 'open') : 'auto';
-            
-            try {
-                const response = await fetch(updateStatusRoute, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: newStatus }),
-                });
-                
-                const result = await response.json();
-                if (result.success) {
-                    manualStatus = newStatus;
-                    updateRestaurantStatus();
-                    console.log('Status atualizado com sucesso!');
-                } else {
-                    console.error('Erro ao atualizar o status.');
-                }
-            } catch (error) {
-                console.error('Erro na comunicação com o servidor:', error);
-            }
-        });
-    }
-    
-    // --- Lógica de Cópia do Link ---
-    const copyButton = document.getElementById('copy-button');
-    const menuLinkElement = document.getElementById('menu-link');
-    const copyMessage = document.getElementById('copy-message');
+        let isOpen = false;
+        let statusText = 'Fechado';
+        
+        // 1. Verifica o controle manual primeiro
+        if (manualStatus !== 'auto') {
+            isOpen = manualStatus === 'open';
+            statusText = isOpen ? 'Aberto' : 'Fechado';
+            statusMode.textContent = `Modo: Manual (${statusText})`;
+        } else {
+            // 2. Se for automático, calcula com base no horário
+            statusMode.textContent = 'Modo: Automático';
+            const now = new Date();
+            const currentDay = daysOfWeek[now.getDay()];
+            const currentTime = now.toTimeString().slice(0, 5); // Formato "HH:MM"
+            
+            const hours = MOCK_OPENING_HOURS[currentDay];
 
-    /**
-     * Função para copiar texto para o clipboard usando document.execCommand('copy'), 
-     * mais confiável em ambientes de iframe.
-     * @param {string} text O texto a ser copiado.
-     * @returns {boolean} Sucesso da operação.
-     */
-    function copyToClipboard(text) {
-        // Cria um elemento temporário para armazenar o texto
-        const tempInput = document.createElement('textarea');
-        tempInput.value = text;
-        // Posiciona fora da tela para evitar scroll ou visibilidade
-        tempInput.style.position = 'absolute';
-        tempInput.style.left = '-9999px';
-        document.body.appendChild(tempInput);
-        
-        // Seleciona o texto
-        tempInput.select();
-        
-        try {
-            // Usa o método de cópia mais compatível em iframes
-            const successful = document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            return successful;
-        } catch (err) {
-            document.body.removeChild(tempInput);
-            console.error('Falha ao tentar copiar o link para a área de transferência:', err);
-            return false;
-        }
-    }
+            if (hours && hours.open && hours.close) {
+                // Converte horários para um número que pode ser comparado
+                const timeToMinutes = (time) => parseInt(time.slice(0, 2)) * 60 + parseInt(time.slice(3, 5));
+                const currentM = timeToMinutes(currentTime);
+                const openM = timeToMinutes(hours.open);
+                let closeM = timeToMinutes(hours.close);
 
-    if (copyButton && menuLinkElement && copyMessage) {
-        copyButton.addEventListener('click', () => {
-            const link = menuLinkElement.href;
-            const success = copyToClipboard(link);
+                // Lógica para horários que passam da meia-noite (ex: 23:00 - 02:00)
+                if (closeM < openM) {
+                    // Adiciona 24 horas para o dia seguinte
+                    closeM += 24 * 60; 
+                    
+                    // Se o horário atual for após a abertura (no dia atual) OU 
+                    // se for antes do fechamento (no dia seguinte)
+                    if (currentM >= openM || currentM < timeToMinutes(hours.close)) {
+                        isOpen = true;
+                    }
+                } else { // Horários no mesmo dia (ex: 18:00 - 23:30)
+                    if (currentM >= openM && currentM < closeM) {
+                        isOpen = true;
+                    }
+                }
+            }
+            statusText = isOpen ? 'Aberto' : 'Fechado';
+        }
 
-            if (success) {
-                // Mostra a mensagem de sucesso
-                copyMessage.classList.add('opacity-100');
-                setTimeout(() => {
-                    copyMessage.classList.remove('opacity-100');
-                }, 1500);
-            }
-        });
-    }
+        // Atualiza a aparência do badge
+        statusBadge.textContent = statusText;
+        statusBadge.classList.remove('bg-success', 'bg-danger', 'bg-warning');
+        statusBadge.classList.add(isOpen ? 'bg-success' : 'bg-danger');
+    }
 
-    // Inicialização
-    renderOpeningHours();
-    updateRestaurantStatus();
-    setInterval(updateRestaurantStatus, 60000); // Atualiza o status a cada minuto
+    function renderOpeningHours() {
+        const listElement = document.getElementById('opening-hours-list');
+        if (!listElement) return;
+
+        listElement.innerHTML = ''; // Limpa a lista
+        displayDays.forEach(dayKey => {
+            const dayName = dayNames[dayKey];
+            const hours = MOCK_OPENING_HOURS[dayKey];
+            
+            const listItem = document.createElement('li');
+            listItem.classList.add('py-3', 'flex', 'justify-between');
+
+            const dayElement = document.createElement('strong');
+            dayElement.classList.add('font-medium', 'text-gray-700');
+            dayElement.textContent = dayName + ':';
+
+            const timeElement = document.createElement('span');
+            timeElement.classList.add('text-gray-600');
+            
+            if (hours && hours.open && hours.close) {
+                timeElement.textContent = `${hours.open} - ${hours.close}`;
+            } else {
+                timeElement.textContent = 'Fechado';
+                timeElement.classList.add('text-danger');
+            }
+
+            listItem.appendChild(dayElement);
+            listItem.appendChild(timeElement);
+            listElement.appendChild(listItem);
+        });
+
+        // Preenche o modal de edição de horários (para simulação)
+        const hoursFormContent = document.getElementById('hours-form-content');
+        if (hoursFormContent) {
+            hoursFormContent.innerHTML = displayDays.map(dayKey => {
+                const dayName = dayNames[dayKey];
+                const hours = MOCK_OPENING_HOURS[dayKey];
+                const isClosed = !hours || !hours.open;
+                
+                return `
+                    <div class="grid grid-cols-5 gap-3 items-center">
+                        <label class="col-span-1 font-medium text-gray-700">${dayName}</label>
+                        <input type="time" name="${dayKey}_open" value="${hours?.open || ''}" ${isClosed ? 'disabled' : ''} class="col-span-1 p-2 border rounded-md">
+                        <span class="text-center">às</span>
+                        <input type="time" name="${dayKey}_close" value="${hours?.close || ''}" ${isClosed ? 'disabled' : ''} class="col-span-1 p-2 border rounded-md">
+                        <div class="col-span-1 flex items-center justify-end">
+                            <input type="checkbox" id="${dayKey}_closed" name="${dayKey}_closed" ${isClosed ? 'checked' : ''} onchange="toggleTimeInputs(this, '${dayKey}_open', '${dayKey}_close')" class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
+                            <label for="${dayKey}_closed" class="ml-2 text-sm text-gray-600">Fechado</label>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    }
+
+    function toggleTimeInputs(checkbox, openId, closeId) {
+        document.querySelector(`[name="${openId}"]`).disabled = checkbox.checked;
+        document.querySelector(`[name="${closeId}"]`).disabled = checkbox.checked;
+    }
+
+
+    // Lógica para o switch de controle manual
+    function setupManualToggle() {
+        const manualOverrideToggle = document.getElementById('manual-override-toggle');
+
+        if (manualOverrideToggle) {
+            manualOverrideToggle.checked = manualStatus !== 'auto';
+
+            manualOverrideToggle.addEventListener('change', async (event) => {
+                // Simulação de chamada ao backend para atualizar status
+                const isManual = event.target.checked;
+                let newStatus;
+                
+                if (isManual) {
+                    // No modo manual, setamos para 'open' por padrão se estava 'auto' ou mantemos o status manual anterior
+                    newStatus = manualStatus === 'auto' ? 'open' : manualStatus;
+                } else {
+                    newStatus = 'auto';
+                }
+                
+                // Simulação: se o toggle for ligado, mas o status manual ainda for 'auto',
+                // forçamos para 'open' ou mantemos o último status manual salvo.
+                if (isManual && manualStatus === 'auto') {
+                    newStatus = 'open'; 
+                }
+
+                // SIMULAÇÃO DE REQUISIÇÃO E ATUALIZAÇÃO
+                // Na aplicação real, você faria um fetch:
+                /* const response = await fetch('{{ url_for("perfil.update_status") }}', {
+                    // ... 
+                }); 
+                const result = await response.json();
+                if (result.success) { 
+                    manualStatus = newStatus;
+                    updateRestaurantStatus();
+                    console.log('Status atualizado com sucesso!');
+                }
+                */
+
+                // Emulação de sucesso:
+                manualStatus = newStatus;
+                updateRestaurantStatus();
+                console.log('Status manual (simulado) alterado para:', newStatus);
+
+                // Se o toggle for ligado, mas o status manual não for 'auto', 
+                // ele já deve refletir o status manual (aberto/fechado), o que é manipulado por updateRestaurantStatus()
+            });
+        }
+    }
+
+    // --- LÓGICA DE TABELAS ---
+
+    function renderNeighborhoodsTable() {
+        const tableBody = document.getElementById('neighborhood-table-body');
+        if (!tableBody) return;
+
+        tableBody.innerHTML = '';
+        if (MOCK_NEIGHBORHOODS.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="3" class="px-6 py-4 text-center text-gray-500">Nenhum bairro de entrega cadastrado.</td>
+                </tr>
+            `;
+            return;
+        }
+
+        MOCK_NEIGHBORHOODS.forEach(n => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${n.name}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatCurrency(n.delivery_fee)}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button onclick="console.log('Simulação: Excluir Bairro ${n.id}')" class="text-danger hover:text-danger/70 transition-colors">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+        lucide.createIcons(); // Recria ícones para novos elementos
+    }
+
+    function renderProductsTable() {
+        const tableBody = document.getElementById('product-table-body');
+        const modalsContainer = document.getElementById('product-modals-container');
+        if (!tableBody || !modalsContainer) return;
+
+        tableBody.innerHTML = '';
+        modalsContainer.innerHTML = ''; // Limpa modais antigos
+        
+        if (MOCK_PRODUCTS.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">Nenhum produto cadastrado.</td>
+                </tr>
+            `;
+            return;
+        }
+
+        MOCK_PRODUCTS.forEach(p => {
+            const statusClass = p.is_active ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger';
+            const statusText = p.is_active ? 'Ativo' : 'Inativo';
+
+            // Renderiza a linha da tabela
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${p.name}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${p.category || 'N/A'}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatCurrency(p.price)}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                        ${statusText}
+                    </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                    <button type="button" class="text-primary hover:text-primary/70 transition-colors" data-modal-target="#editProductModal-${p.id}">
+                        <i data-lucide="pencil" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="console.log('Simulação: Excluir Produto ${p.id}')" class="text-danger hover:text-danger/70 transition-colors">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+
+            // Renderiza o Modal de Edição de Produto (necessário estar no DOM)
+            const modalHtml = `
+                <div id="editProductModal-${p.id}" class="modal fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
+                    <div class="modal-content bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4">
+                        <div class="flex justify-between items-center border-b pb-4 mb-4">
+                            <h5 class="text-xl font-bold">Editar Produto: ${p.name}</h5>
+                            <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close="#editProductModal-${p.id}">
+                                <i data-lucide="x-circle" class="w-6 h-6"></i>
+                            </button>
+                        </div>
+                        <form onsubmit="event.preventDefault(); handleFormSubmit(this, 'Produto ${p.id}');">
+                            <div class="mb-3">
+                                <label for="edit-product-name-${p.id}" class="block text-sm font-medium text-gray-700">Nome do Produto</label>
+                                <input type="text" id="edit-product-name-${p.id}" name="name" class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm" value="${p.name}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-product-description-${p.id}" class="block text-sm font-medium text-gray-700">Descrição</label>
+                                <textarea id="edit-product-description-${p.id}" name="description" rows="3" class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm">${p.description}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-product-price-${p.id}" class="block text-sm font-medium text-gray-700">Preço (R$)</label>
+                                <input type="number" id="edit-product-price-${p.id}" name="price" step="0.01" class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm" value="${p.price}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-product-category-${p.id}" class="block text-sm font-medium text-gray-700">Categoria</label>
+                                <input type="text" id="edit-product-category-${p.id}" name="category" class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm" value="${p.category || ''}">
+                            </div>
+                            <div class="mb-3 flex items-center space-x-2">
+                                <input type="checkbox" id="edit-product-active-${p.id}" name="is_active" ${p.is_active ? 'checked' : ''} class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
+                                <label for="edit-product-active-${p.id}" class="text-sm font-medium text-gray-700">Produto Ativo</label>
+                            </div>
+                            <div class="flex justify-end space-x-3 mt-4">
+                                <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#editProductModal-${p.id}">Cancelar</button>
+                                <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            modalsContainer.insertAdjacentHTML('beforeend', modalHtml);
+        });
+        lucide.createIcons(); // Recria ícones para novos elementos
+    }
+
+
+    // --- LÓGICA DE CÓPIA DO LINK (MANTIDA) ---
+    function setupCopyLink() {
+        const copyButton = document.getElementById('copy-button');
+        const menuLinkElement = document.getElementById('menu-link');
+        const copyMessage = document.getElementById('copy-message');
+
+        function copyToClipboard(text) {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            tempInput.style.position = 'absolute';
+            tempInput.style.left = '-9999px';
+            document.body.appendChild(tempInput);
+            
+            tempInput.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                return successful;
+            } catch (err) {
+                document.body.removeChild(tempInput);
+                console.error('Falha ao tentar copiar o link para a área de transferência:', err);
+                return false;
+            }
+        }
+
+        if (copyButton && menuLinkElement && copyMessage) {
+            menuLinkElement.href = MOCK_MENU_LINK; // Define o link mock
+            menuLinkElement.textContent = MOCK_MENU_LINK; // Define o texto do link
+            
+            copyButton.addEventListener('click', () => {
+                const link = menuLinkElement.href;
+                const success = copyToClipboard(link);
+
+                if (success) {
+                    // Mostra a mensagem de sucesso
+                    copyMessage.classList.add('opacity-100');
+                    setTimeout(() => {
+                        copyMessage.classList.remove('opacity-100');
+                    }, 1500);
+                } else {
+                    console.error('Não foi possível copiar o link para a área de transferência.');
+                }
+            });
+        }
+    }
+
+    // Função principal para renderizar todos os componentes que dependem de dados mockados
+    function renderAllData() {
+        // Renderiza Status e Horários
+        updateRestaurantStatus(); 
+        renderOpeningHours();
+
+        // Renderiza Tabelas
+        renderNeighborhoodsTable();
+        renderProductsTable();
+        
+        // Re-configura modais (pois novos modais de produto podem ter sido criados)
+        setupModals();
+    }
+
+    // --- INICIALIZAÇÃO GERAL ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // Inicializa ícones do Lucide
+        lucide.createIcons();
+        
+        // Configurações e Renderizações Iniciais
+        setupCopyLink();
+        setupManualToggle();
+        
+        // Renderiza dados e configura modais
+        renderAllData();
+
+        // Atualiza o status a cada minuto para simular tempo real
+        setInterval(updateRestaurantStatus, 60000); 
+    });
 </script>
-{% endblock %}
+</body>
+</html>
