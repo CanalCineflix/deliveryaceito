@@ -58,6 +58,7 @@
                     <img id="restaurant-logo" src="{{ user_data.logo_url or 'https://via.placeholder.com/128' }}" alt="Logo do Restaurante" class="w-32 h-32 rounded-full object-cover border-4 border-gray-100 shadow-sm mx-auto">
                 </div>
 
+                <!-- Adicionamos 'flex-grow' aqui para garantir que a lista ocupe o espaço total -->
                 <ul class="divide-y divide-gray-200 flex-grow">
                     <li class="py-3 flex justify-between items-center">
                         <strong class="font-medium text-gray-700">Nome do Restaurante:</strong>
@@ -73,12 +74,13 @@
                     </li>
                     <li class="py-3 flex justify-between items-center">
                         <strong class="font-medium text-gray-700">Link do Cardápio:</strong>
-                        <div class="flex items-center space-x-2">
-                            <a id="menu-link" href="{{ menu_link }}" target="_blank" class="text-primary hover:underline truncate w-48 md:w-auto">{{ menu_link }}</a>
-                            <button id="copy-button" class="p-2 bg-gray-100 text-gray-500 rounded-md hover:bg-gray-200 transition-colors" title="Copiar link">
+                        <div class="flex items-center space-x-2 flex-1 justify-end min-w-0">
+                            <!-- Removido 'truncate' excessivo e larguras fixas; usamos 'flex-1 min-w-0' no link wrapper e 'truncate' apenas no link, para garantir que ele respeite o espaço, mas não force o botão para fora. -->
+                            <a id="menu-link" href="{{ menu_link }}" target="_blank" class="text-primary hover:underline truncate flex-1 min-w-[50px] text-right" title="{{ menu_link }}">{{ menu_link }}</a>
+                            <button id="copy-button" class="flex-shrink-0 p-2 bg-gray-100 text-gray-500 rounded-md hover:bg-gray-200 transition-colors" title="Copiar link">
                                 <i data-lucide="clipboard" class="w-4 h-4"></i>
                             </button>
-                            <span id="copy-message" class="text-sm text-success opacity-0 transition-opacity duration-300">Copiado!</span>
+                            <span id="copy-message" class="text-sm text-success opacity-0 transition-opacity duration-300 flex-shrink-0">Copiado!</span>
                         </div>
                     </li>
                 </ul>
@@ -471,13 +473,9 @@
         manualOverrideToggle.checked = (manualStatus !== 'auto');
 
         manualOverrideToggle.addEventListener('change', async (event) => {
-            // Quando o toggle é ativado, ele deve definir o status como 'open' ou 'closed',
-            // mas o valor real deve ser decidido pelo backend (ou precisamos de um seletor).
-            // Aqui, apenas alteramos entre 'auto' e o último estado manual conhecido (ou 'open' por padrão se manualStatus for 'auto').
-            
+            // Ao ativar o toggle (manual), define como 'open' por padrão se estava em 'auto'.
             let newStatus;
             if (event.target.checked) {
-                // Ao ativar o toggle (manual), define como 'open' por padrão se estava em 'auto'.
                 newStatus = (manualStatus === 'auto' || manualStatus === 'closed') ? 'open' : manualStatus;
             } else {
                 // Ao desativar o toggle, volta para 'auto'.
