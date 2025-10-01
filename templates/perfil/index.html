@@ -215,26 +215,30 @@
                 </button>
             </div>
             <form action="{{ url_for('perfil.update_profile') }}" method="POST" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="restaurant_name" class="block text-sm font-medium text-gray-700">Nome do Restaurante</label>
-                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" id="restaurant_name" name="restaurant_name" value="{{ user_data.restaurant_name or '' }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="whatsapp" class="block text-sm font-medium text-gray-700">WhatsApp (com DDD, somente números)</label>
-                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" id="whatsapp" name="whatsapp" value="{{ user_data.whatsapp or '' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="address" class="block text-sm font-medium text-gray-700">Endereço Completo</label>
-                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" id="address" name="address" value="{{ user_data.address or '' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="logo" class="block text-sm font-medium text-gray-700">Alterar Logo</label>
-                    <input type="file" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" id="logo" name="logo" accept="image/*">
-                </div>
-                <div class="flex justify-end space-x-3 mt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#editProfileModal">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Salvar Alterações</button>
-                </div>
+                <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-x-6">
+    <!-- O mb-3 é mantido para mobile, mas lg:mb-0 o desativa em desktop, permitindo que o 'gap' do grid controle o espaçamento vertical e garanta o alinhamento. -->
+    <div class="mb-3 lg:mb-0">
+        <label for="restaurant_name" class="block text-sm font-medium text-gray-700">Nome do Restaurante</label>
+        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" id="restaurant_name" name="restaurant_name" value="{{ user_data.restaurant_name or '' }}" required>
+    </div>
+    <div class="mb-3 lg:mb-0">
+        <label for="whatsapp" class="block text-sm font-medium text-gray-700">WhatsApp (com DDD, somente números)</label>
+        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" id="whatsapp" name="whatsapp" value="{{ user_data.whatsapp or '' }}">
+    </div>
+    <div class="mb-3 lg:mb-0">
+        <label for="address" class="block text-sm font-medium text-gray-700">Endereço Completo</label>
+        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" id="address" name="address" value="{{ user_data.address or '' }}">
+    </div>
+    <div class="mb-3 lg:mb-0">
+        <label for="logo" class="block text-sm font-medium text-gray-700">Alterar Logo</label>
+        <input type="file" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" id="logo" name="logo" accept="image/*">
+    </div>
+</div>
+<!-- A seção de botões não foi alterada e permanece fora do grid, como deve ser. -->
+<div class="flex justify-end space-x-3 mt-4">
+    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" data-modal-close="#editProfileModal">Cancelar</button>
+    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">Salvar Alterações</button>
+</div>
             </form>
         </div>
     </div>
