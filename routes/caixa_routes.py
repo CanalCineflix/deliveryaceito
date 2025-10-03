@@ -10,6 +10,7 @@ from sqlalchemy import func, extract
 from sqlalchemy import case
 from collections import defaultdict
 from sqlalchemy.orm import joinedload
+from decimal import Decimal
 
 
 # Define o Blueprint para as rotas do caixa
