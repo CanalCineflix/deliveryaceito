@@ -11,6 +11,7 @@ from sqlalchemy import case
 from collections import defaultdict
 from sqlalchemy.orm import joinedload
 
+
 # Define o Blueprint para as rotas do caixa
 caixa_bp = Blueprint('caixa', __name__, url_prefix='/caixa')
 
@@ -34,10 +35,13 @@ def index():
         func.date(CashMovement.created_at) == today
     ).order_by(CashMovement.created_at.desc()).all()
     
-    # Totais do dia
-    total_sales = sum([m.amount for m in movements if m.type == 'sale'])
-    total_expenses = sum([abs(m.amount) for m in movements if m.type in ['expense', 'withdrawal']])
-    total_deposits = sum([m.amount) for m in movements if m.type == 'deposit'])
+  total_sales = sum(m.amount for m in movements if m.type == 'sale')
+
+# Otimizado: Uso de Gerador de Expressão (mantendo abs() para garantir que os gastos sejam somados como positivos)
+total_expenses = sum(abs(m.amount) for m in movements if m.type in ['expense', 'withdrawal'])
+
+# CORRIGIDO E OTIMIZADO: Remoção do colchete ] e uso do Gerador de Expressão
+total_deposits = sum(m.amount for m in movements if m.type == 'deposit')
 
     current_balance = 0.0
     if active_session:
