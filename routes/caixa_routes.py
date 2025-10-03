@@ -35,13 +35,13 @@ def index():
         func.date(CashMovement.created_at) == today
     ).order_by(CashMovement.created_at.desc()).all()
     
-  total_sales = sum(m.amount for m in movements if m.type == 'sale')
+    total_sales = sum(m.amount for m in movements if m.type == 'sale')
 
-# Otimizado: Uso de Gerador de Expressão (mantendo abs() para garantir que os gastos sejam somados como positivos)
-total_expenses = sum(abs(m.amount) for m in movements if m.type in ['expense', 'withdrawal'])
+    # Otimizado: Uso de Gerador de Expressão. Mantém abs() para somar gastos como positivos.
+    total_expenses = sum(abs(m.amount) for m in movements if m.type in ['expense', 'withdrawal'])
 
-# CORRIGIDO E OTIMIZADO: Remoção do colchete ] e uso do Gerador de Expressão
-total_deposits = sum(m.amount for m in movements if m.type == 'deposit')
+    # CORRIGIDO E OTIMIZADO: Remoção do erro de sintaxe e uso do Gerador de Expressão.
+    total_deposits = sum(m.amount for m in movements if m.type == 'deposit')
 
     current_balance = 0.0
     if active_session:
