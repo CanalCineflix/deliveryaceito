@@ -37,7 +37,7 @@ def index():
     # Totais do dia
     total_sales = sum([m.amount for m in movements if m.type == 'sale'])
     total_expenses = sum([abs(m.amount) for m in movements if m.type in ['expense', 'withdrawal']])
-    total_deposits = sum([m.amount for m in movements if m.type == 'deposit'])
+    total_deposits = sum([m.amount) for m in movements if m.type == 'deposit'])
 
     current_balance = 0.0
     if active_session:
@@ -46,7 +46,11 @@ def index():
             CashMovement.session_id == active_session.id,
             CashMovement.type != 'opening'
         ).scalar() or 0.0
-        current_balance = opening_amount + balance_change
+        
+        # CORREÇÃO: Ocorre TypeError ao somar Decimal (opening_amount) e float (balance_change=0.0).
+        # Convertemos explicitamente opening_amount (Decimal) e balance_change (Decimal ou float)
+        # para float para garantir o tipo homogêneo na soma, resolvendo o erro.
+        current_balance = float(opening_amount) + float(balance_change)
     
     products = Product.query.filter(
         Product.user_id == current_user.id,
@@ -63,14 +67,14 @@ def index():
     ).order_by(Order.created_at.desc()).all()
     
     return render_template('caixa/index.html',
-                           active_session=active_session,
-                           movements=movements,
-                           total_sales=total_sales,
-                           total_expenses=total_expenses,
-                           total_deposits=total_deposits,
-                           current_balance=current_balance,
-                           products=products,
-                           new_counter_orders=new_counter_orders)
+                            active_session=active_session,
+                            movements=movements,
+                            total_sales=total_sales,
+                            total_expenses=total_expenses,
+                            total_deposits=total_deposits,
+                            current_balance=current_balance,
+                            products=products,
+                            new_counter_orders=new_counter_orders)
 
 @caixa_bp.route('/abrir', methods=['POST'])
 @login_required
