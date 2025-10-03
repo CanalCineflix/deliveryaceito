@@ -276,7 +276,6 @@ def finalize_counter_order():
 
     payment_method = order_data.get('payment_method')
     change_for_str = order_data.get('change_for')
-    change_for = float(change_for_str) if change_for_str else None
     notes = order_data.get('notes', '')
     items_data = order_data.get('items', [])
     
@@ -284,11 +283,20 @@ def finalize_counter_order():
         return jsonify({'success': False, 'message': 'O pedido deve conter itens.'}), 400
             
     try:
+        # --- CORREÇÃO DE TIPO ---
+        # 1. Converte o valor de pagamento para Decimal.
+        #    Isso resolve o erro de 'float' e 'decimal.Decimal' no cálculo do troco.
+        pago_decimal = Decimal(change_for_str) if change_for_str else Decimal('0.00')
+
+        # 2. Mantém 'change_for' para a estrutura do Order/Receipt, agora como Decimal.
+        change_for = pago_decimal
+        
+        # A ordem de criação do objeto Order é mantida (será atualizada no final do loop).
         order = Order(
             user_id=current_user.id,
             payment_method=payment_method,
-            change_for=change_for,
-            total_price=0.0,
+            change_for=change_for, 
+            total_price=Decimal('0.00'), # Inicializado como Decimal
             status=OrderStatus.COMPLETED,
             notes=notes
         )
@@ -296,7 +304,8 @@ def finalize_counter_order():
         db.session.add(order)
         db.session.flush()
 
-        total_price = 0
+        # 3. Inicializa o total como Decimal.
+        total_price = Decimal(0)
         order_items_to_print = []
 
         for item_data in items_data:
@@ -318,7 +327,9 @@ def finalize_counter_order():
                     notes=item_notes
                 )
                 db.session.add(item)
-                total_price += product.price * quantity
+                
+                # Cálculo feito com Decimal
+                total_price += product.price * quantity 
 
                 order_items_to_print.append({
                     'name': product.name,
@@ -330,6 +341,14 @@ def finalize_counter_order():
 
         order.total_price = total_price
         
+        # 4. Verifica suficiência do pagamento (comparando Decimais).
+        if pago_decimal < total_price:
+            db.session.rollback()
+            return jsonify({'success': False, 'message': f'O valor pago (R$ {pago_decimal:.2f}) é insuficiente para o total (R$ {total_price:.2f}).'}), 400
+        
+        # 5. CÁLCULO FINAL DO TROCO (Decimal - Decimal).
+        change_due = pago_decimal - total_price
+
         cash_movement = CashMovement(
             user_id=current_user.id,
             session_id=active_session.id,
@@ -349,6 +368,8 @@ def finalize_counter_order():
             total_price=order.total_price,
             payment_method=payment_method,
             change_for=change_for,
+            # Passa o troco calculado para o recibo
+            change_due=change_due, 
             notes=notes
         )
 
@@ -357,12 +378,18 @@ def finalize_counter_order():
             'success': True,
             'message': 'Venda de balcão registrada com sucesso!',
             'order_id': order.id,
-            'receipt_html': receipt_html,  
+            'receipt_html': receipt_html, 
+            # 6. Retorna o troco como string para o JSON
+            'change_due': str(change_due), 
             'redirect_url': url_for('caixa.index')
         }), 200
             
     except Exception as e:
         db.session.rollback()
+        # Tratamento básico de erro de conversão de Decimal
+        if "InvalidOperation" in str(type(e)):
+             return jsonify({'success': False, 'message': 'Valor de pagamento inválido. Certifique-se de usar um formato numérico válido.'}), 400
+             
         print(f"Erro ao processar o pedido: {e}")
         return jsonify({'success': False, 'message': 'Ocorreu um erro inesperado.'}), 500
 
