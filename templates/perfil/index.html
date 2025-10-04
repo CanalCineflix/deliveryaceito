@@ -252,7 +252,7 @@
                     <i data-lucide="x-circle" class="w-6 h-6"></i>
                 </button>
             </div>
-            <form action="{{ url_for('perfil.update_hours') }}" method="POST">
+           <form id="updateHoursForm" action="{{ url_for('perfil.update_hours') }}" method="POST">
                 <div class="space-y-4">
                     {% set days = [('monday', 'Segunda'), ('tuesday', 'Terça'), ('wednesday', 'Quarta'), ('thursday', 'Quinta'), ('friday', 'Sexta'), ('saturday', 'Sábado'), ('sunday', 'Domingo')] %}
                     {% for day_key, day_name in days %}
@@ -378,220 +378,306 @@
 
 </div>
 
+Excelente! Aqui está o conteúdo do seu arquivo perfil/index.html com as duas correções pontuais aplicadas:
+
+A adição do id="updateHoursForm" na tag <form> (no bloco HTML anterior, que não foi enviado agora, mas é necessário para o script funcionar).
+
+A inserção do bloco de código JavaScript que intercepta o envio e o formata como JSON (dentro da tag <script>).
+
+Novo Conteúdo do <script> em perfil/index.html
+HTML
+
 <script>
- // Armazenando dados do backend em variáveis JS
-    // CORREÇÃO 2: Padrão mais seguro para injetar JSON do Jinja, garantindo que seja sempre um objeto e eliminando o erro 'Unexpected token {'.
-    const openingHours = {{ opening_hours | default({}, true) | tojson }};
-    let manualStatus = '{{ manual_status_override | default("auto", true) }}';
+ // Armazenando dados do backend em variáveis JS
+    // CORREÇÃO 2: Padrão mais seguro para injetar JSON do Jinja, garantindo que seja sempre um objeto e eliminando o erro 'Unexpected token {'.
+    const openingHours = {{ opening_hours | default({}, true) | tojson }};
+    let manualStatus = '{{ manual_status_override | default("auto", true) }}';
 
-    const daysOfWeek = {
-        0: 'sunday', 1: 'monday', 2: 'tuesday', 3: 'wednesday', 4: 'thursday', 5: 'friday', 6: 'saturday'
-    };
-    const displayDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-    const dayNames = {
-        monday: 'Segunda', tuesday: 'Terça', wednesday: 'Quarta', thursday: 'Quinta', friday: 'Sexta', saturday: 'Sábado', sunday: 'Domingo'
-    };
+    const daysOfWeek = {
+        0: 'sunday', 1: 'monday', 2: 'tuesday', 3: 'wednesday', 4: 'thursday', 5: 'friday', 6: 'saturday'
+    };
+    const displayDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const dayNames = {
+        monday: 'Segunda', tuesday: 'Terça', wednesday: 'Quarta', thursday: 'Quinta', friday: 'Sexta', saturday: 'Sábado', sunday: 'Domingo'
+    };
 
-    function updateRestaurantStatus() {
-        const statusBadge = document.getElementById('status-badge');
-        const statusMode = document.getElementById('status-mode');
+    function updateRestaurantStatus() {
+        const statusBadge = document.getElementById('status-badge');
+        const statusMode = document.getElementById('status-mode');
+        
+        if (!statusBadge || !statusMode) return;
+
+        let isOpen = false;
+        let statusText = 'Fechado';
+        
+        // 1. Verifica o controle manual primeiro
+        if (manualStatus !== 'auto') {
+            isOpen = manualStatus === 'open';
+            statusText = isOpen ? 'Aberto' : 'Fechado';
+            statusMode.textContent = `Modo: Manual (${statusText})`;
+        } else {
+            // 2. Se for automático, calcula com base no horário
+            statusMode.textContent = 'Modo: Automático';
+            const now = new Date();
+            const currentDay = daysOfWeek[now.getDay()];
+            const currentTime = now.toTimeString().slice(0, 5); // Formato "HH:MM"
+            
+            const hours = openingHours[currentDay];
+
+            if (hours && hours.open && hours.close) {
+                // Lógica para horários que passam da meia-noite
+                if (hours.close < hours.open) { 
+                    if (currentTime >= hours.open || currentTime < hours.close) {
+                        isOpen = true;
+                    }
+                } else { // Lógica para horários no mesmo dia
+                    if (currentTime >= hours.open && currentTime < hours.close) {
+                        isOpen = true;
+                    }
+                }
+            }
+            statusText = isOpen ? 'Aberto' : 'Fechado';
+        }
+
+        // Atualiza a aparência do badge
+        statusBadge.textContent = statusText;
+        statusBadge.classList.remove('bg-success', 'bg-danger');
+        statusBadge.classList.add(isOpen ? 'bg-success' : 'bg-danger');
+    }
+
+    function renderOpeningHours() {
+        const listElement = document.getElementById('opening-hours-list');
+        if (!listElement) return;
+
+        listElement.innerHTML = ''; // Limpa a lista
+        displayDays.forEach(dayKey => {
+            const dayName = dayNames[dayKey];
+            const hours = openingHours[dayKey];
+            
+            const listItem = document.createElement('li');
+            listItem.classList.add('py-3', 'flex', 'justify-between');
+
+            const dayElement = document.createElement('strong');
+            dayElement.classList.add('font-medium', 'text-gray-700');
+            dayElement.textContent = dayName + ':';
+
+            const timeElement = document.createElement('span');
+            timeElement.classList.add('text-gray-600');
+            
+            if (hours && hours.open && hours.close) {
+                timeElement.textContent = `${hours.open} - ${hours.close}`;
+            } else {
+                timeElement.textContent = 'Fechado';
+                timeElement.classList.add('text-danger');
+            }
+
+            listItem.appendChild(dayElement);
+            listItem.appendChild(timeElement);
+            listElement.appendChild(listItem);
+        });
+    }
+
+// --- CORREÇÃO: LÓGICA DE ENVIO DO FORMULÁRIO DE HORÁRIOS PARA JSON ---
+const updateHoursForm = document.getElementById('updateHoursForm');
+const editHoursModal = document.getElementById('editHoursModal');
+
+if (updateHoursForm) {
+    updateHoursForm.addEventListener('submit', async function (event) {
+        event.preventDefault(); // Impede o envio tradicional do formulário
         
-        if (!statusBadge || !statusMode) return;
-
-        let isOpen = false;
-        let statusText = 'Fechado';
+        const formData = new FormData(event.target);
+        const hoursData = {};
         
-        // 1. Verifica o controle manual primeiro
-        if (manualStatus !== 'auto') {
-            isOpen = manualStatus === 'open';
-            statusText = isOpen ? 'Aberto' : 'Fechado';
-            statusMode.textContent = `Modo: Manual (${statusText})`;
-        } else {
-            // 2. Se for automático, calcula com base no horário
-            statusMode.textContent = 'Modo: Automático';
-            const now = new Date();
-            const currentDay = daysOfWeek[now.getDay()];
-            const currentTime = now.toTimeString().slice(0, 5); // Formato "HH:MM"
+        // 1. Processa os dados do formulário para o formato JSON desejado
+        // O formato esperado é: { 'day_key': { 'open': 'HH:MM', 'close': 'HH:MM' } }
+        for (const [key, value] of formData.entries()) {
+            const parts = key.split('_');
+            const dayKey = parts[0];
+            const type = parts[1]; 
             
-            const hours = openingHours[currentDay];
-
-            if (hours && hours.open && hours.close) {
-                // Lógica para horários que passam da meia-noite
-                if (hours.close < hours.open) { 
-                    if (currentTime >= hours.open || currentTime < hours.close) {
-                        isOpen = true;
-                    }
-                } else { // Lógica para horários no mesmo dia
-                    if (currentTime >= hours.open && currentTime < hours.close) {
-                        isOpen = true;
-                    }
-                }
+            if (!hoursData[dayKey]) {
+                hoursData[dayKey] = {};
             }
-            statusText = isOpen ? 'Aberto' : 'Fechado';
+            
+            if (type === 'closed') {
+                if (value === 'on') { 
+                    hoursData[dayKey].open = null;
+                    hoursData[dayKey].close = null;
+                }
+            } else if (value) {
+                hoursData[dayKey][type] = value;
+            }
+        }
+        
+        const payload = {};
+        for (const day in hoursData) {
+            const hours = hoursData[day];
+            if (hours.open && hours.close) {
+                payload[day] = { open: hours.open, close: hours.close };
+            } else {
+                payload[day] = { open: null, close: null };
+            }
         }
 
-        // Atualiza a aparência do badge
-        statusBadge.textContent = statusText;
-        statusBadge.classList.remove('bg-success', 'bg-danger');
-        statusBadge.classList.add(isOpen ? 'bg-success' : 'bg-danger');
-    }
-
-    function renderOpeningHours() {
-        const listElement = document.getElementById('opening-hours-list');
-        if (!listElement) return;
-
-        listElement.innerHTML = ''; // Limpa a lista
-        displayDays.forEach(dayKey => {
-            const dayName = dayNames[dayKey];
-            const hours = openingHours[dayKey];
-            
-            const listItem = document.createElement('li');
-            listItem.classList.add('py-3', 'flex', 'justify-between');
-
-            const dayElement = document.createElement('strong');
-            dayElement.classList.add('font-medium', 'text-gray-700');
-            dayElement.textContent = dayName + ':';
-
-            const timeElement = document.createElement('span');
-            timeElement.classList.add('text-gray-600');
-            
-            if (hours && hours.open && hours.close) {
-                timeElement.textContent = `${hours.open} - ${hours.close}`;
-            } else {
-                timeElement.textContent = 'Fechado';
-                timeElement.classList.add('text-danger');
-            }
-
-            listItem.appendChild(dayElement);
-            listItem.appendChild(timeElement);
-            listElement.appendChild(listItem);
-        });
-    }
-
-    // Lógica para o switch de controle manual
-    const manualOverrideToggle = document.getElementById('manual-override-toggle');
-    const updateStatusRoute = '{{ url_for("perfil.update_status") }}';
-
-    if (manualOverrideToggle) {
-        // Define o estado inicial do toggle com base em manualStatus (se não for "auto")
-        manualOverrideToggle.checked = (manualStatus !== 'auto');
-
-        manualOverrideToggle.addEventListener('change', async (event) => {
-            // Ao ativar o toggle (manual), define como 'open' por padrão se estava em 'auto'.
-            let newStatus;
-            if (event.target.checked) {
-                newStatus = (manualStatus === 'auto' || manualStatus === 'closed') ? 'open' : manualStatus;
-            } else {
-                // Ao desativar o toggle, volta para 'auto'.
-                newStatus = 'auto';
-            }
-            
-            try {
-                const response = await fetch(updateStatusRoute, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: newStatus }),
-                });
-                
-                const result = await response.json();
-                if (result.success) {
-                    manualStatus = newStatus;
-                    updateRestaurantStatus();
-                    // Removido alert() e substituído por console.log()
-                    console.log('Status atualizado com sucesso!');
-                } else {
-                    console.error('Erro ao atualizar o status.');
-                    // Em caso de erro, reverte o estado do toggle no UI
-                    event.target.checked = !event.target.checked;
-                }
-            } catch (error) {
-                console.error('Erro na comunicação com o servidor:', error);
-                // Em caso de erro, reverte o estado do toggle no UI
-                event.target.checked = !event.target.checked;
-            }
-        });
-    }
-    
-    // --- Lógica de Cópia do Link (MODIFICADA) ---
-    const copyButton = document.getElementById('copy-button');
-    const menuLinkElement = document.getElementById('menu-link');
-    const copyMessage = document.getElementById('copy-message');
-
-    /**
-     * Função para copiar texto para o clipboard usando document.execCommand('copy'), 
-     * mais confiável em ambientes de iframe.
-     * @param {string} text O texto a ser copiado.
-     * @returns {boolean} Sucesso da operação.
-     */
-    function copyToClipboard(text) {
-        // Cria um elemento temporário para armazenar o texto
-        const tempInput = document.createElement('textarea');
-        tempInput.value = text;
-        // Posiciona fora da tela para evitar scroll ou visibilidade
-        tempInput.style.position = 'absolute';
-        tempInput.style.left = '-9999px';
-        document.body.appendChild(tempInput);
-        
-        // Seleciona o texto
-        tempInput.select();
+        const actionUrl = event.target.action;
         
         try {
-            // Usa o método de cópia mais compatível em iframes
-            const successful = document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            return successful;
-        } catch (err) {
-            document.body.removeChild(tempInput);
-            console.error('Falha ao tentar copiar o link para a área de transferência:', err);
-            return false;
-        }
-    }
+            const response = await fetch(actionUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload) 
+            });
+            
+            const result = await response.json();
 
-    if (copyButton && menuLinkElement && copyMessage) {
-        copyButton.addEventListener('click', () => {
-            const link = menuLinkElement.href;
-            const success = copyToClipboard(link);
+            if (result.success) {
+                Object.assign(openingHours, payload); 
+                renderOpeningHours();
 
-            if (success) {
-                // Mostra a mensagem de sucesso
-                copyMessage.classList.add('opacity-100');
-                setTimeout(() => {
-                    copyMessage.classList.remove('opacity-100');
-                }, 1500);
+                if (editHoursModal) {
+                    editHoursModal.classList.add('scale-95');
+                    setTimeout(() => { editHoursModal.classList.add('hidden'); }, 300);
+                }
+
+                console.log('Sucesso:', result.message);
             } else {
-                // Em caso de falha, apenas loga (Alert não é permitido).
-                console.error('Não foi possível copiar o link para a área de transferência.');
+                console.error('Erro ao salvar horários:', result.message);
+                alert('Erro ao salvar horários: ' + result.message);
             }
-        });
-    }
-    // --- Fim da Lógica de Cópia do Link ---
+            
+        } catch (error) {
+            console.error('Erro de comunicação com o servidor:', error);
+            alert('Erro de rede ou servidor. Tente novamente.');
+        }
+    });
+}
+// --- FIM DA CORREÇÃO ---
 
-    // Lógica para Modais (simples, sem biblioteca externa)
-    document.querySelectorAll('[data-modal-target]').forEach(button => {
-        button.addEventListener('click', () => {
-            const modal = document.querySelector(button.dataset.modalTarget);
-            if (modal) {
-                modal.classList.remove('hidden');
-                setTimeout(() => { modal.classList.remove('scale-95'); modal.classList.add('scale-100'); }, 10);
-            }
-        });
-    });
 
-    document.querySelectorAll('[data-modal-close]').forEach(button => {
-        button.addEventListener('click', () => {
-            const modal = document.querySelector(button.dataset.modalClose);
-            if (modal) {
-                modal.classList.add('scale-95');
-                setTimeout(() => { modal.classList.add('hidden'); }, 300);
-            }
-        });
-    });
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        lucide.createIcons();
-        updateRestaurantStatus();
-        renderOpeningHours();
-    });
+    // Lógica para o switch de controle manual
+    const manualOverrideToggle = document.getElementById('manual-override-toggle');
+    const updateStatusRoute = '{{ url_for("perfil.update_status") }}';
+
+    if (manualOverrideToggle) {
+        // Define o estado inicial do toggle com base em manualStatus (se não for "auto")
+        manualOverrideToggle.checked = (manualStatus !== 'auto');
+
+        manualOverrideToggle.addEventListener('change', async (event) => {
+            // Ao ativar o toggle (manual), define como 'open' por padrão se estava em 'auto'.
+            let newStatus;
+            if (event.target.checked) {
+                newStatus = (manualStatus === 'auto' || manualStatus === 'closed') ? 'open' : manualStatus;
+            } else {
+                // Ao desativar o toggle, volta para 'auto'.
+                newStatus = 'auto';
+            }
+            
+            try {
+                const response = await fetch(updateStatusRoute, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus }),
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    manualStatus = newStatus;
+                    updateRestaurantStatus();
+                    // Removido alert() e substituído por console.log()
+                    console.log('Status atualizado com sucesso!');
+                } else {
+                    console.error('Erro ao atualizar o status.');
+                    // Em caso de erro, reverte o estado do toggle no UI
+                    event.target.checked = !event.target.checked;
+                }
+            } catch (error) {
+                console.error('Erro na comunicação com o servidor:', error);
+                // Em caso de erro, reverte o estado do toggle no UI
+                event.target.checked = !event.target.checked;
+            }
+        });
+    }
+    
+    // --- Lógica de Cópia do Link (MODIFICADA) ---
+    const copyButton = document.getElementById('copy-button');
+    const menuLinkElement = document.getElementById('menu-link');
+    const copyMessage = document.getElementById('copy-message');
+
+    /**
+     * Função para copiar texto para o clipboard usando document.execCommand('copy'), 
+     * mais confiável em ambientes de iframe.
+     * @param {string} text O texto a ser copiado.
+     * @returns {boolean} Sucesso da operação.
+     */
+    function copyToClipboard(text) {
+        // Cria um elemento temporário para armazenar o texto
+        const tempInput = document.createElement('textarea');
+        tempInput.value = text;
+        // Posiciona fora da tela para evitar scroll ou visibilidade
+        tempInput.style.position = 'absolute';
+        tempInput.style.left = '-9999px';
+        document.body.appendChild(tempInput);
+        
+        // Seleciona o texto
+        tempInput.select();
+        
+        try {
+            // Usa o método de cópia mais compatível em iframes
+            const successful = document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            return successful;
+        } catch (err) {
+            document.body.removeChild(tempInput);
+            console.error('Falha ao tentar copiar o link para a área de transferência:', err);
+            return false;
+        }
+    }
+
+    if (copyButton && menuLinkElement && copyMessage) {
+        copyButton.addEventListener('click', () => {
+            const link = menuLinkElement.href;
+            const success = copyToClipboard(link);
+
+            if (success) {
+                // Mostra a mensagem de sucesso
+                copyMessage.classList.add('opacity-100');
+                setTimeout(() => {
+                    copyMessage.classList.remove('opacity-100');
+                }, 1500);
+            } else {
+                // Em caso de falha, apenas loga (Alert não é permitido).
+                console.error('Não foi possível copiar o link para a área de transferência.');
+            }
+        });
+    }
+    // --- Fim da Lógica de Cópia do Link ---
+
+    // Lógica para Modais (simples, sem biblioteca externa)
+    document.querySelectorAll('[data-modal-target]').forEach(button => {
+        button.addEventListener('click', () => {
+            const modal = document.querySelector(button.dataset.modalTarget);
+            if (modal) {
+                modal.classList.remove('hidden');
+                setTimeout(() => { modal.classList.remove('scale-95'); modal.classList.add('scale-100'); }, 10);
+            }
+        });
+    });
+
+    document.querySelectorAll('[data-modal-close]').forEach(button => {
+        button.addEventListener('click', () => {
+            const modal = document.querySelector(button.dataset.modalClose);
+            if (modal) {
+                modal.classList.add('scale-95');
+                setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            }
+        });
+    });
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+        updateRestaurantStatus();
+        renderOpeningHours();
+    });
 
 </script>
 {% endblock %}
