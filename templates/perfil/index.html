@@ -477,7 +477,7 @@ HTML
         });
     }
 
-// --- CORREÇÃO: LÓGICA DE ENVIO DO FORMULÁRIO DE HORÁRIOS PARA JSON ---
+// --- CORREÇÃO: LÓGICA DE ENVIO DO FORMULÁRIO DE HORÁRIOS PARA JSON (INSERIDO NO LOCAL CORRETO) ---
 const updateHoursForm = document.getElementById('updateHoursForm');
 const editHoursModal = document.getElementById('editHoursModal');
 
@@ -489,7 +489,6 @@ if (updateHoursForm) {
         const hoursData = {};
         
         // 1. Processa os dados do formulário para o formato JSON desejado
-        // O formato esperado é: { 'day_key': { 'open': 'HH:MM', 'close': 'HH:MM' } }
         for (const [key, value] of formData.entries()) {
             const parts = key.split('_');
             const dayKey = parts[0];
@@ -535,6 +534,7 @@ if (updateHoursForm) {
                 renderOpeningHours();
 
                 if (editHoursModal) {
+                    // Logica de fechar o modal
                     editHoursModal.classList.add('scale-95');
                     setTimeout(() => { editHoursModal.classList.add('hidden'); }, 300);
                 }
@@ -551,7 +551,7 @@ if (updateHoursForm) {
         }
     });
 }
-// --- FIM DA CORREÇÃO ---
+// --- FIM DA CORREÇÃO DE ENVIO JSON ---
 
 
     // Lógica para o switch de controle manual
