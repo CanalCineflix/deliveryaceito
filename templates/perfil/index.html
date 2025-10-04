@@ -387,6 +387,14 @@ A inserção do bloco de código JavaScript que intercepta o envio e o formata c
 Novo Conteúdo do <script> em perfil/index.html
 HTML
 
+Compreendido! O problema anterior era um erro de sintaxe simples na forma como o JavaScript acessava o atributo data-modal-close no bloco de fechar modais, o que paralisou todo o script.
+
+Abaixo está o script JavaScript completo e corrigido. Ele inclui a lógica de inicialização de ícones, status de abertura/fechamento, a renderização de horários, a lógica do switch manual, o envio do modal de horários como JSON, a função de copiar link e, o mais importante, a lógica de modais totalmente funcional.
+
+Instrução: Copie o código abaixo e substitua o conteúdo de sua tag <script> no final do arquivo perfil/index.html inteiramente por ele.
+
+JavaScript
+
 <script>
     // Armazenando dados do backend em variáveis JS
     const openingHours = {{ opening_hours | default({}, true) | tojson }};
@@ -448,7 +456,7 @@ HTML
     }
 
     /**
-     * Renderiza a lista de horários de funcionamento.
+     * Renderiza a lista de horários de funcionamento na visualização.
      */
     function renderOpeningHours() {
         const listElement = document.getElementById('opening-hours-list');
@@ -482,7 +490,7 @@ HTML
         });
     }
 
-    // --- LÓGICA DE ENVIO DO FORMULÁRIO DE HORÁRIOS PARA JSON ---
+    // --- LÓGICA DE ENVIO DO FORMULÁRIO DE HORÁRIOS COMO JSON (CRÍTICA) ---
     const updateHoursForm = document.getElementById('updateHoursForm');
     const editHoursModal = document.getElementById('editHoursModal');
 
@@ -539,7 +547,7 @@ HTML
                     // Atualiza a variável global e renderiza a lista na tela
                     Object.assign(openingHours, payload); 
                     renderOpeningHours();
-                    updateRestaurantStatus(); // Atualiza status se o horário mudou
+                    updateRestaurantStatus(); 
 
                     // Fecha o modal
                     if (editHoursModal) {
@@ -562,18 +570,18 @@ HTML
     // --- FIM DA LÓGICA DE ENVIO JSON ---
 
 
-    // Lógica para o switch de controle manual
+    // Lógica para o switch de controle manual (funcionalidade de override de status)
     const manualOverrideToggle = document.getElementById('manual-override-toggle');
     const updateStatusRoute = '{{ url_for("perfil.update_status") }}';
 
     if (manualOverrideToggle) {
-        // Define o estado inicial do toggle com base em manualStatus (se não for "auto")
+        // Define o estado inicial do toggle com base em manualStatus
         manualOverrideToggle.checked = (manualStatus !== 'auto');
 
         manualOverrideToggle.addEventListener('change', async (event) => {
             let newStatus;
             if (event.target.checked) {
-                // Ao ativar o toggle, se estava em 'auto', define como 'open'
+                // Ao ativar o toggle, se estava em 'auto', define como 'open' (manual)
                 newStatus = (manualStatus === 'auto' || manualStatus === 'closed') ? 'open' : manualStatus;
             } else {
                 // Ao desativar o toggle, volta para 'auto'.
@@ -589,7 +597,7 @@ HTML
                 
                 const result = await response.json();
                 if (result.success) {
-                    manualStatus = result.current_override; // Usa o valor retornado pelo backend
+                    manualStatus = result.current_override; 
                     updateRestaurantStatus();
                     console.log('Status atualizado com sucesso!');
                 } else {
@@ -644,7 +652,7 @@ HTML
     }
     // --- Fim da Lógica de Cópia do Link ---
 
-    // Lógica para Modais (simples, sem biblioteca externa)
+    // Lógica para Modais (AGORA TOTALMENTE CORRIGIDA E FUNCIONAL)
     document.querySelectorAll('[data-modal-target]').forEach(button => {
         button.addEventListener('click', () => {
             const modal = document.querySelector(button.dataset.modalTarget);
@@ -653,7 +661,6 @@ HTML
                 
                 // Inicializa os inputs do modal de horários quando ele é aberto
                 if (modal.id === 'editHoursModal') {
-                    // Preenche os campos de horário com os valores atuais da variável JS
                     displayDays.forEach(dayKey => {
                         const hours = openingHours[dayKey] || {};
                         const openInput = document.querySelector(`input[name="${dayKey}_open"]`);
@@ -663,7 +670,7 @@ HTML
                         if (openInput) openInput.value = hours.open || '';
                         if (closeInput) closeInput.value = hours.close || '';
                         
-                        // Garante que o checkbox 'Fechado' reflete o estado
+                        // Garante que o checkbox 'Fechado' reflete o estado e desabilita os inputs
                         const isClosed = !hours.open;
                         if (closedCheckbox) {
                             closedCheckbox.checked = isClosed;
@@ -691,7 +698,9 @@ HTML
 
     document.querySelectorAll('[data-modal-close]').forEach(button => {
         button.addEventListener('click', () => {
-            const modal = document.querySelector(button.dataset.modal-close);
+            // CORREÇÃO: Usa a notação correta (camelCase) para acessar o dataset. 
+            // Era 'dataset.modal-close' (erro), agora é 'dataset.modalClose' (correto).
+            const modal = document.querySelector(button.dataset.modalClose); 
             if (modal) {
                 modal.classList.add('scale-95');
                 setTimeout(() => { modal.classList.add('hidden'); }, 300);
@@ -701,7 +710,9 @@ HTML
     
     // Funções executadas ao carregar a página
     document.addEventListener('DOMContentLoaded', () => {
+        // Inicializa os ícones do Lucide
         lucide.createIcons();
+        // Inicializa o status e a lista de horários
         updateRestaurantStatus();
         renderOpeningHours();
     });
