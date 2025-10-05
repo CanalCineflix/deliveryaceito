@@ -3,6 +3,7 @@ from models import db, User, Product, Order, OrderItem, OrderStatus, RestaurantC
 from datetime import datetime
 import json
 from sqlalchemy.orm import joinedload
+from decimal import Decimal
 
 cardapio_bp = Blueprint('cardapio', __name__, url_prefix='/cardapio')
 
@@ -222,7 +223,7 @@ def create_order(user_id):
                 continue
 
         # ATUALIZAÇÕES NECESSÁRIAS:
-        final_total = total_price + delivery_fee
+        final_total = float(total_price) + float(delivery_fee)
         new_order.total_price = final_total
         new_order.delivery_fee = delivery_fee
 
