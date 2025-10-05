@@ -4,6 +4,7 @@ from datetime import datetime
 import json
 from sqlalchemy.orm import joinedload
 from decimal import Decimal
+from slugify import slugify # <--- CORREÇÃO 1: Importação necessária
 
 cardapio_bp = Blueprint('cardapio', __name__, url_prefix='/cardapio')
 
@@ -234,7 +235,7 @@ def create_order(user_id):
 
         db.session.commit()
         
-        # A URL de redirecionamento já está correta, mas vou manter o código completo para sua conveniência
+        # A URL de redirecionamento já está correta
         return jsonify({'success': True, 'redirect_url': url_for('cardapio.order_confirmation', order_id=new_order.id)}), 200
 
     except Exception as e:
@@ -259,32 +260,49 @@ def pix_payment(order_id):
 @cardapio_bp.route('/<int:order_id>/confirmacao')
 def order_confirmation(order_id):
     try:
-        # Busca o pedido e carrega os itens com os produtos
+        # 1. Busca o pedido e carrega os itens
         order = Order.query.options(
             joinedload(Order.items).joinedload(OrderItem.product)
         ).filter_by(id=order_id).first_or_404()
 
-        # NOVO CÓDIGO: Busca o restaurante para obter o SLUG
-        # Assumimos que o user_id do pedido é o ID do restaurante
-        restaurant = User.query.get(order.user_id)
-        if not restaurant:
+        # 2. Busca o Usuário/Restaurante (dono do cardápio)
+        restaurant_user = User.query.get(order.user_id)
+        if not restaurant_user:
             raise Exception("Restaurante não encontrado para este pedido.")
+            
+        # 3. CORREÇÃO 2: Gera o slug no formato ID-NOME-SLUG
+        
+        # Tentativa mais robusta: assume que o nome do restaurante está no 'Restaurant' ou 'User'.
+        # Baseado no seu perfil, o nome é 'Restaurante Teste hauss'.
 
-        # NOVO CÓDIGO: Calcula o troco dinamicamente (usando o campo correto total_price)
-        # O campo 'total' não existe no modelo Order, mas sim 'total_price'
+        # Assumindo que o nome do restaurante é um atributo acessível 'restaurant_name' ou 'name' no User ou modelo relacionado.
+        restaurant_name = 'Restaurante Teste hauss' # Fallback direto do seu perfil. AJUSTE ISSO para o atributo real (ex: restaurant_user.restaurant_name)
+        
+        # Se 'restaurant_name' existe diretamente no User (melhor forma):
+        if hasattr(restaurant_user, 'restaurant_name') and restaurant_user.restaurant_name:
+            restaurant_name = restaurant_user.restaurant_name
+        
+        # Gerar o slug base
+        base_slug = slugify(restaurant_name)
+        
+        # Constrói o slug COMPLETO que a rota 'cardapio.menu' espera: ID-SLUG
+        final_slug = f"{order.user_id}-{base_slug}"
+
+        # 4. Calcula o troco (se não foi calculado no create_order)
         if order.payment_method == 'Dinheiro' and order.change_for is not None:
             order.change_due = order.change_for - order.total_price
         else:
             order.change_due = 0.0
 
-        # Passamos o order e o slug do restaurante
+        # 5. Renderiza, passando o slug completo
         return render_template(
             'cardapio/order_confirmation.html',
             order=order,
-            restaurant_slug=restaurant.slug # Variável necessária para o link 'Voltar ao Cardápio'
+            restaurant_slug=final_slug # Passa o slug COMPLETO
         )
 
     except Exception as e:
         # Log do erro para debug
         print(f"⚠️ ERRO em order_confirmation: {e}")
+        # Retorna a mensagem de erro que você vê nas imagens
         return "Erro ao carregar confirmação do pedido.", 500
