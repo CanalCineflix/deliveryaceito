@@ -264,16 +264,24 @@ def order_confirmation(order_id):
             joinedload(Order.items).joinedload(OrderItem.product)
         ).filter_by(id=order_id).first_or_404()
 
-        # Calcula o troco dinamicamente se existirem os campos necessários
-        if hasattr(order, 'change_for') and hasattr(order, 'total'):
-            order.change_due = float(order.change_for) - float(order.total)
-        else:
-            order.change_due = 0.0  # valor padrão caso não haja informação
+        # NOVO CÓDIGO: Busca o restaurante para obter o SLUG
+        # Assumimos que o user_id do pedido é o ID do restaurante
+        restaurant = User.query.get(order.user_id)
+        if not restaurant:
+            raise Exception("Restaurante não encontrado para este pedido.")
 
-        # Renderiza o template normalmente
+        # NOVO CÓDIGO: Calcula o troco dinamicamente (usando o campo correto total_price)
+        # O campo 'total' não existe no modelo Order, mas sim 'total_price'
+        if order.payment_method == 'Dinheiro' and order.change_for is not None:
+            order.change_due = order.change_for - order.total_price
+        else:
+            order.change_due = 0.0
+
+        # Passamos o order e o slug do restaurante
         return render_template(
             'cardapio/order_confirmation.html',
-            order=order
+            order=order,
+            restaurant_slug=restaurant.slug # Variável necessária para o link 'Voltar ao Cardápio'
         )
 
     except Exception as e:
