@@ -258,11 +258,17 @@ def pix_payment(order_id):
 
 @cardapio_bp.route('/<int:order_id>/confirmacao')
 def order_confirmation(order_id):
-    order = Order.query.options(
-        joinedload(Order.items).joinedload(OrderItem.product)
-    ).filter_by(id=order_id).first_or_404()
-    
-    return render_template(
-        'cardapio/order_confirmation.html',
-        order=order
-    )
+    try:
+        order = Order.query.options(
+            joinedload(Order.items).joinedload(OrderItem.product)
+        ).filter_by(id=order_id).first_or_404()
+
+        return render_template(
+            'cardapio/order_confirmation.html',
+            order=order
+        )
+
+    except Exception as e:
+        # Isso ajuda a ver o erro real no log
+        print(f"⚠️ ERRO em order_confirmation: {e}")
+        return "Erro ao carregar confirmação do pedido.", 500
