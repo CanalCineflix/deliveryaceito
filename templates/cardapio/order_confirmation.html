@@ -55,8 +55,8 @@
                     </ul>
                     
                     <div class="mt-4 text-center">
-                        <a href="{{ url_for('cardapio.menu', restaurant_slug=restaurant_slug) }}" class="btn btn-secondary">Voltar ao Cardápio</a>
-                    </div>
+    <a href="{{ url_for('cardapio.menu', user_id=order.user_id, restaurant_slug=restaurant_slug) }}" class="btn btn-secondary">Voltar ao Cardápio</a>
+</div>
                 </div>
             </div>
         </div>
