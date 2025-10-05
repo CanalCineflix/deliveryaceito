@@ -168,34 +168,34 @@ def new_order():
             db.session.flush()
             
             total_price = Decimal(0)
-
-for item_data in items_data:
-    product_id = item_data.get('id')
-    quantity = item_data.get('quantity')
-    observation = item_data.get('observation')
-    
-    if not product_id or not quantity or quantity <= 0:
-        continue
-    
-    product = Product.query.get(product_id)
-    
-    if product:
-        item = OrderItem(
-            order_id=order.id,
-            product_id=product.id,
-            quantity=quantity,
-            price_at_order=product.price,
-            notes=observation
-        )
-        db.session.add(item)
-        total_price += Decimal(product.price) * Decimal(quantity)
+            
+            for item_data in items_data:
+                product_id = item_data.get('id')
+                quantity = item_data.get('quantity')
+                observation = item_data.get('observation')
+                
+                if not product_id or not quantity or quantity <= 0:
+                    continue
+                
+                product = Product.query.get(product_id)
+                
+                if product:
+                    item = OrderItem(
+                        order_id=order.id,
+                        product_id=product.id,
+                        quantity=quantity,
+                        price_at_order=product.price,
+                        notes=observation
+                    )
+                    db.session.add(item)
+                    total_price += Decimal(product.price) * Decimal(quantity)
             
             order.total_price = total_price
             db.session.commit()
             
             flash('Pedido criado com sucesso!', 'success')
             return jsonify({'success': True, 'redirect_url': url_for('pedidos.index')}), 200
-            
+        
         except Exception as e:
             db.session.rollback()
             flash(f'Ocorreu um erro ao criar o pedido: {e}', 'danger')
