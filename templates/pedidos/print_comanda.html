@@ -101,8 +101,7 @@
             <p><strong>Telefone:</strong> {{ order.client_phone }}</p>
             <p><strong>Forma de Pagamento:</strong> {{ order.payment_method }}</p>
            {% if order.payment_method == 'Dinheiro' and order.change_for %}
-<p><strong>Troco para:</strong> R$ {{ "%.2f"|format(order.change_for) }}</p>
-<p><strong>Troco:</strong> R$ {{ "%.2f"|format(order.change_due) }}</p>
+    <p><strong>Troco para:</strong> R$ {{ "%.2f"|format(order.change_for) }}</p>
 {% endif %}
 
             {% if order.client_address %}
