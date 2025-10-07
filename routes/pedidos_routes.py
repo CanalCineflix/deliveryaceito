@@ -267,6 +267,9 @@ def view_order(order_id):
 @login_required
 def print_comanda(order_id):
     order = Order.query.options(
+        # 1. Adicione o joinedload para Order.user
+        joinedload(Order.user), 
+        # 2. Mantém o joinedload para os itens e produtos
         joinedload(Order.items).joinedload(OrderItem.product)
     ).filter(
         Order.id == order_id,
