@@ -101,13 +101,16 @@
             <p><strong>Telefone:</strong> {{ order.client_phone }}</p>
             <p><strong>Forma de Pagamento:</strong> {{ order.payment_method }}</p>
            
-            {% if order.payment_method == 'Dinheiro' and order.change_for %}
-                <p><strong>Troco para:</strong> R$ {{ "%.2f"|format(order.change_for) }}</p>
+            {% if order.payment_method == 'Dinheiro' %}
+                {% if order.change_for is not none %}
+                    <p><strong>Troco para:</strong> R$ {{ "%.2f"|format(order.change_for) }}</p>
+                {% endif %}
+
+                {% if order.change_due is not none and order.change_due > 0 %}
+                    <p><strong>TROCO A DEVOLVER: R$ {{ "%.2f"|format(order.change_due) }}</strong></p>
+                {% endif %}
             {% endif %}
 
-            {% if order.payment_method == 'Dinheiro' and order.change_due is not none and order.change_due > 0 %}
-                <p><strong>TROCO A DEVOLVER: R$ {{ "%.2f"|format(order.change_due) }}</strong></p>
-            {% endif %}
             {% if order.client_address %}
             <p><strong>Endereço de Entrega:</strong> {{ order.client_address }}</p>
             {% endif %}
