@@ -95,19 +95,19 @@
             <p>{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
         </div>
 
-        <div class="customer-info">
+         <div class="customer-info">
             <h3>Dados do Cliente</h3>
             <p><strong>Nome:</strong> {{ order.client_name }}</p>
             <p><strong>Telefone:</strong> {{ order.client_phone }}</p>
             <p><strong>Forma de Pagamento:</strong> {{ order.payment_method }}</p>
            
             {% if order.payment_method == 'Dinheiro' %}
-                {% if order.change_for is not none %}
+                {% if order.change_for %}
                     <p><strong>Troco para:</strong> R$ {{ "%.2f"|format(order.change_for) }}</p>
                 {% endif %}
 
-                {% if order.change_due is not none and order.change_due > 0 %}
-                    <p><strong>TROCO A DEVOLVER: R$ {{ "%.2f"|format(order.change_due) }}</strong></p>
+                {% if troco_a_devolver is not none and troco_a_devolver > 0 %}
+                    <p><strong>TROCO A DEVOLVER: R$ {{ "%.2f"|format(troco_a_devolver) }}</strong></p>
                 {% endif %}
             {% endif %}
 
