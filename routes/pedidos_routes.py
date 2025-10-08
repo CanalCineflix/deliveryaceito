@@ -282,4 +282,15 @@ def print_comanda(order_id):
         Order.user_id == current_user.id
     ).first_or_404()
     
-    return render_template('pedidos/print_comanda.html', order=order)
+    # 🚨 ADICIONE ESTA LÓGICA ANTES DE RENDERIZAR O TEMPLATE:
+    troco_devolver = 0
+    # Verifica se o pagamento é em dinheiro E se o cliente deu um valor para troco
+    if order.payment_method == 'Dinheiro' and order.change_for:
+        # Calcula o troco: (Valor dado - Preço Total)
+        # Se o troco for positivo, usa-o. Se for zero ou negativo (erro), usa 0.
+        troco_calculado = order.change_for - order.total_price
+        if troco_calculado > 0:
+            troco_devolver = troco_calculado
+            
+    # Passa a variável extra para o template
+    return render_template('pedidos/print_comanda.html', order=order, troco_a_devolver=troco_devolver)
