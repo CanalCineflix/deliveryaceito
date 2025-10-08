@@ -150,43 +150,43 @@ def new_order():
         customer_notes = order_data.get('customer_notes')
         payment_method = order_data.get('payment_method')
         table_number = order_data.get('table_number')
-        items_data = order_data.get('items', [])
+        
+        # Mantenha 'items' ou use 'order_items' dependendo do seu frontend
+        items_data = order_data.get('items', []) 
 
         try:
-            # Novo pedido (com total_price inicial 0)
+            # Criação inicial do objeto Order
             order = Order(
                 user_id=current_user.id,
                 client_name=customer_name,
                 client_phone=customer_phone,
                 client_address=customer_address,
                 payment_method=payment_method,
-                total_price=0.0, # Será recalculado abaixo
+                total_price=0.0, 
                 table_number=table_number,
                 notes=customer_notes
             )
             
             db.session.add(order)
-            db.session.flush() # Obtém o order.id antes do commit
+            db.session.flush() # Obtém o order.id
             
             total_price = Decimal(0)
             
             for item_data in items_data:
                 
-                # --- CORREÇÃO IMPORTANTE AQUI ---
-                # Garante que product_id é um inteiro
+                # CORREÇÃO: Garante que ID e Quantidade são inteiros (int)
                 try:
                     product_id = int(item_data.get('id'))
                     quantity = int(item_data.get('quantity'))
                 except (TypeError, ValueError):
-                    # Ignora o item se o ID ou a quantidade não forem números válidos
                     continue
                     
-                observation = item_data.get('note') # Se o JSON estiver usando 'note' em vez de 'observation'
+                # CORREÇÃO: Usa 'note' para observação, conforme o log anterior
+                observation = item_data.get('note', '') 
                 
                 if quantity <= 0:
                     continue
                 
-                # O ID é agora um inteiro
                 product = Product.query.get(product_id)
                 
                 if product:
@@ -200,10 +200,10 @@ def new_order():
                     db.session.add(item)
                     total_price += Decimal(product.price) * Decimal(quantity)
                 else:
-                    # Opcional: Logar a falha para debug
+                    # Loga se o produto não for encontrado, útil para debug
                     print(f"Produto não encontrado para ID: {product_id}. Item ignorado.") 
-            # --- FIM DA CORREÇÃO ---
             
+            # Atualiza o preço total e salva
             order.total_price = total_price
             db.session.commit()
             
@@ -212,7 +212,6 @@ def new_order():
             
         except Exception as e:
             db.session.rollback()
-            # Log de erro mais detalhado
             print(f"Erro ao criar pedido: {e}") 
             flash(f'Ocorreu um erro ao criar o pedido: {e}', 'danger')
             return jsonify({'success': False, 'message': str(e)}), 500
@@ -230,9 +229,6 @@ def new_order():
 def next_status(order_id):
     """
     Avança o status de um pedido para o próximo estágio na sequência.
-    - PENDING -> PREPARING
-    - PREPARING -> SENT
-    - SENT -> COMPLETED
     """
     order = Order.query.filter(
         Order.id == order_id,
@@ -270,7 +266,10 @@ def next_status(order_id):
 @pedidos_bp.route('/<int:order_id>')
 @login_required
 def view_order(order_id):
-    order = Order.query.filter(
+    # Carrega itens e produtos também na tela de visualização
+    order = Order.query.options(
+        joinedload(Order.items).joinedload(OrderItem.product)
+    ).filter(
         Order.id == order_id,
         Order.user_id == current_user.id
     ).first_or_404()
@@ -281,9 +280,9 @@ def view_order(order_id):
 @login_required
 def print_comanda(order_id):
     order = Order.query.options(
-        # 1. Garante o carregamento do usuário (restaurante)
+        # Garante o carregamento do usuário (restaurante)
         joinedload(Order.user), 
-        # 2. Garante o carregamento dos itens e produtos
+        # Garante o carregamento dos itens e produtos
         joinedload(Order.items).joinedload(OrderItem.product)
     ).filter(
         Order.id == order_id,
