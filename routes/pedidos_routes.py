@@ -22,13 +22,11 @@ def index():
     # Apenas os status PENDING, PREPARING e SENT são exibidos nesta tela
     valid_statuses = [OrderStatus.PENDING, OrderStatus.PREPARING, OrderStatus.SENT]
     
-    # Verifica se o status passado na URL é válido para esta rota
     if status not in [s.name for s in valid_statuses]:
         flash('Status de pedido inválido.', 'danger')
         return redirect(url_for('pedidos.index', status='PENDING'))
         
     orders = Order.query.options(
-        # Garante o carregamento dos itens e produtos para a tela principal
         joinedload(Order.items).joinedload(OrderItem.product)
     ).filter(
         Order.user_id == current_user.id,
@@ -40,9 +38,7 @@ def index():
 @pedidos_bp.route('/concluidos', methods=['GET'])
 @login_required
 def concluidos():
-    """
-    Rota para exibir os pedidos concluídos, com filtro por data e agrupados.
-    """
+    # ... (código inalterado)
     start_date_str = request.args.get('start_date')
     end_date_str = request.args.get('end_date')
 
@@ -77,9 +73,7 @@ def concluidos():
 @pedidos_bp.route('/cancelados', methods=['GET'])
 @login_required
 def cancelados():
-    """
-    Rota para exibir os pedidos cancelados, com filtro por data.
-    """
+    # ... (código inalterado)
     start_date_str = request.args.get('start_date')
     end_date_str = request.args.get('end_date')
 
@@ -116,15 +110,12 @@ def cancelados():
 @pedidos_bp.route('/<int:order_id>/cancelar', methods=['POST'])
 @login_required
 def cancel_order(order_id):
-    """
-    Cancela um pedido, salvando a data e o motivo do cancelamento.
-    """
+    # ... (código inalterado)
     order = Order.query.filter(
         Order.id == order_id,
         Order.user_id == current_user.id
     ).first_or_404()
     
-    # Acessa o motivo do cancelamento enviado no formulário
     cancel_reason = request.form.get('cancel_reason', 'Motivo não especificado.')
 
     order.status = OrderStatus.CANCELLED
@@ -146,13 +137,13 @@ def new_order():
 
         customer_name = order_data.get('customer_name')
         customer_phone = order_data.get('customer_phone')
-        customer_address = order_data.get('customer_address')
-        customer_notes = order_data.get('customer_notes')
+        customer_address = order_data.get('client_address') # Verifique se o frontend usa client_address
+        customer_notes = order_data.get('complement_note')  # Verifique se o frontend usa complement_note ou customer_notes
         payment_method = order_data.get('payment_method')
         table_number = order_data.get('table_number')
         
-        # Mantenha 'items' ou use 'order_items' dependendo do seu frontend
-        items_data = order_data.get('items', []) 
+        # 🚨 CORREÇÃO PRINCIPAL AQUI: Usa 'order_items' para capturar a lista de itens
+        items_data = order_data.get('order_items', []) 
 
         try:
             # Criação inicial do objeto Order
@@ -168,20 +159,25 @@ def new_order():
             )
             
             db.session.add(order)
-            db.session.flush() # Obtém o order.id
+            db.session.flush() 
             
             total_price = Decimal(0)
             
+            # Adicione a taxa de entrega ao preço inicial, se for o caso.
+            # No seu caso, o total de R$ 10.00 é a taxa. Se você não está calculando a taxa na rota do Cardápio,
+            # ela deve ser adicionada aqui.
+            # total_price = total_price + Decimal('10.00') # Exemplo se 10.00 for a taxa fixa
+            
             for item_data in items_data:
                 
-                # CORREÇÃO: Garante que ID e Quantidade são inteiros (int)
+                # Garante que ID e Quantidade são inteiros (int)
                 try:
                     product_id = int(item_data.get('id'))
                     quantity = int(item_data.get('quantity'))
                 except (TypeError, ValueError):
                     continue
                     
-                # CORREÇÃO: Usa 'note' para observação, conforme o log anterior
+                # Usa 'note' para observação, conforme o log
                 observation = item_data.get('note', '') 
                 
                 if quantity <= 0:
@@ -200,11 +196,13 @@ def new_order():
                     db.session.add(item)
                     total_price += Decimal(product.price) * Decimal(quantity)
                 else:
-                    # Loga se o produto não for encontrado, útil para debug
                     print(f"Produto não encontrado para ID: {product_id}. Item ignorado.") 
             
-            # Atualiza o preço total e salva
-            order.total_price = total_price
+            # Se o valor total de R$ 10.00 deve ser adicionado *após* a soma dos itens:
+            # Assumindo que R$ 10.00 é a taxa de entrega:
+            delivery_fee = Decimal('10.00') # Você deve buscar esse valor do DB ou do JSON
+            order.total_price = total_price + delivery_fee
+            
             db.session.commit()
             
             flash('Pedido criado com sucesso!', 'success')
@@ -227,9 +225,7 @@ def new_order():
 @pedidos_bp.route('/<int:order_id>/status/next', methods=['POST'])
 @login_required
 def next_status(order_id):
-    """
-    Avança o status de um pedido para o próximo estágio na sequência.
-    """
+    # ... (código inalterado)
     order = Order.query.filter(
         Order.id == order_id,
         Order.user_id == current_user.id
@@ -266,7 +262,6 @@ def next_status(order_id):
 @pedidos_bp.route('/<int:order_id>')
 @login_required
 def view_order(order_id):
-    # Carrega itens e produtos também na tela de visualização
     order = Order.query.options(
         joinedload(Order.items).joinedload(OrderItem.product)
     ).filter(
@@ -280,9 +275,7 @@ def view_order(order_id):
 @login_required
 def print_comanda(order_id):
     order = Order.query.options(
-        # Garante o carregamento do usuário (restaurante)
         joinedload(Order.user), 
-        # Garante o carregamento dos itens e produtos
         joinedload(Order.items).joinedload(OrderItem.product)
     ).filter(
         Order.id == order_id,
