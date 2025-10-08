@@ -8,7 +8,6 @@ import json
 from sqlalchemy.orm import joinedload
 from decimal import Decimal 
 
-
 pedidos_bp = Blueprint('pedidos', __name__, url_prefix='/pedidos', 
 template_folder=os.path.join(os.path.dirname(__file__), '../templates/pedidos'))
 
@@ -29,6 +28,7 @@ def index():
         return redirect(url_for('pedidos.index', status='PENDING'))
         
     orders = Order.query.options(
+        # Garante o carregamento dos itens e produtos para a tela principal
         joinedload(Order.items).joinedload(OrderItem.product)
     ).filter(
         Order.user_id == current_user.id,
@@ -153,30 +153,40 @@ def new_order():
         items_data = order_data.get('items', [])
 
         try:
+            # Novo pedido (com total_price inicial 0)
             order = Order(
                 user_id=current_user.id,
                 client_name=customer_name,
                 client_phone=customer_phone,
                 client_address=customer_address,
                 payment_method=payment_method,
-                total_price=0.0,
+                total_price=0.0, # Será recalculado abaixo
                 table_number=table_number,
                 notes=customer_notes
             )
             
             db.session.add(order)
-            db.session.flush()
+            db.session.flush() # Obtém o order.id antes do commit
             
             total_price = Decimal(0)
             
             for item_data in items_data:
-                product_id = item_data.get('id')
-                quantity = item_data.get('quantity')
-                observation = item_data.get('observation')
                 
-                if not product_id or not quantity or quantity <= 0:
+                # --- CORREÇÃO IMPORTANTE AQUI ---
+                # Garante que product_id é um inteiro
+                try:
+                    product_id = int(item_data.get('id'))
+                    quantity = int(item_data.get('quantity'))
+                except (TypeError, ValueError):
+                    # Ignora o item se o ID ou a quantidade não forem números válidos
+                    continue
+                    
+                observation = item_data.get('note') # Se o JSON estiver usando 'note' em vez de 'observation'
+                
+                if quantity <= 0:
                     continue
                 
+                # O ID é agora um inteiro
                 product = Product.query.get(product_id)
                 
                 if product:
@@ -189,15 +199,21 @@ def new_order():
                     )
                     db.session.add(item)
                     total_price += Decimal(product.price) * Decimal(quantity)
+                else:
+                    # Opcional: Logar a falha para debug
+                    print(f"Produto não encontrado para ID: {product_id}. Item ignorado.") 
+            # --- FIM DA CORREÇÃO ---
             
             order.total_price = total_price
             db.session.commit()
             
             flash('Pedido criado com sucesso!', 'success')
             return jsonify({'success': True, 'redirect_url': url_for('pedidos.index')}), 200
-        
+            
         except Exception as e:
             db.session.rollback()
+            # Log de erro mais detalhado
+            print(f"Erro ao criar pedido: {e}") 
             flash(f'Ocorreu um erro ao criar o pedido: {e}', 'danger')
             return jsonify({'success': False, 'message': str(e)}), 500
 
@@ -208,8 +224,6 @@ def new_order():
     
     return render_template('pedidos/new.html', products=products)
 
-# A rota `update_status` foi removida, pois a lógica de avanço de status
-# já está na rota `next_status` e `cancel_order`.
 
 @pedidos_bp.route('/<int:order_id>/status/next', methods=['POST'])
 @login_required
@@ -267,9 +281,9 @@ def view_order(order_id):
 @login_required
 def print_comanda(order_id):
     order = Order.query.options(
-        # 1. Adicione o joinedload para Order.user
+        # 1. Garante o carregamento do usuário (restaurante)
         joinedload(Order.user), 
-        # 2. Mantém o joinedload para os itens e produtos
+        # 2. Garante o carregamento dos itens e produtos
         joinedload(Order.items).joinedload(OrderItem.product)
     ).filter(
         Order.id == order_id,
