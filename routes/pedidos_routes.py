@@ -38,7 +38,6 @@ def index():
 @pedidos_bp.route('/concluidos', methods=['GET'])
 @login_required
 def concluidos():
-    # ... (código inalterado)
     start_date_str = request.args.get('start_date')
     end_date_str = request.args.get('end_date')
 
@@ -48,7 +47,9 @@ def concluidos():
     )
     
     if start_date_str:
+        # Certifique-se de que datetime está importado do módulo 'datetime'
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+        # Certifique-se de que func está importado de 'sqlalchemy'
         query = query.filter(func.date(Order.completed_at) >= start_date)
     
     if end_date_str:
@@ -59,6 +60,17 @@ def concluidos():
     
     grouped_by_date = {}
     for order in completed_orders:
+        
+        # 🚨 LÓGICA DE CÁLCULO DE TROCO ADICIONADA AQUI
+        order.troco_a_devolver = 0
+        if order.payment_method == 'Dinheiro' and order.change_for:
+            # O campo 'change_for' é o valor que o cliente deu
+            troco_calculado = order.change_for - order.total_price
+            if troco_calculado > 0:
+                # Anexa o troco a devolver como um novo atributo ao objeto Order
+                order.troco_a_devolver = troco_calculado
+        # 🚨 FIM DA LÓGICA DE CÁLCULO DE TROCO
+        
         if order.completed_at:
             date_key = order.completed_at.strftime('%d/%m/%Y')
             if date_key not in grouped_by_date:
