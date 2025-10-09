@@ -69,7 +69,7 @@
                                     </p>
                                     {% if order.change_for %}
                                         <p class="text-sm text-gray-600 mb-1">
-                                            <strong>Troco:</strong> R$ {{ "%.2f"|format(order.change_due) }}
+                                            <strong>Troco:</strong> R$ {{ "%.2f"|format(order.troco_a_devolver) }}
                                         </p>
                                     {% endif %}
                                     <p class="text-xl font-bold text-primary mt-2">
